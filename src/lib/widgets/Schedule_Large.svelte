@@ -1,4 +1,5 @@
 <script>
+    import ScheduleItem from "./ScheduleItem.svelte";
     let hours; 
 </script>
 
@@ -9,16 +10,16 @@
             <div id="separator"></div>
             <div id="hour-num">{i+8}</div>
         {/each}
+        <ScheduleItem name="placeholder" place="A113" color="red" height="50px" pos="50px" icon="%sveltekit.assets%/favicon.png"></ScheduleItem>
     </div>
 </div>
 
 
 <style>
-    /* #container {
-        border-radius: 30px;
-        background-color: rgba(255, 255, 255, 0.3);
-        border: 1px solid white;
-    } */
+    #container {
+        z-index: 1;
+        position: relative;
+    }
 
     #title {
         text-align: center;

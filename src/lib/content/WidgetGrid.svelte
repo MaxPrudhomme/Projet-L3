@@ -6,8 +6,10 @@
     let content="";
 </script>
 
+
+
 <div id="container">
-    <Widget {size} {content}></Widget>
+     <Widget {size} {content}></Widget>
 </div>
 
 <style>
@@ -19,4 +21,17 @@
         grid-template-rows: repeat(4, 1fr);
         gap: 3.85%;
     }
+    
+    :global(.svlt-grid-shadow) {
+    /* Back shadow */
+    background: pink;
+    }
+  :global(.svlt-grid-container) {
+    /* Container color */
+    background: #eee;
+  }
+  :global(.svlt-grid-resizer::after) {
+    /* Resizer color */
+    border-color: white !important;
+  }
 </style>
