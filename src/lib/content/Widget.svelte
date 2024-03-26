@@ -1,4 +1,6 @@
 <script>
+    import "../widgets/Schedule_Large.svelte";
+	import Schedule_Large from "../widgets/Schedule_Large.svelte";
     export let size;
     export let content;
     const widgetSizes = {
@@ -17,13 +19,13 @@
 </script>
 
 <div id="container" bind:this={containerRef}>
-    <h1>{content}</h1>
+    <Schedule_Large></Schedule_Large>
 </div>
 
 
 <style>
     #container {
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.3);
         border-radius: 30px;
     }
 </style>

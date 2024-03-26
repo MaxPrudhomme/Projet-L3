@@ -2,9 +2,12 @@
     import Widget from "./Widget.svelte";    
     import { onMount } from 'svelte';
 
+    let size="l";
+    let content="";
 </script>
 
 <div id="container">
+    <Widget {size} {content}></Widget>
 </div>
 
 <style>
