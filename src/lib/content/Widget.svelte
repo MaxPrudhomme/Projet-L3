@@ -27,5 +27,6 @@
     #container {
         background-color: rgba(255, 255, 255, 0.3);
         border-radius: 30px;
+        position: relative;
     }
 </style>

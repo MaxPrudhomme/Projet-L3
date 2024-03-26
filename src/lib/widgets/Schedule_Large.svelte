@@ -6,11 +6,13 @@
 <div id="container">
     <h1 id="title">Schedule</h1>
     <div id="schedule">  
-        {#each {length:10} as _,i}
+        {#each {length:12} as _,i}
             <div id="separator"></div>
             <div id="hour-num">{i+8}</div>
         {/each}
-        <ScheduleItem name="placeholder" place="A113" color="red" height="50px" pos="50px" icon="%sveltekit.assets%/favicon.png"></ScheduleItem>
+        <ScheduleItem name="Placeholder" place="A113" color="red" height="50px" pos="50px" icon="%sveltekit.assets%/favicon.png"></ScheduleItem>
+        <!-- paramètres à remplir avec les données du backend -->
+        <ScheduleItem name="Placeholder2" place="A113" color="blue" height="50px" pos="150px" icon="%sveltekit.assets%/favicon.png"></ScheduleItem>
     </div>
 </div>
 
@@ -43,5 +45,7 @@
         font-size: large;
         margin: 15px;
         color: grey;
+        text-align: center;
+        margin-right: 90%;
     }
 </style>

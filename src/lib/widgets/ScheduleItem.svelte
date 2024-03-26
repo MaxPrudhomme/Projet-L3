@@ -15,21 +15,26 @@
     }
 </script>
 
-<div id="schedule-item">
+<div id="schedule-item" bind:this={itemRef}>
     <div id="align">
         <img src={icon} alt="icon"/>
-        <h1>{name}</h1>
+        <div>
+            <h1>{name}</h1>
+            <p>{place}</p>
+        </div>   
     </div>
-    <p>{place}</p>
 </div>
 
 <style>
     #schedule-item {
         border-radius: 10px;
-        width: 250px;
+        width: 300px;           /* to make responsive if multiple items at the same height/time */
         padding: 10px;
         z-index: 2;
         position: absolute;
+        margin-left: 45px;
+
+        font-family: Arial, Helvetica, sans-serif;
     }
 
     #align {
@@ -39,4 +44,11 @@
     img {
         margin-right: 20px;
     }
+
+    h1 {
+        margin-top: -5px;
+        margin-bottom: 5px;
+        font-size: x-large;
+    }
+
 </style>
