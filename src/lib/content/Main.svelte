@@ -3,18 +3,18 @@
     import WidgetGrid from "./WidgetGrid.svelte";
 </script>
 
-<div id="container" class="glass">
+<div id="container" class="glass noise">
     <WidgetGrid></WidgetGrid>
     <Scrollbar></Scrollbar>
 </div>
 
 <style>
     #container {
-        height: 100%;
-        width: 82%;
+        height: 820px;
+        width: 1465px;
         background-color: rgba(255, 255, 255, 0.3);
         display: flex;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
     }
 </style>
