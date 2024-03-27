@@ -16,3 +16,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
+
+.noise {
+    background-image: url("../src/lib/misc/assets/noise.png");
+}

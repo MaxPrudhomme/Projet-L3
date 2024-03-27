@@ -11,11 +11,11 @@
 
 <style>
     #container {
-        width: 90vw;
-        height: 85vh;
+        width: 1800px;
+        height: 820px;
         display: flex;
         overflow:hidden;
         border-radius: 25px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.30);
     }
 </style>

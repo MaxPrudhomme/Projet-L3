@@ -11,7 +11,6 @@
         width: 25px;
         height: 90%;
         border-radius: 15px;
-        margin-left: 40px;
     }
 
     #scrollbar {
