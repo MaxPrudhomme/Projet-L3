@@ -2,11 +2,12 @@
 	import Schedule_Large from '$lib/widgets/Schedule_Large.svelte';
 	import LastMarks_Medium from '$lib/widgets/LastMarks_Medium.svelte';
 	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
+	import Average_Small from '$lib/widgets/Average_Small.svelte';
 	let containerRef;
 </script>
 
 <div id="container" bind:this={containerRef}>
-	<Vacations_Medium vacationsDate="24/05/2024"></Vacations_Medium>
+	<Average_Small mark="15"></Average_Small>
 </div>
 
 <style>
