@@ -18,17 +18,12 @@
 		flex-direction: column;
 		justify-content: space-between;
 		height: 350px;
-	}
-
-	h1,
-	p {
 		font-family: 'SF Pro Display';
 	}
 
 	#title {
 		text-align: center;
-		font-family: Arial, Helvetica, sans-serif;
-		color: grey;
+		color: rgb(0,0,0,0.5);
 		font-size: large;
 		margin-top: 10px;
 		margin-bottom: 20px;
@@ -43,17 +38,20 @@
 		text-align: center;
 		margin-top: auto;
 		font-size: 100px;
+		justify-self: center;
 	}
 
 	#out-of {
 		text-align: right;
-		font-size: large;
-		margin-right: 5%;
+		font-size: x-large;
+		margin-right: 10%;
 		margin-bottom: auto;
+		color: rgb(0,0,0,0.5);
 	}
 
 	#date {
 		text-align: center;
 		vertical-align: bottom;
+		color: rgb(0,0,0,0.5);
 	}
 </style>
