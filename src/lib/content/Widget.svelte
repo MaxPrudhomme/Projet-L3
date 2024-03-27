@@ -1,9 +1,12 @@
 <script>
 	import Schedule_Large from '$lib/widgets/Schedule_Large.svelte';
+	import LastMarks_Medium from '$lib/widgets/LastMarks_Medium.svelte';
 	let containerRef;
 </script>
 
-<div id="container" bind:this={containerRef}><Schedule_Large></Schedule_Large></div>
+<div id="container" bind:this={containerRef}>
+	<LastMarks_Medium name="Algorithms" mark="15" date="21/09/2022"></LastMarks_Medium>
+</div>
 
 <style>
 	#container {
