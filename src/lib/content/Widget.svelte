@@ -1,23 +1,43 @@
 <script>
-	import Schedule_Large from '$lib/widgets/Schedule_Large.svelte';
-	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
-	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
-	import Average_Small from '$lib/widgets/Average_Small.svelte';
-	import NextExam_Small from '$lib/widgets/NextExam_Small.svelte';
-	import Homework_Large from '$lib/widgets/Homework_Large.svelte';
+	import { onMount } from 'svelte';
+
+	export let height = null;
+	export let width = null;
+	export let disabled = false;
+
 	let containerRef;
+	let blockerRef;
+
+	onMount(() => {
+		if (height !== null && width !== null) {
+			containerRef.style.height = height + 'px';
+			containerRef.style.width = width + 'px';
+			blockerRef.style.height = height + 'px';
+			blockerRef.style.width = width + 'px';
+		}
+	});
 </script>
 
 <div id="container" bind:this={containerRef}>
-	<Homework_Large></Homework_Large>
+	{#if disabled}
+		<div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
+	{:else}
+		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
+	{/if}
 </div>
 
 <style>
 	#container {
-		background-color: rgba(255, 255, 255, 0.3);
+		display: inline-flex;
+		position: relative;
+		background-color: rgba(0, 0, 0, 0.3);
 		border-radius: 20px;
 		height: 100%;
 		width: 100%;
-		padding: 5px;
+	}
+
+	#blocker {
+		border-radius: 20px;
+		cursor: pointer;
 	}
 </style>

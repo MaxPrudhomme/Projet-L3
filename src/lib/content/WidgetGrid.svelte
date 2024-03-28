@@ -12,6 +12,12 @@
     }
 
     const itemSize = { width: 170, height: 170 };
+
+    function deleteWidget() {
+        widgets.update(currentWidgets => {
+        return currentWidgets.filter(widget => widget.id !== id);
+    })
+    }
 </script>
 
 
@@ -20,10 +26,10 @@
     <GridControls></GridControls>
     <div id="grid">
     <Grid class="grid-container" rows={4} cols={7} {itemSize} gap={20} collision="none">
-        {#each $widgets as item}
-            <GridItem bind:x={item.x} bind:y={item.y} bind:w={item.w} bind:h={item.h} resizable={false} previewClass="itemPreview" movable={move}>
+        {#each $widgets as {x, y, w, h, content}}
+            <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
                 <div class="content">
-                    <Widget></Widget>
+                    <Widget disabled={editMode ? true: false}></Widget>
                 </div>
             </GridItem>
         {/each}
@@ -44,10 +50,11 @@
     .content {
         height: 100%;
         width: 100%;
+        position: relative;
     }
     
     :global(.itemPreview) {
-		background-color: rgb(0, 255, 0, 0.6);
+		background-color: rgba(0, 255, 0, 0.6);
         border-radius: 20px;
         transition: all 0.15s ease;
 	}

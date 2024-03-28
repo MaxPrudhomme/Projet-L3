@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'SFPro-Regular'
 }
 
 .absolute {
@@ -19,4 +20,58 @@
 
 .noise {
     background-image: url("../src/lib/misc/assets/noise.png");
+}
+
+.buttonReset {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+@font-face {
+    font-family: 'SFPro-Regular';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-Medium';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-Bold';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBOLD.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-BlackItelic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-HeavyItalic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-LightItalic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-SemiBoldItalic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-ThinItalic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYTHINITALIC.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFPro-UltraLightItalic';
+    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYULTRALIGHTITALIC.OTF') format('opentype');
 }

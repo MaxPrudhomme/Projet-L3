@@ -2,4 +2,15 @@ import { writable } from 'svelte/store';
 
 export const editMode = writable(false);
 
-export const widgets = writable([{ x: 0, y: 0, w: 2, h: 4 }]);
+export const interactionActive = writable(false);
+
+export const widgets = writable([]);
+
+export const matrixRepresentation = writable([
+	[0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0]
+]);
+
+//{id: 1, x: 0, y: 0, w: 1, h: 1, content: ["schedule", "s"]} Example grid
