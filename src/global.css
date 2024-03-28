@@ -22,6 +22,15 @@
     background-image: url("../src/lib/misc/assets/noise.png");
 }
 
+.buttonReset {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
 @font-face {
     font-family: 'SFPro-Regular';
     src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
