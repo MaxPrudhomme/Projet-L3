@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 
+	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
+
 	export let height = null;
 	export let width = null;
 	export let disabled = false;
@@ -24,6 +26,8 @@
 	{:else}
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
+
+	<Marks_Large marks={[12, 15, 13, 11, 9]} semesters={[1, 1, 1, 2, 2]}></Marks_Large>
 </div>
 
 <style>
