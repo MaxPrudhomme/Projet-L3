@@ -14,11 +14,23 @@
 <div id="container">
 	<h1 id="title">Marks</h1>
 
-	<!-- {#each marks.length as _, i}
-		{#if semesters[i] == currenstSemester}
-			<MarkItem mark={marks[i]}></MarkItem>
+	<div id="display">
+		{#if semesters[0] == currentSemester}
+			<MarkItem mark={marks[0]}></MarkItem>
 		{/if}
-	{/each} ça fout la merde, à fix-->
+		{#if semesters[1] == currentSemester}
+			<MarkItem mark={marks[1]}></MarkItem>
+		{/if}
+		{#if semesters[2] == currentSemester}
+			<MarkItem mark={marks[2]}></MarkItem>
+		{/if}
+		{#if semesters[3] == currentSemester}
+			<MarkItem mark={marks[3]}></MarkItem>
+		{/if}
+		{#if semesters[4] == currentSemester}
+			<MarkItem mark={marks[4]}></MarkItem>
+		{/if}
+	</div>
 
 	<div id="periods">
 		<button onclick={changePeriod(1)}>P1</button>
@@ -34,6 +46,15 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		width: 360px;
+	}
+
+	#display {
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
+		overflow-x: hidden;
+		align-items: center;
+		height: 650px;
 	}
 
 	#title {

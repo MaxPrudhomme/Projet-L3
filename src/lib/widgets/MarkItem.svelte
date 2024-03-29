@@ -12,8 +12,8 @@
 	<h2>/20</h2>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		width="16"
-		height="16"
+		width="50"
+		height="50"
 		fill="currentColor"
 		class="bi bi-arrow-up-square"
 		viewBox="0 0 16 16"
@@ -31,15 +31,26 @@
 		padding: 10px;
 		margin-top: 10px;
 		margin-bottom: 10px;
+		display: flex;
+		flex-direction: row;
 	}
 
 	#mark {
 		font-weight: bold;
-		font-size: xx-large;
+		font-size: 50px;
 	}
 
 	h2 {
 		font-size: x-large;
 		color: rgb(0, 0, 0, 0.5);
+		margin-top: 10%;
+		margin-left: 5%;
+	}
+
+	svg {
+		margin-top: auto;
+		margin-bottom: auto;
+		margin-left: auto;
+		margin-right: 5%;
 	}
 </style>
