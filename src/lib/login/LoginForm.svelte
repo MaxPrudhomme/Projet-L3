@@ -1,30 +1,21 @@
 <script>
-    import { auth } from "$lib/firebase";
-    import { signInWithEmailAndPassword } from "firebase/auth";
-    import { userToken, loggedIn } from "../../store";
 
     let email = null;
     let password = null;
-    let loginButton;
 
     function handleSubmit() {
+
         if (email && password ) {
-            signInWithEmailAndPassword(auth, email, password).then((cred) => {
-                userToken.set(cred)
-                loggedIn.set(true)
-                loginButton.innerText = "Success"
-            })
-            .catch((error) => {
-                console.log(error.code, error.message)
-            })
+            console.log(email, password)
         }
 
         email = null;
         password = null;
     }
+
 </script>
 
-<div id="container" class="glass noise">
+<div id="container">
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="black" viewBox="0 0 16 16" id="loginIcon">
         <path d="M8.06 6.5a.5.5 0 0 1 .5.5v.776a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 0 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V7a.5.5 0 0 1 .5-.5Z"/>
         <path d="M6.06 7a2 2 0 1 1 4 0 .5.5 0 1 1-1 0 1 1 0 1 0-2 0v.332q0 .613-.066 1.221A.5.5 0 0 1 6 8.447q.06-.555.06-1.115zm3.509 1a.5.5 0 0 1 .487.513 11.5 11.5 0 0 1-.587 3.339l-1.266 3.8a.5.5 0 0 1-.949-.317l1.267-3.8a10.5 10.5 0 0 0 .535-3.048A.5.5 0 0 1 9.569 8m-3.356 2.115a.5.5 0 0 1 .33.626L5.24 14.939a.5.5 0 1 1-.955-.296l1.303-4.199a.5.5 0 0 1 .625-.329"/>
@@ -39,20 +30,15 @@
             <input bind:value={password} class="input input-bot" type="password" placeholder="Password">
         </div>
         <button id="resetButton" class="buttonReset">Reset Password</button>
-
-        <button id="loginButton" type="submit" class="buttonReset" bind:this={loginButton}>Login</button>
-    </form>
     
+        <button id="loginButton" type="submit" class="buttonReset">Login</button>
+    </form>
     <h2>or</h2>
-
-    <button id="signupButton" class="buttonReset">Create an Account</button>
 </div>
+
 
 <style>
     #container {
-        width: 100%;
-        height: 100%;
-        border-radius: 25px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -87,17 +73,13 @@
         margin-right: auto;
     }
 
-    #signupButton {
-        margin-top: 25px;
-    }
-
     h2 {
         margin-top: 25px;
         font-size: 20px;
         color: rgba(0, 0, 0, 0.5)
     }
 
-    #loginButton, #signupButton {
+    #loginButton {
         width: 230px;
         height: 50px;
         border-radius: 30px;
@@ -110,5 +92,4 @@
     #loginButton:hover {
         background-color: rgba(255, 255, 255, 0.85);
     }
-
 </style>

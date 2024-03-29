@@ -14,6 +14,7 @@ export const matrixRepresentation = writable([
 ]);
 
 export const userToken = writable(null);
+export const loggedIn = writable(false);
 
 //{id: 1, x: 0, y: 0, w: 1, h: 1, content: ["schedule", "s"]} Example grid
 

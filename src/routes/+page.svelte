@@ -7,10 +7,18 @@
     import Login from "$lib/login/Login.svelte";
     import InteractionContainer from "$lib/content/InteractionContainer.svelte";
     
-    import { interactionActive } from "../store";
-    import { userToken } from "../store";
+    import { interactionActive, userToken, loggedIn } from "../store";
 
     let contentContainer;
+    $: {
+        if (contentContainer) {
+        if ($loggedIn) {
+            contentContainer.style.width = "1800px";
+        } else {
+            contentContainer.style.width = "400px"; 
+        }
+        }
+    }
 </script>
 
 {#if $interactionActive}
@@ -20,7 +28,12 @@
 {/if }
 
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
-    <Login></Login>
+    {#if !$loggedIn}
+        <Login></Login>
+    {:else}    
+        <Sidebar></Sidebar>
+        <Main></Main>
+    {/if}
 </div>
 
 <style>
