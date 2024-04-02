@@ -27,7 +27,9 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Averages_Large courses={['Algorithmics', 'Cringe', 'Based']} averages={[15, 20, 9]}
+	<Averages_Large
+		courses={['Algorithmics', 'Cringe', 'Based', 'Saucisse', 'Rougail']}
+		averages={[15, 20, 9, 17, 2]}
 	></Averages_Large>
 </div>
 
@@ -39,6 +41,7 @@
 		border-radius: 20px;
 		height: 100%;
 		width: 100%;
+		scrollbar-width: none;
 	}
 
 	#blocker {

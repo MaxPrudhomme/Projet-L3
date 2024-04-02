@@ -1,4 +1,5 @@
 <script>
+	import AverageSmall from './Average_Small.svelte';
 	import AveragesItem from './AveragesItem.svelte';
 	export let courses; // array of courses with an average
 	export let averages; // tha average for each course
@@ -10,9 +11,12 @@
 	<h1 id="title">Averages</h1>
 
 	<div id="display">
-		<AveragesItem course={courses[0]} average={averages[0]}></AveragesItem>
+		<!-- <AveragesItem course={courses[0]} average={averages[0]}></AveragesItem>
 		<AveragesItem course={courses[1]} average={averages[1]}></AveragesItem>
-		<AveragesItem course={courses[2]} average={averages[2]}></AveragesItem>
+		<AveragesItem course={courses[2]} average={averages[2]}></AveragesItem> -->
+		{#each courses as course, i}
+			<AveragesItem {course} average={averages[i]}></AveragesItem>
+		{/each}
 	</div>
 
 	<div id="values">

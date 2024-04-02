@@ -56,13 +56,14 @@
 	#average-bar {
 		background-color: rgb(255, 255, 255, 0.5);
 		border-radius: 15px;
-		height: 25px;
+		height: 20px;
 		width: 100%;
+		margin-top: 2px;
 	}
 
 	#value-bar {
 		background-color: blue;
 		border-radius: 15px;
-		height: 25px;
+		height: 20px;
 	}
 </style>
