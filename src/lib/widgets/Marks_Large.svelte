@@ -1,13 +1,26 @@
 <script>
 	import MarkItem from './MarkItem.svelte';
 
-	let currentSemester = true; // true if first semester, false if second semester
+	let currentSemester = 1; // true if first semester, false if second semester
 
 	export let marks;
 	export let semesters;
 
+	let first;
+	let second;
+
 	function changePeriod(semester) {
-		currentSemester = semester;
+		if (semester == 1) {
+			second.style.display = 'none';
+			second.style.visibility = 'hidden';
+			first.style.display = 'block';
+			first.style.visibility = 'visible';
+		} else if (semester == 2) {
+			first.style.display = 'none';
+			first.style.visibility = 'hidden';
+			second.style.display = 'block';
+			second.style.visibility = 'visible';
+		}
 	}
 </script>
 
@@ -17,16 +30,23 @@
 	<div id="display">
 		{#key currentSemester}
 			{#each marks as mark, i}
-				{#if semesters[i] == currentSemester}
-					<MarkItem {mark}></MarkItem>
+				{#if semesters[i] == 1}
+					<div id="firstsemester" bind:this={first}>
+						<MarkItem {mark}></MarkItem>
+					</div>
+				{/if}
+				{#if semesters[i] == 2}
+					<div id="secondsemester" bind:this={second}>
+						<MarkItem {mark}></MarkItem>
+					</div>
 				{/if}
 			{/each}
 		{/key}
 	</div>
 
 	<div id="periods">
-		<button onclick={changePeriod(true)}>P1</button>
-		<button onclick={changePeriod(false)}>P2</button>
+		<button onclick={changePeriod(1)}>P1</button>
+		<button onclick={changePeriod(2)}>P2</button>
 	</div>
 </div>
 
