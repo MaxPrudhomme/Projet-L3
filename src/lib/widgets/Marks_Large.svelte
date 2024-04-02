@@ -1,7 +1,7 @@
 <script>
 	import MarkItem from './MarkItem.svelte';
 
-	let currentSemester = 1; // true if first semester, false if second semester
+	let currentSemester = true; // true if first semester, false if second semester
 
 	export let marks;
 	export let semesters;
@@ -15,26 +15,18 @@
 	<h1 id="title">Marks</h1>
 
 	<div id="display">
-		{#if semesters[0] == currentSemester}
-			<MarkItem mark={marks[0]}></MarkItem>
-		{/if}
-		{#if semesters[1] == currentSemester}
-			<MarkItem mark={marks[1]}></MarkItem>
-		{/if}
-		{#if semesters[2] == currentSemester}
-			<MarkItem mark={marks[2]}></MarkItem>
-		{/if}
-		{#if semesters[3] == currentSemester}
-			<MarkItem mark={marks[3]}></MarkItem>
-		{/if}
-		{#if semesters[4] == currentSemester}
-			<MarkItem mark={marks[4]}></MarkItem>
-		{/if}
+		{#key currentSemester}
+			{#each marks as mark, i}
+				{#if semesters[i] == currentSemester}
+					<MarkItem {mark}></MarkItem>
+				{/if}
+			{/each}
+		{/key}
 	</div>
 
 	<div id="periods">
-		<button onclick={changePeriod(1)}>P1</button>
-		<button onclick={changePeriod(2)}>P2</button>
+		<button onclick={changePeriod(true)}>P1</button>
+		<button onclick={changePeriod(false)}>P2</button>
 	</div>
 </div>
 

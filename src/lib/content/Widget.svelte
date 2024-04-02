@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import Averages_Large from '$lib/widgets/Averages_Large.svelte';
+	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
 
 	export let height = null;
 	export let width = null;
@@ -27,10 +28,7 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Averages_Large
-		courses={['Algorithmics', 'Cringe', 'Based', 'Saucisse', 'Rougail']}
-		averages={[15, 20, 9, 17, 2]}
-	></Averages_Large>
+	<Marks_Large marks={[15, 12, 8, 10]} semesters={[true, true, false, false]}></Marks_Large>
 </div>
 
 <style>
