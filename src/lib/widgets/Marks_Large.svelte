@@ -3,25 +3,8 @@
 
 	let currentSemester = 1; // true if first semester, false if second semester
 
-	export let marks;
-	export let semesters;
-
-	let first;
-	let second;
-
-	function changePeriod(semester) {
-		if (semester == 1) {
-			second.style.display = 'none';
-			second.style.visibility = 'hidden';
-			first.style.display = 'block';
-			first.style.visibility = 'visible';
-		} else if (semester == 2) {
-			first.style.display = 'none';
-			first.style.visibility = 'hidden';
-			second.style.display = 'block';
-			second.style.visibility = 'visible';
-		}
-	}
+	export let first;
+	export let second;
 </script>
 
 <div id="container">
@@ -29,24 +12,32 @@
 
 	<div id="display">
 		{#key currentSemester}
-			{#each marks as mark, i}
-				{#if semesters[i] == 1}
-					<div id="firstsemester" bind:this={first}>
-						<MarkItem {mark}></MarkItem>
-					</div>
-				{/if}
-				{#if semesters[i] == 2}
-					<div id="secondsemester" bind:this={second}>
-						<MarkItem {mark}></MarkItem>
-					</div>
-				{/if}
-			{/each}
+			{#if currentSemester == 1}
+				{#each first as f}
+					<MarkItem mark={f}></MarkItem>
+				{/each}
+			{/if}
+			{#if currentSemester == 2}
+				{#each second as s}
+					<MarkItem mark={s}></MarkItem>
+				{/each}
+			{/if}
 		{/key}
 	</div>
 
 	<div id="periods">
-		<button onclick={changePeriod(1)}>P1</button>
-		<button onclick={changePeriod(2)}>P2</button>
+		<button
+			on:click={() => {
+				currentSemester = 1;
+				console.log(currentSemester);
+			}}>P1</button
+		>
+		<button
+			on:click={() => {
+				currentSemester = 2;
+				console.log(currentSemester);
+			}}>P2</button
+		>
 	</div>
 </div>
 

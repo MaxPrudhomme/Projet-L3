@@ -28,7 +28,7 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Marks_Large marks={[15, 12, 8, 10]} semesters={[1, 1, 2, 2]}></Marks_Large>
+	<Marks_Large first={[15, 12]} second={[8, 10]}></Marks_Large>
 </div>
 
 <style>
