@@ -2,8 +2,31 @@
     import Widget from "./Widget.svelte";    
     import Grid, { GridItem } from 'svelte-grid-extended';
     import GridControls from "./GridControls.svelte";
-    import { editMode } from "../../store";
-    import { widgets } from "../../store";
+    import { editMode, widgets, currentView, userUid } from "../../store";
+    import { db } from "$lib/firebase";
+    import { doc, getDoc } from "firebase/firestore";
+
+
+    $: {
+        const newView = $currentView
+        const fetchData = async () => {
+            try {
+                if (newView === "dashboard") {
+                    const userRef = doc(db, 'users', $userUid);
+                    const userData = await getDoc(userRef);
+                    widgets.set(userData.data()["dashboard"]);
+                } else {
+                    const viewRef = doc(db, 'users', $userUid, 'userCourses', newView);
+                    const viewData = await getDoc(viewRef);
+                    widgets.set(viewData.data()["widgets"]);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }
+
 
     let move = false
 

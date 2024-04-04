@@ -1,7 +1,7 @@
 <script>
-  import { editMode } from "../../store";
-  import { widgets } from "../../store";
-  import { interactionActive } from "../../store";
+  import { editMode, widgets, interactionActive, userUid, currentView } from "../../store";
+  import { db } from "$lib/firebase";
+  import { doc, updateDoc } from "firebase/firestore";
 
   let widgetsBackup = [];
 
@@ -10,8 +10,19 @@
     widgetsBackup = JSON.parse(JSON.stringify($widgets));
   }
 
-  function saveChanges() {
-      editMode.set(false); 
+  async function saveChanges() {
+    editMode.set(false); 
+    if ($currentView === "dashboard") {
+      const targetRef = doc(db, 'users', $userUid)
+      await updateDoc(targetRef, {
+        dashboard: $widgets
+      })
+    } else {
+      const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView)
+      await updateDoc(targetRef, {
+        widgets: $widgets
+      })
+    }
   }
 
   function cancelChanges() {
@@ -22,7 +33,6 @@
   function browseWidgets() {
     interactionActive.set(true)
   }
-
 </script>
 
 <div id="container">
