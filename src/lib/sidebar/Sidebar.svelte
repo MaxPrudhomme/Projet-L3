@@ -21,7 +21,7 @@
 
 </script>
 
-<div id="container" class="noise" transition:fly="{{ x: -1000, duration: 500, delay: 500}}">
+<div id="container" class="noise" in:fly={{ x: -1000, duration: 750, delay: 750}} out:fly={{ x: -1000, duration: 750}}>
     {#if $user}
         <SidebarUserInfo firstName={$user["name"]["first"]} lastName={$user["name"]["last"]}></SidebarUserInfo>
         <SidebarList></SidebarList>

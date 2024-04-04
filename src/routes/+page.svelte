@@ -1,7 +1,6 @@
 <script>
     import "../global.css";
     import { fade } from "svelte/transition";
-
     import Sidebar from "$lib/sidebar/Sidebar.svelte";
     import Main from "$lib/content/Main.svelte";
     import Login from "$lib/login/Login.svelte";
@@ -11,18 +10,22 @@
 
     let contentContainer;
     $: {
-        if (contentContainer) {
-        if ($userUid !== null) {
-            contentContainer.style.width = "1800px";
-        } else {
-            contentContainer.style.width = "400px"; 
+        setTimeout(() => {
+            if (contentContainer) {
+            if ($userUid !== null) {
+                contentContainer.style.width = "1800px";
+            } else {
+                contentContainer.style.width = "400px"; 
+            }
         }
-        }
+        }, 1000)
+
     }
+
 </script>
 
 {#if $interactionActive}
-<div id="configContainer" transition:fade={{duration:150}}>
+<div id="configContainer" in:fade={{duration:150, delay:650}} out:fade={{duration: 150}}>
     <InteractionContainer></InteractionContainer>
 </div>
 {/if }
