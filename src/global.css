@@ -31,6 +31,26 @@
     transition: all 0.5s ease;
 }
 
+.input {
+    border: none;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.45);
+    width: 335px;
+    height: 50px;
+    font-size: 18px;
+    padding-left: 15px;
+}
+
+.input-top {
+    border-radius: 5px 5px 0px 0px;
+}
+
+.input-bot {
+    border-radius: 0px 0px 5px 5px;
+}
+
+
+
 @font-face {
     font-family: 'SFPro-Regular';
     src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');

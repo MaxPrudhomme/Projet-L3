@@ -13,6 +13,8 @@ export const matrixRepresentation = writable([
 	[0, 0, 0, 0, 0, 0, 0]
 ]);
 
-//{id: 1, x: 0, y: 0, w: 1, h: 1, content: ["schedule", "s"]} Example grid
+export const userToken = writable(null);
+export const userUid = writable(null);
+export const user = writable(null)
 
-import { db } from '$lib/firebase';
+export const currentView = writable("dashboard")
