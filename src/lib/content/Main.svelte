@@ -4,7 +4,7 @@
     import { fade } from "svelte/transition";
 </script>
 
-<div id="container" transition:fade={{duration:500, delay:1000}}>
+<div id="container" in:fade={{duration:500, delay:1000}} out:fade={{duration: 150}}>
     <WidgetGrid></WidgetGrid>
     <Scrollbar></Scrollbar>
 </div>

@@ -6,7 +6,6 @@
     import { db } from "$lib/firebase";
     import { doc, getDoc } from "firebase/firestore";
 
-
     $: {
         const newView = $currentView
         const fetchData = async () => {
@@ -27,7 +26,6 @@
         fetchData();
     }
 
-
     let move = false
 
     $: {
@@ -42,8 +40,6 @@
     })
     }
 </script>
-
-
 
 <div id="container">
     <GridControls></GridControls>

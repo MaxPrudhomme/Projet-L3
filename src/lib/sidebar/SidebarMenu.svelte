@@ -1,9 +1,15 @@
 <script>
     import Icon from '$lib/Icon.svelte'
-    import { currentView } from '../../store';
+    import { currentView, user, userToken, userUid } from '../../store';
 
     function requestDashboard() {
         currentView.set("dashboard")
+    }
+
+    function logOut() {
+        user.set(null)
+        userToken.set(null)
+        userUid.set(null)
     }
 
 </script>
@@ -12,10 +18,10 @@
     <button class="buttonReset">
         <Icon name={"gear-wide-connected"} class={"s32x32"}></Icon>
     </button>
-    <button class="buttonReset"  on:click={requestDashboard}>
+    <button class="buttonReset" on:click={requestDashboard}>
         <Icon name={"house"} class={"s32x32"}></Icon>
     </button>
-    <button class="buttonReset">
+    <button class="buttonReset" on:click={logOut}>
         <Icon name={"power"} class={"s32x32"}></Icon>
     </button>
 </div>
