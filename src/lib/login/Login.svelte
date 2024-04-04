@@ -1,7 +1,7 @@
 <script>
     import { auth } from "$lib/firebase";
     import { signInWithEmailAndPassword } from "firebase/auth";
-    import { userToken, loggedIn } from "../../store";
+    import { userToken, userUid } from "../../store";
 
     let email = null;
     let password = null;
@@ -11,14 +11,13 @@
         if (email && password ) {
             signInWithEmailAndPassword(auth, email, password).then((cred) => {
                 userToken.set(cred)
-                loggedIn.set(true)
+                userUid.set(auth.currentUser.uid)
                 loginButton.innerText = "Success"
             })
             .catch((error) => {
                 console.log(error.code, error.message)
             })
         }
-
         email = null;
         password = null;
     }

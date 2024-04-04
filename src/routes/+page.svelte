@@ -7,12 +7,12 @@
     import Login from "$lib/login/Login.svelte";
     import InteractionContainer from "$lib/content/InteractionContainer.svelte";
     
-    import { interactionActive, userToken, loggedIn } from "../store";
+    import { interactionActive, userUid } from "../store";
 
     let contentContainer;
     $: {
         if (contentContainer) {
-        if ($loggedIn) {
+        if ($userUid !== null) {
             contentContainer.style.width = "1800px";
         } else {
             contentContainer.style.width = "400px"; 
@@ -28,7 +28,7 @@
 {/if }
 
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
-    {#if !$loggedIn}
+    {#if $userUid === null}
         <Login></Login>
     {:else}    
         <Sidebar></Sidebar>

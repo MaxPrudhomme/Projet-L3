@@ -1,9 +1,10 @@
 <script>
     import Scrollbar from "./Scrollbar.svelte";
     import WidgetGrid from "./WidgetGrid.svelte";
+    import { fade } from "svelte/transition";
 </script>
 
-<div id="container" class="glass noise">
+<div id="container" transition:fade={{duration:500, delay:1000}}>
     <WidgetGrid></WidgetGrid>
     <Scrollbar></Scrollbar>
 </div>
