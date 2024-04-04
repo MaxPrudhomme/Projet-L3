@@ -1,25 +1,47 @@
 <script>
     export let subject = null;
     export let tag = null;
+    export let icon = null;
+    export let id = null;
+    import Icon from '$lib/Icon.svelte'
+    import { currentView } from '../../store';
+
+    function requestView() {
+        currentView.set(id)
+    }
+
 </script>
 
-<div id="container">
+<button class="buttonReset" on:click={requestView}>
+    <Icon name={icon} class="s36x36"></Icon>
     {#if tag}
-        <h1>{tag}</h1>
+        <p>{tag}</p>
     {:else} 
-        <h1>{subject}</h1>
+        <p>{subject}</p>
     {/if}
-</div>
+</button>
 
 <style>
-    #container {
-        width: 275px;
-        height: 60px;
+    button {
         background-color: rgba(255, 255, 255, 0.3);    
         border-radius: 5px;
+        transition: all 0.5s ease;
+        text-align: left;
+        width: 275px;
+        height: 60px;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
     }
-    h1 {
+    
+    button:hover {
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    p {
         color: black;
-        font-size: 30px;
+        font-size: 26px;
+        margin-left: 10px;
     }
 </style>

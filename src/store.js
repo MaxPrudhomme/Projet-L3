@@ -17,4 +17,4 @@ export const userToken = writable(null);
 export const userUid = writable(null);
 export const user = writable(null)
 
-//{id: 1, x: 0, y: 0, w: 1, h: 1, content: ["schedule", "s"]} Example grid
+export const currentView = writable("dashboard")

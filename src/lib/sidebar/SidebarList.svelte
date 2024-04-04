@@ -4,23 +4,28 @@
 	import { collection, getDocs, where, query } from "firebase/firestore";
     import { db } from "$lib/firebase";
 	import SidebarSubject from "./SidebarSubject.svelte";
+    import { writable } from "svelte/store"
 
-    let coursesList = []
+    let coursesList = writable([]);
 
     onMount(async () => {
         const userCoursesIds = (await getDocs(collection(db, 'users', $userUid, 'userCourses'))).docs.map(({ id }) => id);
         const coursesRef = await collection(db, 'courses')
         
         const coursesSnapshot = await getDocs(query(coursesRef, where('__name__', 'in', userCoursesIds)));
-        coursesSnapshot.docs.forEach((doc) => {
-            coursesList.push({ ...doc.data(), id: doc.id});
+        
+        coursesList.update(list => {
+            coursesSnapshot.docs.forEach((doc) => {
+                list.push({ ...doc.data(), id: doc.id});
+            });
+            return list;
         });
     })
 </script>
 
-<div id="container">
-    {#each coursesList as {icon, tag, subject} }
-        <SidebarSubject {icon} {tag} {subject}></SidebarSubject>
+<div id="container"> 
+    {#each $coursesList as {icon, tag, subject, id} }
+        <SidebarSubject {icon} {tag} {subject} {id}></SidebarSubject>
     {/each}
 </div>
 
