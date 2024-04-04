@@ -14,12 +14,12 @@
 		{#key currentSemester}
 			{#if currentSemester == 1}
 				{#each first as f}
-					<MarkItem mark={f}></MarkItem>
+					<MarkItem mark={f} prof="M. Puel" date="21/09/2022" notes="hmm yes very good"></MarkItem>
 				{/each}
 			{/if}
 			{#if currentSemester == 2}
 				{#each second as s}
-					<MarkItem mark={s}></MarkItem>
+					<MarkItem mark={s} prof="M. Puel" date="21/09/2022" notes="hmm yes very good"></MarkItem>
 				{/each}
 			{/if}
 		{/key}
