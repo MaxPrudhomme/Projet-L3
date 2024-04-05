@@ -1,66 +1,59 @@
 <script>
 	import { onMount } from 'svelte';
 
-	import Averages_Large from '$lib/widgets/Averages_Large.svelte';
-	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
-
-	export let height = null;
-	export let width = null;
+	import AverageSmall from '$lib/widgets/Average_Small.svelte';
+	import AverageLarge from '$lib/widgets/Averages_Large.svelte';
+  
+	export let content;
 	export let disabled = false;
-
+  
 	let containerRef;
 	let blockerRef;
-
+	let CurrentWidget;
+  
+	const widgetMap = {
+	  'average-s': AverageSmall,
+	  'average-l': null
+	};
+  
 	onMount(() => {
-		if (height !== null && width !== null) {
-			containerRef.style.height = height + 'px';
-			containerRef.style.width = width + 'px';
-			blockerRef.style.height = height + 'px';
-			blockerRef.style.width = width + 'px';
-		}
+	  	setCurrentWidget();
 	});
-</script>
-
-<div id="container" bind:this={containerRef}>
+  
+	function setCurrentWidget() {
+		let target = content[0] + '-' + content[1] 
+	  	CurrentWidget = widgetMap[target];
+	}
+  </script>
+  
+  <div id="container" bind:this={containerRef}>
 	{#if disabled}
-		<div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
+	  <div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
 	{:else}
-		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
+	  <div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Marks_Large first={[15, 12]} second={[8, 10]}></Marks_Large>
-</div>
+	{#if CurrentWidget}
+		<CurrentWidget/>
+  	{/if}
 
-<style>
+  </div>
+  
+  <style>
 	#container {
-		display: inline-flex;
-		position: relative;
-		background-color: rgba(0, 0, 0, 0.3);
-		border-radius: 20px;
-		height: 100%;
-		width: 100%;
-		scrollbar-width: none;
+	  display: inline-flex;
+	  position: relative;
+	  background-color: rgba(0, 0, 0, 0.3);
+	  border-radius: 20px;
+	  height: 100%;
+	  width: 100%;
+	  scrollbar-width: none;
+	  overflow: hidden;
 	}
-
+  
 	#blocker {
-		border-radius: 20px;
-		cursor: pointer;
+	  border-radius: 20px;
+	  cursor: pointer;
 	}
-
-	/* width */
-	::-webkit-scrollbar {
-		width: 20px;
-	}
-
-	/* Track */
-	::-webkit-scrollbar-track {
-		box-shadow: inset 0 0 5px grey;
-		border-radius: 10px;
-	}
-
-	/* Handle */
-	::-webkit-scrollbar-thumb {
-		background: red;
-		border-radius: 10px;
-	}
-</style>
+  </style>
+  

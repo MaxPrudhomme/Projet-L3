@@ -18,3 +18,4 @@ export const userUid = writable(null); // Extracted from userToken
 export const user = writable(null) // Extracted from userToken
 
 export const currentView = writable("dashboard")
+export const currentContent =  writable([])

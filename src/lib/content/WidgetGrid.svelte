@@ -48,7 +48,7 @@
         {#each $widgets as {x, y, w, h, content}}
             <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
                 <div class="content">
-                    <Widget disabled={editMode ? true: false}></Widget>
+                    <Widget disabled={editMode ? true: false} {content}></Widget>
                 </div>
             </GridItem>
         {/each}

@@ -4,10 +4,15 @@
     export let icon = null;
     export let id = null;
     import Icon from '$lib/Icon.svelte'
-    import { currentView } from '../../store';
+    import { currentView, currentContent, userUid } from '../../store';
+    import { db } from '$lib/firebase';
+    import { doc, getDoc } from 'firebase/firestore';
 
-    function requestView() {
+    async function requestView() {
         currentView.set(id)
+        const courseRef = doc(db, 'users', $userUid, 'userCourses', $currentView)
+        const courseData = (await getDoc(courseRef)).data()
+        currentContent.set(courseData)
     }
 
 </script>
