@@ -1,24 +1,45 @@
 <script>
+	import { fly } from 'svelte/transition';
+	import { backOut } from 'svelte/easing';
 	export let marks;
 	export let dates;
 	export let names;
 
 	let i = 0;
+	let flyParamsIn = {
+		x: 100,
+		delay: 200,
+		opacity: 0.5
+	};
+	let flyParamsOut = {
+		x: -100,
+		delay: 200,
+		opacity: 0.5
+	};
 
 	function nextMark(event) {
 		if (i < marks.length - 1 && i < 5) i++;
+		flyParamsIn.x = -100;
+		flyParamsOut.x = 100;
 	}
 	function previousMark(event) {
 		if (i > 0) i--;
+		flyParamsIn.x = 100;
+		flyParamsOut.x = -100;
 	}
 </script>
 
 <div class="container">
-	<h1 id="title">Last marks</h1>
-	<h1 id="name">{names[i]}</h1>
-	<h1 id="mark">{marks[i]}</h1>
-	<p id="out-of">/20</p>
-	<p id="date">{dates[i]}</p>
+	{#key i}
+		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+			<h1 id="title">Last marks</h1>
+			<h1 id="name">{names[i]}</h1>
+			<h1 id="mark">{marks[i]}</h1>
+			<p id="out-of">/20</p>
+			<p id="date">{dates[i]}</p>
+		</div>
+	{/key}
+
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<svg
@@ -74,10 +95,11 @@
 		flex-direction: column;
 		justify-content: space-between;
 		height: 150px;
+		width: 100%;
 		font-family: 'SF Pro Display';
-
-		transition-property: all;
-		transition-duration: 1s;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 5px;
 	}
 
 	#title {

@@ -3,6 +3,8 @@
 
 	import Averages_Large from '$lib/widgets/Averages_Large.svelte';
 	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
+	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
+	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
 
 	export let height = null;
 	export let width = null;
@@ -28,7 +30,11 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Marks_Large first={[15, 12]} second={[8, 10]}></Marks_Large>
+	<LastMarks_Small
+		marks={[11, 15, 2]}
+		dates={['11/03/2024', '25/03/2024', '01/04/2024']}
+		names={['Algo', 'SQL', 'Maths']}
+	></LastMarks_Small>
 </div>
 
 <style>

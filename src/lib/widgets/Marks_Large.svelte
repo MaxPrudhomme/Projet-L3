@@ -91,7 +91,7 @@
 		font-size: large;
 		color: rgb(0, 0, 0, 0.5);
 		background: none;
-		border: none;
+		border: 1px solid rgba(0, 0, 0, 0);
 		padding: 5px;
 		outline: inherit;
 		/* margin-left: 15%;
@@ -100,7 +100,7 @@
 	}
 
 	button:hover {
-		border: 1px solid rgb(255, 255, 255, 0.5);
+		border: 1px solid rgb(0, 0, 0, 0.5);
 		border-radius: 5px;
 	}
 </style>

@@ -30,6 +30,8 @@
 		height: 350px;
 		align-items: center;
 		font-family: 'SF Pro Display';
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	#title {
@@ -41,7 +43,8 @@
 	}
 
 	#circle {
-		border: 12px #00ffff solid;
+		border: 12px solid;
+		border-color: #00ffff;
 		border-radius: 50%;
 		text-align: center;
 		height: 250px;
