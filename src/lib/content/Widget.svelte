@@ -5,6 +5,8 @@
 	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
 	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
 	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
+	import Vacations_Small from '$lib/widgets/Vacations_Small.svelte';
+	import Homework_Medium from '$lib/widgets/Homework_Medium.svelte';
 
 	export let height = null;
 	export let width = null;
@@ -30,11 +32,7 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<LastMarks_Small
-		marks={[11, 15, 2]}
-		dates={['11/03/2024', '25/03/2024', '01/04/2024']}
-		names={['Algo', 'SQL', 'Maths']}
-	></LastMarks_Small>
+	<Homework_Medium></Homework_Medium>
 </div>
 
 <style>
