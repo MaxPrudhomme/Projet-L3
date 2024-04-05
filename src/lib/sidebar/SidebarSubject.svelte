@@ -10,9 +10,6 @@
 
     async function requestView() {
         currentView.set(id)
-        const courseRef = doc(db, 'users', $userUid, 'userCourses', $currentView)
-        const courseData = (await getDoc(courseRef)).data()
-        currentContent.set(courseData)
     }
 
 </script>

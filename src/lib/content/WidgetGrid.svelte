@@ -2,55 +2,54 @@
     import Widget from "./Widget.svelte";    
     import Grid, { GridItem } from 'svelte-grid-extended';
     import GridControls from "./GridControls.svelte";
-    import { editMode, widgets, currentView, userUid } from "../../store";
+    import { editMode, widgets, currentView, userUid, currentContent } from "../../store";
     import { db } from "$lib/firebase";
     import { doc, getDoc } from "firebase/firestore";
+    import { fly, fade } from "svelte/transition";
 
-    $: {
-        const newView = $currentView
-        const fetchData = async () => {
-            try {
-                if (newView === "dashboard") {
-                    const userRef = doc(db, 'users', $userUid);
-                    const userData = await getDoc(userRef);
-                    widgets.set(userData.data()["dashboard"]);
-                } else {
-                    const viewRef = doc(db, 'users', $userUid, 'userCourses', newView);
-                    const viewData = await getDoc(viewRef);
-                    widgets.set(viewData.data()["widgets"]);
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
+    let move = false;
+
+    async function load(view) {
+        widgets.set([])
+        setTimeout(async () => {
+            if (view === "dashboard") {
+                const userRef = doc(db, 'users', $userUid);
+                const userData = (await getDoc(userRef)).data();
+                currentContent.set(userData["content"])
+                widgets.set(userData["dashboard"]);
+            } else {
+                const viewRef = doc(db, 'users', $userUid, 'userCourses', view);
+                const viewData = (await getDoc(viewRef)).data();
+                currentContent.set(viewData)
+                widgets.set(viewData["widgets"]);
             }
-        };
-        fetchData();
+        }, 550)
     }
 
-    let move = false
+    $: {
+        load($currentView)
+    }
 
     $: {
         move = $editMode;
     }
 
     const itemSize = { width: 170, height: 170 };
-
-    function deleteWidget() {
-        widgets.update(currentWidgets => {
-        return currentWidgets.filter(widget => widget.id !== id);
-    })
-    }
 </script>
 
 <div id="container">
     <GridControls></GridControls>
-    <div id="grid">
+    <div id="grid" in:fade={{duration: 750, delay: 900}}>
     <Grid class="grid-container" rows={4} cols={7} {itemSize} gap={20} collision="none">
         {#each $widgets as {x, y, w, h, content}}
-            <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
-                <div class="content">
-                    <Widget disabled={editMode ? true: false} {content}></Widget>
-                </div>
-            </GridItem>
+            <div in:fly={{duration: 500, x:-1340}} out:fly={{duration: 500, x:-1340}}>
+                <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
+                    <div class="content">
+                        <Widget disabled={editMode ? true: false} {content}></Widget>
+                    </div>
+                </GridItem>
+            </div>
+
         {/each}
     </Grid>
     </div>

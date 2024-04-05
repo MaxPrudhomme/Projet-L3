@@ -1,8 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
-
 	import AverageSmall from '$lib/widgets/Average_Small.svelte';
-	import AverageLarge from '$lib/widgets/Averages_Large.svelte';
+	import AverageLarge from '$lib/widgets/Average_Large.svelte';
   
 	export let content;
 	export let disabled = false;
@@ -13,18 +12,14 @@
   
 	const widgetMap = {
 	  'average-s': AverageSmall,
-	  'average-l': null
+	  'average-l': AverageLarge
 	};
   
 	onMount(() => {
-	  	setCurrentWidget();
-	});
-  
-	function setCurrentWidget() {
 		let target = content[0] + '-' + content[1] 
 	  	CurrentWidget = widgetMap[target];
-	}
-  </script>
+	});
+</script>
   
   <div id="container" bind:this={containerRef}>
 	{#if disabled}

@@ -1,21 +1,17 @@
 <script>
+	import { onMount } from "svelte";
 	import { user, currentView, currentContent } from "../../store";
 
 	let score = null;
 	let maxScore = null;
+	
+    $: {
+        if ($currentContent && $currentContent["average"]) {
+            score = $currentContent["average"][0];
+            maxScore = $currentContent["average"][1];
+        }
+    }
 
-	$: {
-		const values = $user;
-		if (values) {
-			if ($currentView === "dashboard") {
-				score = $user["globalAverage"][0]
-				maxScore = $user["globalAverage"][1]
-			} else if ($currentContent !== null) {
-				score = $currentContent["average"][0]
-				maxScore = $currentContent["average"][1]
-			}
-		}
-	}
 </script>
 
 <div id="container">

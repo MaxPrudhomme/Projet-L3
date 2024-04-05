@@ -4,16 +4,17 @@
     import SidebarMenu from "./SidebarMenu.svelte";
     import { fly } from 'svelte/transition'
     import { onMount } from "svelte";
-    import { userUid, user, widgets } from "../../store";
+    import { userUid, user, widgets, currentContent } from "../../store";
     import { db } from "$lib/firebase";
     import { getDoc, doc } from "firebase/firestore";
 
     onMount(async () => {
         try {
             const userRef = doc(db, 'users', $userUid)
-            const userData = await getDoc(userRef)
-            user.set(userData.data())
-            widgets.set(userData.data()["dashboard"])
+            const userData = (await getDoc(userRef)).data()
+            currentContent.set(userData["content"])
+            user.set(userData)
+            widgets.set(userData["dashboard"])
         } catch(e) {
             console.log("Error : ", e)
         }
@@ -21,7 +22,7 @@
 
 </script>
 
-<div id="container" class="noise" in:fly={{ x: -1000, duration: 750, delay: 750}} out:fly={{ x: -1000, duration: 750}}>
+<div id="container" class="noise" in:fly={{ x: -1000, duration: 750, delay: 900}} out:fly={{ x: -1000, duration: 750}}>
     {#if $user}
         <SidebarUserInfo firstName={$user["name"]["first"]} lastName={$user["name"]["last"]}></SidebarUserInfo>
         <SidebarList></SidebarList>
