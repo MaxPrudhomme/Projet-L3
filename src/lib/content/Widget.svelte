@@ -44,6 +44,7 @@
 		height: 100%;
 		width: 100%;
 		scrollbar-width: none;
+		overflow-y: auto;
 	}
 
 	#blocker {
