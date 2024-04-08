@@ -34,11 +34,18 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<LastMarks_Medium
+	<!-- <LastMarks_Medium
 		marks={[12, 14, 5, 18]}
 		dates={['111/2/2', '2/3/4', '5/6/7', '8/9/10']}
 		names={['Algo', 'SQL', 'Maths', 'Coco']}
-	></LastMarks_Medium>
+	></LastMarks_Medium> -->
+	<!-- <Schedule_Wide
+		hours={[8, 11, 12, 14]}
+		subjects={['a', 'e', 'i', 'o']}
+		places={[1, 2, 3, 4]}
+		colors={['red', 'blue', 'green', 'yellow']}
+	></Schedule_Wide> -->
+	<Homework_Medium></Homework_Medium>
 </div>
 
 <style>

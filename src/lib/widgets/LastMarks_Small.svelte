@@ -1,6 +1,5 @@
 <script>
 	import { fly } from 'svelte/transition';
-	import { backOut } from 'svelte/easing';
 	export let marks;
 	export let dates;
 	export let names;
