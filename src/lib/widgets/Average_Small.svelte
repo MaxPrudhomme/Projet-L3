@@ -1,6 +1,5 @@
 <script>
-	import { onMount } from "svelte";
-	import { user, currentView, currentContent } from "../../store";
+	import { currentContent } from "../../store";
 
 	let score = null;
 	let maxScore = null;

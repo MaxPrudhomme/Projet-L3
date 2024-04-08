@@ -15,7 +15,7 @@
 </script>
 
 <button class="buttonReset" on:click={requestView}>
-    <Icon name={icon} class="s36x36"></Icon>
+    <Icon name={icon} class={"s36x36"}></Icon>
     {#if tag}
         <p>{tag}</p>
     {:else} 

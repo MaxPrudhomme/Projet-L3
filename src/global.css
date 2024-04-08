@@ -60,6 +60,14 @@ html {
     margin-top: 10px;
 }
 
+.confirmGreenColor {
+    color : #33FF00;
+}
+
+.confirmGreenFilter {
+    filter: brightness(0) saturate(100%) invert(66%) sepia(28%) saturate(3339%) hue-rotate(63deg) brightness(109%) contrast(120%);
+}
+
 @font-face {
     font-family: 'SFPro-Regular';
     src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');

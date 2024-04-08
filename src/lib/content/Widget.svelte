@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import AverageSmall from '$lib/widgets/Average_Small.svelte';
-	import AverageLarge from '$lib/widgets/Average_Large.svelte';
+	import HomeworkTall from '$lib/widgets/Homework_Tall.svelte';
   
 	export let content;
 	export let disabled = false;
@@ -12,7 +12,7 @@
   
 	const widgetMap = {
 	  'average-s': AverageSmall,
-	  'average-l': AverageLarge
+	  'homework-t': HomeworkTall
 	};
   
 	onMount(() => {
