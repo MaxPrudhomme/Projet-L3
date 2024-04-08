@@ -4,16 +4,18 @@
     export let icon = null;
     export let id = null;
     import Icon from '$lib/Icon.svelte'
-    import { currentView } from '../../store';
+    import { currentView, currentContent, userUid } from '../../store';
+    import { db } from '$lib/firebase';
+    import { doc, getDoc } from 'firebase/firestore';
 
-    function requestView() {
+    async function requestView() {
         currentView.set(id)
     }
 
 </script>
 
 <button class="buttonReset" on:click={requestView}>
-    <Icon name={icon} class="s36x36"></Icon>
+    <Icon name={icon} class={"s36x36"}></Icon>
     {#if tag}
         <p>{tag}</p>
     {:else} 

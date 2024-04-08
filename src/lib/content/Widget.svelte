@@ -1,84 +1,54 @@
 <script>
 	import { onMount } from 'svelte';
-
-	import Averages_Large from '$lib/widgets/Averages_Large.svelte';
-	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
-	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
-	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
-	import LastMarks_Medium from '$lib/widgets/LastMarks_Medium.svelte';
-	import Vacations_Small from '$lib/widgets/Vacations_Small.svelte';
-	import Homework_Medium from '$lib/widgets/Homework_Medium.svelte';
-	import Schedule_Wide from '$lib/widgets/Schedule_Wide.svelte';
-
-	export let height = null;
-	export let width = null;
+	import AverageSmall from '$lib/widgets/Average_Small.svelte';
+	import HomeworkTall from '$lib/widgets/Homework_Tall.svelte';
+  
+	export let content;
 	export let disabled = false;
-
+  
 	let containerRef;
 	let blockerRef;
-
+	let CurrentWidget;
+  
+	const widgetMap = {
+	  'average-s': AverageSmall,
+	  'homework-t': HomeworkTall
+	};
+  
 	onMount(() => {
-		if (height !== null && width !== null) {
-			containerRef.style.height = height + 'px';
-			containerRef.style.width = width + 'px';
-			blockerRef.style.height = height + 'px';
-			blockerRef.style.width = width + 'px';
-		}
+		let target = content[0] + '-' + content[1] 
+	  	CurrentWidget = widgetMap[target];
 	});
 </script>
-
-<div id="container" bind:this={containerRef}>
+  
+  <div id="container" bind:this={containerRef}>
 	{#if disabled}
-		<div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
+	  <div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
 	{:else}
-		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
+	  <div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<!-- <LastMarks_Medium
-		marks={[12, 14, 5, 18]}
-		dates={['111/2/2', '2/3/4', '5/6/7', '8/9/10']}
-		names={['Algo', 'SQL', 'Maths', 'Coco']}
-	></LastMarks_Medium> -->
-	<!-- <Schedule_Wide
-		hours={[8, 11, 12, 14]}
-		subjects={['a', 'e', 'i', 'o']}
-		places={[1, 2, 3, 4]}
-		colors={['red', 'blue', 'green', 'yellow']}
-	></Schedule_Wide> -->
-	<Homework_Medium></Homework_Medium>
-</div>
-
-<style>
+	{#if CurrentWidget}
+		<CurrentWidget/>
+  	{/if}
+  </div>
+  
+  <style>
 	#container {
-		display: inline-flex;
-		position: relative;
-		background-color: rgba(0, 0, 0, 0.3);
-		border-radius: 20px;
-		height: 100%;
-		width: 100%;
-		scrollbar-width: none;
-		overflow-y: auto;
-	}
 
+	  display: inline-flex;
+	  position: relative;
+	  background-color: rgba(0, 0, 0, 0.3);
+	  border-radius: 20px;
+	  height: 100%;
+	  width: 100%;
+	  scrollbar-width: none;
+	  overflow: hidden;
+	}
+  
 	#blocker {
-		border-radius: 20px;
-		cursor: pointer;
+	  border-radius: 20px;
+	  cursor: pointer;
 	}
-
-	/* width */
-	::-webkit-scrollbar {
-		width: 20px;
-	}
-
-	/* Track */
-	::-webkit-scrollbar-track {
-		box-shadow: inset 0 0 5px grey;
-		border-radius: 10px;
-	}
-
-	/* Handle */
-	::-webkit-scrollbar-thumb {
-		background: red;
-		border-radius: 10px;
-	}
-</style>
+  </style>
+  
