@@ -105,14 +105,17 @@
 		margin-right: 90%;
 	}
 
-	.bi-caret-left {
+	.bi {
+		fill: rgb(255, 255, 255, 0.5);
 		position: absolute;
+	}
+
+	.bi-caret-left {
 		left: 0;
 		top: 10%;
 	}
 
 	.bi-caret-right {
-		position: absolute;
 		left: 95%;
 		top: 10%;
 	}
