@@ -5,6 +5,7 @@
 	import Marks_Large from '$lib/widgets/Marks_Large.svelte';
 	import Vacations_Medium from '$lib/widgets/Vacations_Medium.svelte';
 	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
+	import LastMarks_Medium from '$lib/widgets/LastMarks_Medium.svelte';
 	import Vacations_Small from '$lib/widgets/Vacations_Small.svelte';
 	import Homework_Medium from '$lib/widgets/Homework_Medium.svelte';
 	import Schedule_Wide from '$lib/widgets/Schedule_Wide.svelte';
@@ -33,12 +34,11 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Schedule_Wide
-		hours={[8, 9, 11, 13]}
-		subjects={['algo', 'SQL', 'ah', 'fafblbl']}
-		places={['A113', 'L103', 'Amphi L005', 'Amphi B']}
-		colors={['red', 'blue', 'green', 'yellow']}
-	></Schedule_Wide>
+	<LastMarks_Medium
+		marks={[12, 14, 5, 18]}
+		dates={['111/2/2', '2/3/4', '5/6/7', '8/9/10']}
+		names={['Algo', 'SQL', 'Maths', 'Coco']}
+	></LastMarks_Medium>
 </div>
 
 <style>
