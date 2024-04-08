@@ -4,14 +4,14 @@
 	export let icon; // location of the icon file
 	export let color; // background color
 	export let height; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
-	export let pos; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	// export let pos; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
 
 	let itemRef;
 
 	$: if (itemRef) {
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
-		itemRef.style.top = pos;
+		// itemRef.style.top = pos;
 	}
 </script>
 
@@ -28,13 +28,14 @@
 <style>
 	#schedule-item {
 		border-radius: 10px;
-		width: 80%; /* to make responsive if multiple items at the same height/time */
+		width: 70%; /* to make responsive if multiple items at the same height/time */
 		padding: 10px;
 		z-index: 2;
 		position: absolute;
 		margin-left: 45px;
 
 		font-family: Arial, Helvetica, sans-serif;
+		top: 40%;
 	}
 
 	#align {

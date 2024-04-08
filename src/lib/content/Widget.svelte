@@ -7,6 +7,7 @@
 	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
 	import Vacations_Small from '$lib/widgets/Vacations_Small.svelte';
 	import Homework_Medium from '$lib/widgets/Homework_Medium.svelte';
+	import Schedule_Wide from '$lib/widgets/Schedule_Wide.svelte';
 
 	export let height = null;
 	export let width = null;
@@ -32,7 +33,12 @@
 		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
-	<Homework_Medium></Homework_Medium>
+	<Schedule_Wide
+		hours={[8, 9, 11, 13]}
+		subjects={['algo', 'SQL', 'ah', 'fafblbl']}
+		places={['A113', 'L103', 'Amphi L005', 'Amphi B']}
+		colors={['red', 'blue', 'green', 'yellow']}
+	></Schedule_Wide>
 </div>
 
 <style>
