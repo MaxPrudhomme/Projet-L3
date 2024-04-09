@@ -1,9 +1,13 @@
 <script>
 	import { fly } from 'svelte/transition';
-	import { currentContent } from '../../store';
+	import { currentContent, currentView, userUid } from '../../store';
+	import { onMount } from 'svelte';
+	import { collection, doc, getDocs } from 'firebase/firestore';
+	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 
 	let i = 0;
+	let marks = [];
 
 	let flyParamsIn = {
 		x: 100,
@@ -17,7 +21,7 @@
 	};
 
 	function nextMark(event) {
-		if (i < $currentContent['marks'].length - 1 && i < 5) i++;
+		if (i < $currentContent['marks'].length - 1) i++;
 		flyParamsIn.x = 100;
 		flyParamsOut.x = -100;
 	}
@@ -26,16 +30,41 @@
 		flyParamsIn.x = -100;
 		flyParamsOut.x = 100;
 	}
+
+	function cmp(a, b) {
+		if (a.date < b.date) return -1;
+		if (a.date > b.date) return 1;
+		return 0;
+	}
+
+	onMount(async () => {
+		try {
+			let courseRef = collection(db, 'courses', $currentView, 'exam');
+			let courseSnapshot = await getDocs(courseRef);
+			courseSnapshot.forEach((doc) => {
+				const data = doc.data();
+				data['mark'] = data['mark'][$userUid];
+				marks.push(doc.id, data);
+			});
+			marks = marks.slice();
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
+
+		let sortedMarks = marks.sort(cmp);
+		marks = sortedMarks.slice();
+		console.log(marks);
+	});
 </script>
 
 <div class="container">
 	{#key i}
 		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 			<h1 class="widgetTitle">Last marks</h1>
-			<h1 id="name">{$currentContent['marks'][i].name}</h1>
-			<h1 id="mark">{$currentContent['marks'][i].mark}</h1>
-			<p id="out-of">/20</p>
-			<p id="date">{$currentContent['marks'][i].date}</p>
+			<h1 id="name">{marks[i]['name']}</h1>
+			<h1 id="mark">{marks[i]['mark']}</h1>
+			<p id="out-of">{marks[i]['maxMark']}</p>
+			<p id="date">{marks[i]['date']}</p>
 		</div>
 	{/key}
 
