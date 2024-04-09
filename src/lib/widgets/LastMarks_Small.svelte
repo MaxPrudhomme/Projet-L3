@@ -1,8 +1,8 @@
 <script>
 	import { fly } from 'svelte/transition';
-	export let marks;
-	export let dates;
-	export let names;
+	import { currentContent } from '../../store';
+
+	isWorking = false;
 
 	let i = 0;
 	let flyParamsIn = {
@@ -26,16 +26,22 @@
 		flyParamsIn.x = 100;
 		flyParamsOut.x = -100;
 	}
+
+	$: {
+		if ($currentContent && $currentContent['marks']) {
+			isWorking = true;
+		}
+	}
 </script>
 
 <div class="container">
 	{#key i}
 		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 			<h1 id="title">Last marks</h1>
-			<h1 id="name">{names[i]}</h1>
-			<h1 id="mark">{marks[i]}</h1>
+			<h1 id="name">{$currentContent['marks'][i].name}</h1>
+			<h1 id="mark">{$currentContent['marks'][i].mark}</h1>
 			<p id="out-of">/20</p>
-			<p id="date">{dates[i]}</p>
+			<p id="date">{$currentContent['marks'][i].date}</p>
 		</div>
 	{/key}
 

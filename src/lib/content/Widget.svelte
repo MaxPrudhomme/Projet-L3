@@ -2,53 +2,53 @@
 	import { onMount } from 'svelte';
 	import AverageSmall from '$lib/widgets/Average_Small.svelte';
 	import HomeworkTall from '$lib/widgets/Homework_Tall.svelte';
-  
+	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
+
 	export let content;
 	export let disabled = false;
-  
+
 	let containerRef;
 	let blockerRef;
 	let CurrentWidget;
-  
+
 	const widgetMap = {
-	  'average-s': AverageSmall,
-	  'homework-t': HomeworkTall
+		'average-s': AverageSmall,
+		'homework-t': HomeworkTall,
+		'lastmarks-s': LastMarks_Small
 	};
-  
+
 	onMount(() => {
-		let target = content[0] + '-' + content[1] 
-	  	CurrentWidget = widgetMap[target];
+		let target = content[0] + '-' + content[1];
+		CurrentWidget = widgetMap[target];
 	});
 </script>
-  
-  <div id="container" bind:this={containerRef}>
+
+<div id="container" bind:this={containerRef}>
 	{#if disabled}
-	  <div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
+		<div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
 	{:else}
-	  <div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
+		<div id="blocker" bind:this={blockerRef} style="visibility: hidden;"></div>
 	{/if}
 
 	{#if CurrentWidget}
-		<CurrentWidget/>
-  	{/if}
-  </div>
-  
-  <style>
-	#container {
+		<CurrentWidget />
+	{/if}
+</div>
 
-	  display: inline-flex;
-	  position: relative;
-	  background-color: rgba(0, 0, 0, 0.3);
-	  border-radius: 20px;
-	  height: 100%;
-	  width: 100%;
-	  scrollbar-width: none;
-	  overflow: hidden;
+<style>
+	#container {
+		display: inline-flex;
+		position: relative;
+		background-color: rgba(0, 0, 0, 0.3);
+		border-radius: 20px;
+		height: 100%;
+		width: 100%;
+		scrollbar-width: none;
+		overflow: hidden;
 	}
-  
+
 	#blocker {
-	  border-radius: 20px;
-	  cursor: pointer;
+		border-radius: 20px;
+		cursor: pointer;
 	}
-  </style>
-  
+</style>
