@@ -1,10 +1,10 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { currentContent } from '../../store';
-
-	isWorking = false;
+	import Icon from '$lib/Icon.svelte';
 
 	let i = 0;
+
 	let flyParamsIn = {
 		x: 100,
 		delay: 200,
@@ -17,27 +17,21 @@
 	};
 
 	function nextMark(event) {
-		if (i < marks.length - 1 && i < 5) i++;
-		flyParamsIn.x = -100;
-		flyParamsOut.x = 100;
-	}
-	function previousMark(event) {
-		if (i > 0) i--;
+		if (i < $currentContent['marks'].length - 1 && i < 5) i++;
 		flyParamsIn.x = 100;
 		flyParamsOut.x = -100;
 	}
-
-	$: {
-		if ($currentContent && $currentContent['marks']) {
-			isWorking = true;
-		}
+	function previousMark(event) {
+		if (i > 0) i--;
+		flyParamsIn.x = -100;
+		flyParamsOut.x = 100;
 	}
 </script>
 
 <div class="container">
 	{#key i}
 		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-			<h1 id="title">Last marks</h1>
+			<h1 class="widgetTitle">Last marks</h1>
 			<h1 id="name">{$currentContent['marks'][i].name}</h1>
 			<h1 id="mark">{$currentContent['marks'][i].mark}</h1>
 			<p id="out-of">/20</p>
@@ -45,39 +39,17 @@
 		</div>
 	{/key}
 
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="16"
-		height="16"
-		fill="currentColor"
-		class="bi bi-caret-left"
-		viewBox="0 0 16 16"
-		on:click={previousMark}
-	>
-		<path
-			d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753"
-		/>
-	</svg>
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="16"
-		height="16"
-		fill="currentColor"
-		class="bi bi-caret-right"
-		viewBox="0 0 16 16"
-		on:click={nextMark}
-	>
-		<path
-			d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"
-		/>
-	</svg>
+	<button class="buttonReset bi-caret-left" on:click={previousMark}>
+		<Icon name="arrow-left" width="16" height="16" />
+	</button>
+	<button class="buttonReset bi-caret-right" on:click={nextMark}>
+		<Icon name="arrow-right" width="16" height="16" />
+	</button>
 </div>
 
 <style>
+	@import '../../global.css';
+
 	.bi-caret-left {
 		position: absolute;
 		left: 0;
@@ -90,28 +62,16 @@
 		top: 50%;
 	}
 
-	.bi:hover {
-		fill: black;
-	}
-
 	.container {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		height: 150px;
+		height: 100%;
 		width: 100%;
 		font-family: 'SF Pro Display';
 		margin-left: auto;
 		margin-right: auto;
 		margin-bottom: 5px;
-	}
-
-	#title {
-		text-align: center;
-		color: rgb(0, 0, 0, 0.5);
-		font-size: large;
-		margin-top: 10px;
 	}
 
 	#name {
@@ -142,5 +102,6 @@
 		vertical-align: bottom;
 		color: rgb(0, 0, 0, 0.5);
 		margin-top: 7%;
+		margin-bottom: 5px;
 	}
 </style>

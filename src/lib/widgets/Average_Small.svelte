@@ -1,16 +1,15 @@
 <script>
-	import { currentContent } from "../../store";
+	import { currentContent } from '../../store';
 
 	let score = null;
 	let maxScore = null;
-	
-    $: {
-        if ($currentContent && $currentContent["average"]) {
-            score = $currentContent["average"][0];
-            maxScore = $currentContent["average"][1];
-        }
-    }
 
+	$: {
+		if ($currentContent && $currentContent['average']) {
+			score = $currentContent['average'][0];
+			maxScore = $currentContent['average'][1];
+		}
+	}
 </script>
 
 <div id="container">

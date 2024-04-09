@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import AverageSmall from '$lib/widgets/Average_Small.svelte';
 	import HomeworkTall from '$lib/widgets/Homework_Tall.svelte';
-	import LastMarks_Small from '$lib/widgets/LastMarks_Small.svelte';
+	import LastMarksSmall from '$lib/widgets/LastMarks_Small.svelte';
 
 	export let content;
 	export let disabled = false;
@@ -14,7 +14,7 @@
 	const widgetMap = {
 		'average-s': AverageSmall,
 		'homework-t': HomeworkTall,
-		'lastmarks-s': LastMarks_Small
+		'lastmarks-s': LastMarksSmall
 	};
 
 	onMount(() => {
