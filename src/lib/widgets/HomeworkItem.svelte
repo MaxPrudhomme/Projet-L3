@@ -6,12 +6,11 @@
     export let tasks = null;
     export let id = null;
 
+    import Icon from "$lib/Icon.svelte";
     import { onMount } from "svelte";
     import { db } from "$lib/firebase";
     import { userUid, currentView } from "../../store";
-    import Icon from "$lib/Icon.svelte";
 	import { doc, getDoc, updateDoc } from "firebase/firestore";
-	import { confirmPasswordReset } from "firebase/auth";
 
     let dueDateColorClass = '';
     let displayDueDate = ''; 
@@ -27,11 +26,11 @@
             })
         } else {
             const targetRef = doc(db, 'courses', $currentView, 'homework', id)
-            const content = (await getDoc(targetRef)).data()
+            let content = (await getDoc(targetRef)).data()["status"]
+            content[$userUid] = !content[$userUid]
 
-            const value = content["status"][id]
             await updateDoc(targetRef, {
-                homework: !value
+                ["status"]: content
             });
         }
     }
