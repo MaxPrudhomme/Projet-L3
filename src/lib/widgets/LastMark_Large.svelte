@@ -7,7 +7,7 @@
 	import Icon from '$lib/Icon.svelte';
 
 	let i = 0;
-	let marks = [];
+	var marks = [];
 
 	let flyParamsIn = {
 		x: 100,
@@ -31,14 +31,6 @@
 		flyParamsOut.x = 100;
 	}
 
-	function cmp(a, b) {
-		let ad = new Date(a['date']);
-		let bd = new Date(b['date']);
-		if (ad < bd) return -1;
-		if (ad > bd) return 1;
-		return 0;
-	}
-
 	onMount(async () => {
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
@@ -53,22 +45,32 @@
 			console.error('Error fetching documents:', error);
 		}
 
-		let sortedMarks = marks.sort(cmp);
+		let sortedMarks = marks.sort((a, b) => {
+			let ad = new Date(a['date']);
+			let bd = new Date(b['date']);
+			if (ad < bd) return -1;
+			if (ad > bd) return 1;
+			return 0;
+		});
 		marks = Array.from(sortedMarks);
 		console.log(marks);
 		console.log(marks[i]);
 		console.log(marks[i].name);
 	});
+
+	// console.log(marks);
+	// console.log(marks[i]);
+	// console.log(marks[i].name);
 </script>
 
 <div class="container">
 	{#key i}
 		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-			<h1 class="widgetTitle">Last marks</h1>
+			<!-- <h1 class="widgetTitle">Last marks</h1>
 			<h1 id="name">{marks[i].name}</h1>
 			<h1 id="mark">{marks[i].mark}</h1>
 			<p id="out-of">{marks[i].maxMark}</p>
-			<p id="date">{marks[i].date.seconds}</p>
+			<p id="date">{marks[i].date.seconds}</p> -->
 		</div>
 	{/key}
 
