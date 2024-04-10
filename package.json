@@ -30,6 +30,7 @@
 	"type": "module",
 	"dependencies": {
 		"firebase": "^10.9.0",
+		"ical.js": "^2.0.0",
 		"svelte-grid-extended": "^1.1.4",
 		"uuid": "^9.0.1"
 	}
