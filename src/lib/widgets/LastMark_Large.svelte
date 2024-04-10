@@ -7,7 +7,6 @@
 	import Icon from '$lib/Icon.svelte';
 
 	let i = 0;
-	var marks = [];
 
 	let flyParamsIn = {
 		x: 100,
@@ -20,8 +19,36 @@
 		opacity: 0.5
 	};
 
+	let marks = new Map();
+	onMount(async () => {
+		try {
+			let courseRef = collection(db, 'courses', $currentView, 'exam');
+			let courseSnapshot = await getDocs(courseRef);
+			let j = 0;
+			courseSnapshot.forEach((doc) => {
+				const data = doc.data();
+				data['mark'] = data['mark'][$userUid];
+				let date = new Date(data['date'].seconds * 1000);
+				data['date'] = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+				marks.set(j, data);
+				j++;
+			});
+			marks = new Map(marks);
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
+
+		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
+			const dateA = new Date(dataA.date.seconds * 1000);
+			const dateB = new Date(dataB.date.seconds * 1000);
+
+			return dateA - dateB;
+		});
+		marks = new Map(sortedMarks);
+	});
+
 	function nextMark(event) {
-		if (i < marks.length - 1) i++;
+		if (i < marks.size - 1) i++;
 		flyParamsIn.x = 100;
 		flyParamsOut.x = -100;
 	}
@@ -30,49 +57,20 @@
 		flyParamsIn.x = -100;
 		flyParamsOut.x = 100;
 	}
-
-	onMount(async () => {
-		try {
-			let courseRef = collection(db, 'courses', $currentView, 'exam');
-			let courseSnapshot = await getDocs(courseRef);
-			courseSnapshot.forEach((doc) => {
-				const data = doc.data();
-				data['mark'] = data['mark'][$userUid];
-				marks.push(data);
-			});
-			marks = Array.from(marks);
-		} catch (error) {
-			console.error('Error fetching documents:', error);
-		}
-
-		let sortedMarks = marks.sort((a, b) => {
-			let ad = new Date(a['date']);
-			let bd = new Date(b['date']);
-			if (ad < bd) return -1;
-			if (ad > bd) return 1;
-			return 0;
-		});
-		marks = Array.from(sortedMarks);
-		console.log(marks);
-		console.log(marks[i]);
-		console.log(marks[i].name);
-	});
-
-	// console.log(marks);
-	// console.log(marks[i]);
-	// console.log(marks[i].name);
 </script>
 
 <div class="container">
-	{#key i}
-		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-			<!-- <h1 class="widgetTitle">Last marks</h1>
-			<h1 id="name">{marks[i].name}</h1>
-			<h1 id="mark">{marks[i].mark}</h1>
-			<p id="out-of">{marks[i].maxMark}</p>
-			<p id="date">{marks[i].date.seconds}</p> -->
-		</div>
-	{/key}
+	{#if marks.size !== 0}
+		{#key i}
+			<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+				<h1 class="widgetTitle">Marks</h1>
+				<h1 id="name">{marks.get(i).name}</h1>
+				<h1 id="mark">{marks.get(i).mark}</h1>
+				<p id="out-of">/{marks.get(i).maxMark}</p>
+				<p id="date">{marks.get(i).date.seconds}</p>
+			</div>
+		{/key}
+	{/if}
 
 	<button class="buttonReset bi-caret-left" on:click={previousMark}>
 		<Icon name="arrow-left" width="16" height="16" />
@@ -87,7 +85,7 @@
 
 	.bi-caret-left {
 		position: absolute;
-		left: 0;
+		left: 5%;
 		top: 50%;
 	}
 
@@ -106,7 +104,7 @@
 		font-family: 'SF Pro Display';
 		margin-left: auto;
 		margin-right: auto;
-		margin-bottom: 5px;
+		margin-bottom: 10%;
 	}
 
 	#name {
@@ -126,7 +124,7 @@
 	#out-of {
 		text-align: right;
 		font-size: x-large;
-		margin-right: 10%;
+		margin-right: 25%;
 		margin-bottom: auto;
 		margin-top: -10%;
 		color: rgb(0, 0, 0, 0.5);
@@ -136,7 +134,7 @@
 		text-align: center;
 		vertical-align: bottom;
 		color: rgb(0, 0, 0, 0.5);
-		margin-top: 7%;
-		margin-bottom: 5px;
+		margin-top: 4%;
+		margin-bottom: 15px;
 	}
 </style>
