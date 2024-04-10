@@ -21,7 +21,7 @@
 	};
 
 	function nextMark(event) {
-		if (i < $currentContent['marks'].length - 1) i++;
+		if (i < marks.length - 1) i++;
 		flyParamsIn.x = 100;
 		flyParamsOut.x = -100;
 	}
@@ -32,8 +32,10 @@
 	}
 
 	function cmp(a, b) {
-		if (a.date < b.date) return -1;
-		if (a.date > b.date) return 1;
+		let ad = new Date(a['date']);
+		let bd = new Date(b['date']);
+		if (ad < bd) return -1;
+		if (ad > bd) return 1;
 		return 0;
 	}
 
@@ -44,16 +46,18 @@
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
 				data['mark'] = data['mark'][$userUid];
-				marks.push(doc.id, data);
+				marks.push(data);
 			});
-			marks = marks.slice();
+			marks = Array.from(marks);
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
 
 		let sortedMarks = marks.sort(cmp);
-		marks = sortedMarks.slice();
+		marks = Array.from(sortedMarks);
 		console.log(marks);
+		console.log(marks[i]);
+		console.log(marks[i].name);
 	});
 </script>
 
@@ -61,10 +65,10 @@
 	{#key i}
 		<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 			<h1 class="widgetTitle">Last marks</h1>
-			<h1 id="name">{marks[i]['name']}</h1>
-			<h1 id="mark">{marks[i]['mark']}</h1>
-			<p id="out-of">{marks[i]['maxMark']}</p>
-			<p id="date">{marks[i]['date']}</p>
+			<h1 id="name">{marks[i].name}</h1>
+			<h1 id="mark">{marks[i].mark}</h1>
+			<p id="out-of">{marks[i].maxMark}</p>
+			<p id="date">{marks[i].date.seconds}</p>
 		</div>
 	{/key}
 
