@@ -16,13 +16,13 @@
 
 <div id="container">
     <button class="buttonReset">
-        <Icon name={"gear-wide-connected"} class={"s32x32"}></Icon>
+        <Icon name={"gear-wide-connected"} class={"s36x36"}></Icon>
     </button>
     <button class="buttonReset" on:click={requestDashboard}>
-        <Icon name={"house"} class={"s32x32"}></Icon>
+        <Icon name={"house"} class={"s36x36"}></Icon>
     </button>
     <button class="buttonReset" on:click={logOut}>
-        <Icon name={"power"} class={"s32x32"}></Icon>
+        <Icon name={"power"} class={"s36x36"}></Icon>
     </button>
 </div>
 

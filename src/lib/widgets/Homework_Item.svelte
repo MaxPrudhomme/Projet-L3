@@ -47,8 +47,8 @@
         } else if (isSameDate(dateObj, tomorrow)) {
             return 'Tomorrow';
         } else {
-            const day = dateObj.getDate();
-            const month = dateObj.getMonth() + 1;
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
             const year = dateObj.getFullYear();
             return `${day}/${month}/${year}`;
         }
@@ -95,7 +95,6 @@
         background-color: rgb(255, 255, 255, 0.5);
         border-radius: 10px;
         width: 80%;
-        margin: auto;
         margin-top: 10px;
         padding: 10px;
     }
