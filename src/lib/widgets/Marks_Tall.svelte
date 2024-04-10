@@ -3,8 +3,8 @@
 
 	let currentSemester = 1; // true if first semester, false if second semester
 
-	export let first;
-	export let second;
+	export let first = [12, 14, 16];
+	export let second = [2, 11, 9];
 </script>
 
 <div id="container">
