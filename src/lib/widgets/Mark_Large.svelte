@@ -20,6 +20,7 @@
 	};
 
 	let marks = new Map();
+	let currentmark = new Object();
 	onMount(async () => {
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
@@ -45,29 +46,42 @@
 			return dateA - dateB;
 		});
 		marks = new Map(sortedMarks);
+		currentmark = marks.get(0);
+		console.log(marks);
+		console.log(currentmark);
 	});
 
 	function nextMark(event) {
-		if (i < marks.size - 1) i++;
-		flyParamsIn.x = 100;
-		flyParamsOut.x = -100;
+		if (i < marks.size - 1) {
+			i++;
+			currentmark = marks.get(i);
+			console.log(i);
+			console.log(currentmark);
+			flyParamsIn.x = 100;
+			flyParamsOut.x = -100;
+		}
 	}
 	function previousMark(event) {
-		if (i > 0) i--;
-		flyParamsIn.x = -100;
-		flyParamsOut.x = 100;
+		if (i > 0) {
+			i--;
+			currentmark = marks.get(i);
+			console.log(i);
+			console.log(currentmark);
+			flyParamsIn.x = -100;
+			flyParamsOut.x = 100;
+		}
 	}
 </script>
 
 <div class="container">
-	{#if marks.size !== 0}
-		{#key i}
-			<div id="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+	{#if marks.size !== 0 && currentmark}
+		{#key currentmark}
+			<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 				<h1 class="widgetTitle">Marks</h1>
-				<h1 id="name">{marks.get(i).name}</h1>
-				<h1 id="mark">{marks.get(i).mark}</h1>
-				<p id="out-of">/{marks.get(i).maxMark}</p>
-				<p id="date">{marks.get(i).date.seconds}</p>
+				<h1 id="name">{currentmark.name}</h1>
+				<h1 id="mark">{currentmark.mark}</h1>
+				<p id="out-of">/{currentmark.maxMark}</p>
+				<p id="date">{currentmark.date}</p>
 			</div>
 		{/key}
 	{/if}
