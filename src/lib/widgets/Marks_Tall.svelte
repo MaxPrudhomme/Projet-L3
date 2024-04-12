@@ -1,10 +1,41 @@
 <script>
 	import MarkItem from './MarkItem.svelte';
+	import { fly } from 'svelte/transition';
+	import { currentContent, currentView, userUid } from '../../store';
+	import { onMount } from 'svelte';
+	import { collection, doc, getDocs } from 'firebase/firestore';
+	import { db } from '$lib/firebase';
+	import Icon from '$lib/Icon.svelte';
 
 	let currentSemester = 1; // true if first semester, false if second semester
 
-	export let first = [12, 14, 16];
-	export let second = [2, 11, 9];
+	let marks = new Map();
+	onMount(async () => {
+		try {
+			let courseRef = collection(db, 'courses', $currentView, 'exam');
+			let courseSnapshot = await getDocs(courseRef);
+			let j = 0;
+			courseSnapshot.forEach((doc) => {
+				const data = doc.data();
+				data['mark'] = data['mark'][$userUid];
+				let date = new Date(data['date'].seconds * 1000);
+				data['date'] = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+				marks.set(j, data);
+				j++;
+			});
+			marks = new Map(marks);
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
+
+		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
+			const dateA = new Date(dataA.date.seconds * 1000);
+			const dateB = new Date(dataB.date.seconds * 1000);
+
+			return dateA - dateB;
+		});
+		marks = new Map(sortedMarks);
+	});
 </script>
 
 <div id="container">
@@ -13,14 +44,14 @@
 	<div id="display">
 		{#key currentSemester}
 			{#if currentSemester == 1}
-				{#each first as f}
-					<MarkItem mark={f} prof="M. Puel" date="21/09/2022" notes="hmm yes very good"></MarkItem>
+				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
+					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
 				{/each}
 			{/if}
 			{#if currentSemester == 2}
-				{#each second as s}
-					<MarkItem mark={s} prof="M. Puel" date="21/09/2022" notes="hmm yes very good"></MarkItem>
-				{/each}
+				<!-- {#each [...marks] as [id, { date, mark, maxMark, details, name }]}
+					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
+				{/each} -->
 			{/if}
 		{/key}
 	</div>
@@ -57,7 +88,7 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		align-items: center;
-		height: 650px;
+		height: 90%;
 	}
 
 	#title {
