@@ -47,41 +47,38 @@
 		});
 		marks = new Map(sortedMarks);
 		currentmark = marks.get(i);
-		console.log(marks);
-		console.log(currentmark);
 	});
 
 	function nextMark(event) {
 		if (i < marks.size - 1) {
 			i++;
 			currentmark = marks.get(i);
-			console.log(i);
-			console.log(currentmark);
-			flyParamsIn.x = 100;
-			flyParamsOut.x = -100;
+			flyParamsIn.x = 300;
+			flyParamsOut.x = -300;
 		}
 	}
 	function previousMark(event) {
 		if (i > 0) {
 			i--;
 			currentmark = marks.get(i);
-			console.log(i);
-			console.log(currentmark);
-			flyParamsIn.x = -100;
-			flyParamsOut.x = 100;
+			flyParamsIn.x = -300;
+			flyParamsOut.x = 300;
 		}
 	}
 </script>
 
 <div class="container">
+	<h1 class="widgetTitle">Marks</h1>
 	{#if marks.size !== 0}
-		<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-			<h1 class="widgetTitle">Marks</h1>
-			<h1 id="name">{currentmark.name}</h1>
-			<h1 id="mark">{currentmark.mark}</h1>
-			<p id="out-of">/{currentmark.maxMark}</p>
-			<p id="date">{currentmark.date}</p>
-		</div>
+		{#key currentmark}
+			<!-- pour que les animations de transition marchent  -->
+			<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+				<h1 id="name">{currentmark.name}</h1>
+				<h1 id="mark">{currentmark.mark}</h1>
+				<p id="out-of">/{currentmark.maxMark}</p>
+				<p id="date">{currentmark.date}</p>
+			</div>
+		{/key}
 	{/if}
 
 	<button class="buttonReset bi-caret-left" on:click={previousMark}>
@@ -117,13 +114,15 @@
 		margin-left: auto;
 		margin-right: auto;
 		margin-bottom: 10%;
+		overflow-x: hidden;
+		overflow-y: hidden;
 	}
 
 	#name {
 		text-align: center;
 		font-weight: lighter;
 		font-size: 25px;
-		margin-top: 5%;
+		margin-top: 3%;
 	}
 
 	#mark {
