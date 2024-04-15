@@ -1,5 +1,6 @@
 <script>
 	import { fly } from 'svelte/transition';
+	import { cubicInOut } from 'svelte/easing';
 	import { currentContent, currentView, userUid } from '../../store';
 	import { onMount } from 'svelte';
 	import { collection, doc, getDocs } from 'firebase/firestore';
@@ -9,14 +10,18 @@
 	let i = 0;
 
 	let flyParamsIn = {
-		x: 100,
-		delay: 200,
-		opacity: 0.5
+		x: 300,
+		duration: 600,
+		delay: 100,
+		opacity: 0.5,
+		easing: cubicInOut
 	};
 	let flyParamsOut = {
-		x: -100,
-		delay: 200,
-		opacity: 0.5
+		x: -300,
+		duration: 600,
+		delay: 100,
+		opacity: 0.5,
+		easing: cubicInOut
 	};
 
 	let marks = new Map();
@@ -51,18 +56,18 @@
 
 	function nextMark(event) {
 		if (i < marks.size - 1) {
-			i++;
-			currentmark = marks.get(i);
 			flyParamsIn.x = 300;
 			flyParamsOut.x = -300;
+			i++;
+			currentmark = marks.get(i);
 		}
 	}
 	function previousMark(event) {
 		if (i > 0) {
-			i--;
-			currentmark = marks.get(i);
 			flyParamsIn.x = -300;
 			flyParamsOut.x = 300;
+			i--;
+			currentmark = marks.get(i);
 		}
 	}
 </script>

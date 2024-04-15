@@ -1,10 +1,10 @@
 <script>
 	import MarkItem from './MarkItem.svelte';
-	import { currentContent, currentView, userUid } from '../../store';
+	import { currentView, userUid } from '../../store';
 	import { onMount } from 'svelte';
 	import { collection, doc, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
-	import Icon from '$lib/Icon.svelte';
+	import { fade } from 'svelte/transition';
 
 	let currentSemester = 1; // true if first semester, false if second semester
 
@@ -14,14 +14,12 @@
 	};
 
 	let marks = new Map();
-	let firstSemesterMarks = new Map(); // comment qu'on fait pour choper les dates de semestre ?
-	let secondSemesterMarks = new Map(); // demander à Max
+	let firstSemesterMarks = new Map();
+	let secondSemesterMarks = new Map();
 	onMount(async () => {
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);
-			// let rootCourseRef = await getDocs(collection(db, 'courses', $currentView));
-			// let schoolData = await getSchoolDataById(await getDocs(rootCourseRef).school);
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
@@ -32,22 +30,24 @@
 				j++;
 			});
 			marks = new Map(marks);
-
-			// let k = 0;
-			// let l = 0;
-			// marks.forEach((mark) => {
-			// 	let semOneEnd = new Date(schoolData.semester1.end.seconds * 1000);
-			// 	if (mark.date <= semOneEnd) {
-			// 		firstSemesterMarks.set(k, mark);
-			// 		k++;
-			// 	} else {
-			// 		secondSemesterMarks.set(l, mark);
-			// 		l++;
-			// 	}
-			// });
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
+
+		let k = 0;
+		let l = 0;
+		marks.forEach((mark) => {
+			if (mark.semester == 1) {
+				firstSemesterMarks.set(k, mark);
+				k++;
+			}
+			if (mark.semester == 2) {
+				secondSemesterMarks.set(k, mark);
+				l++;
+			}
+		});
+		firstSemesterMarks = new Map(firstSemesterMarks);
+		secondSemesterMarks = new Map(secondSemesterMarks);
 
 		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
 			const dateA = new Date(dataA.date.seconds * 1000);
@@ -62,7 +62,7 @@
 <div id="container">
 	<h1 id="title">Marks</h1>
 
-	<div id="display">
+	<!-- <div id="display">
 		{#key currentSemester}
 			{#if currentSemester == 1}
 				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
@@ -70,14 +70,14 @@
 				{/each}
 			{/if}
 			{#if currentSemester == 2}
-				<!-- {#each [...marks] as [id, { date, mark, maxMark, details, name }]}
+				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
 					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each} -->
+				{/each}
 			{/if}
 		{/key}
-	</div>
+	</div> -->
 
-	<!-- <div id="display">
+	<div id="display" in:fade out:fade>
 		{#key currentSemester}
 			{#if currentSemester == 1}
 				{#each [...firstSemesterMarks] as [id, { date, mark, maxMark, details, name }]}
@@ -90,7 +90,7 @@
 				{/each}
 			{/if}
 		{/key}
-	</div> -->
+	</div>
 
 	<div id="periods">
 		<button
