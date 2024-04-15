@@ -11,8 +11,10 @@
     import { db } from "$lib/firebase";
     import { userUid, currentView } from "../../store";
     import { doc, getDoc, updateDoc } from "firebase/firestore";
+    import { fly } from "svelte/transition";
 
     let dueDateColorClass = '';
+    let dueDateColorFilter = '';
     let displayDueDate = '';
     let displayGivenDate = '';
 
@@ -22,9 +24,17 @@
         if (author) {
             const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView)
             const content = (await getDoc(targetRef)).data()
-            await updateDoc(targetRef, {
-                ["homework." + id + ".status"]: !content["homework"][id]["status"]
-            })
+            if (content["homework"][id]["dueDate"].toDate().setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) {
+                delete content["homework"][id];
+                await updateDoc(targetRef, {
+                    homework: content["homework"]
+                });
+            } else {
+                await updateDoc(targetRef, {
+                    ["homework." + id + ".status"]: !content["homework"][id]["status"]
+                })
+            }
+
         } else {
             const targetRef = doc(db, 'courses', $currentView, 'homework', id)
             let content = (await getDoc(targetRef)).data()["status"]
@@ -36,23 +46,35 @@
         }
     }
 
+    function basicDate(timestamp) {
+        const dateObj = timestamp.toDate();
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
     function formatDate(timestamp) {
         const dateObj = timestamp.toDate();
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
 
-        if (isSameDate(dateObj, today)) {
+        today.setHours(0, 0, 0, 0);
+        dateObj.setHours(0, 0, 0, 0);
+        tomorrow.setHours(0, 0, 0, 0);
+
+        if (dateObj < today) {
+            return 'Past Due';
+        } else if (isSameDate(dateObj, today)) {
             return 'Today';
         } else if (isSameDate(dateObj, tomorrow)) {
             return 'Tomorrow';
         } else {
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const year = dateObj.getFullYear();
-            return `${day}/${month}/${year}`;
+            return basicDate(timestamp);
         }
     }
+
 
     function isSameDate(date1, date2) {
         return date1.getFullYear() === date2.getFullYear() &&
@@ -61,24 +83,28 @@
     }
 
     onMount(() => {
-        dueDateColorClass = status ? 'confirmGreenColor' : '';
         displayDueDate = formatDate(dueDate);
-        displayGivenDate = formatDate(givenDate);
+        displayGivenDate = basicDate(givenDate);
+        dueDateColorClass = status ? 'confirmGreenColor' : '';
+        if (!status) {
+            dueDateColorClass = displayDueDate === 'Past Due' ? 'alertRedColor' : '';
+            dueDateColorFilter = displayDueDate === 'Past Due' ? 'alertRedFilter' : '';
+        }
     });
 </script>
 
-<div id="container">
+<div id="container" out:fly={{duration: 250, x:-350}}>
     <div id="statusContainer">
         <button class="buttonReset" on:click={changeStatus}>
             {#if status} 
                 <Icon name={"check-lg"} class={"s36x36 t500 confirmGreenFilter"}></Icon>
             {:else if !status && author}
-                <Icon name={"person-circle"} class={"s36x36 t500"}></Icon>
+                <Icon name={"person-circle"} class={"s36x36 t500 " + dueDateColorFilter}></Icon>
             {:else if !status && !author}
-                <Icon name={"person-workspace"} class={"s36x36 t500"}></Icon>    
+                <Icon name={"person-workspace"} class={"s36x36 t500 " + dueDateColorFilter}></Icon>    
             {/if}
         </button>
-        <p id="dueDate" class={dueDateColorClass}>due {displayDueDate}</p>
+            <p id="dueDate" class={dueDateColorClass}>{#if displayDueDate !== 'Past Due'}due {/if}{displayDueDate}</p>
     </div>
     <ul>
         {#each tasks as task} 

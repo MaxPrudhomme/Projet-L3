@@ -77,6 +77,14 @@ html {
     filter: brightness(0) saturate(100%) invert(66%) sepia(28%) saturate(3339%) hue-rotate(63deg) brightness(109%) contrast(120%);
 }
 
+.alertRedColor {
+    color: #FF3C3C;
+}
+
+.alertRedFilter {
+    filter: brightness(0) saturate(100%) invert(48%) sepia(92%) saturate(4895%) hue-rotate(340deg) brightness(101%) contrast(102%);
+}
+
 @font-face {
     font-family: 'SFPro-Regular';
     src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
