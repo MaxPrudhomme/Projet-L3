@@ -8,6 +8,11 @@
 
 	let currentSemester = 1; // true if first semester, false if second semester
 
+	export const getSchoolDataById = async (schoolDocRef) => {
+		const schoolSnapshot = await getDoc(schoolDocRef);
+		return schoolSnapshot.data();
+	};
+
 	let marks = new Map();
 	let firstSemesterMarks = new Map(); // comment qu'on fait pour choper les dates de semestre ?
 	let secondSemesterMarks = new Map(); // demander à Max
@@ -15,6 +20,8 @@
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);
+			// let rootCourseRef = await getDocs(collection(db, 'courses', $currentView));
+			// let schoolData = await getSchoolDataById(await getDocs(rootCourseRef).school);
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
@@ -25,6 +32,19 @@
 				j++;
 			});
 			marks = new Map(marks);
+
+			// let k = 0;
+			// let l = 0;
+			// marks.forEach((mark) => {
+			// 	let semOneEnd = new Date(schoolData.semester1.end.seconds * 1000);
+			// 	if (mark.date <= semOneEnd) {
+			// 		firstSemesterMarks.set(k, mark);
+			// 		k++;
+			// 	} else {
+			// 		secondSemesterMarks.set(l, mark);
+			// 		l++;
+			// 	}
+			// });
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
@@ -56,6 +76,21 @@
 			{/if}
 		{/key}
 	</div>
+
+	<!-- <div id="display">
+		{#key currentSemester}
+			{#if currentSemester == 1}
+				{#each [...firstSemesterMarks] as [id, { date, mark, maxMark, details, name }]}
+					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
+				{/each}
+			{/if}
+			{#if currentSemester == 2}
+				{#each [...secondSemesterMarks] as [id, { date, mark, maxMark, details, name }]}
+					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
+				{/each}
+			{/if}
+		{/key}
+	</div> -->
 
 	<div id="periods">
 		<button
