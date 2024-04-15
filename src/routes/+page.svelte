@@ -6,13 +6,21 @@
     import Login from "$lib/login/Login.svelte";
     import InteractionContainer from "$lib/content/InteractionContainer.svelte";
     
-    import { interactionActive, userUid } from "../store";
+    import { currentView, interactionActive, userUid } from "../store";
+    import { setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
+    import { auth } from "$lib/firebase";
 
     let contentContainer;
+    let isAuthenticated = false;  
+
+    onAuthStateChanged(auth, (user) => {
+        isAuthenticated = !!user;
+    });
+
     $: {
         setTimeout(() => {
             if (contentContainer) {
-            if ($userUid !== null) {
+            if (isAuthenticated) {
                 contentContainer.style.width = "1800px";
             } else {
                 contentContainer.style.width = "400px"; 
@@ -22,6 +30,15 @@
 
     }
 
+    setPersistence(auth, browserSessionPersistence)
+    .then(async () => {
+        userUid.set(auth.currentUser.uid)
+        await 
+        currentView.set()
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 </script>
 
 {#if $interactionActive}
@@ -31,9 +48,9 @@
 {/if }
 
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
-    {#if $userUid === null}
+    {#if isAuthenticated === false}
         <Login></Login>
-    {:else}    
+    {:else if $userUid }    
         <Sidebar></Sidebar>
         <Main></Main>
     {/if}
