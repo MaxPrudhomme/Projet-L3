@@ -6,7 +6,7 @@
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 
-	let i = 1;
+	let i = 0;
 
 	let flyParamsIn = {
 		x: 100,

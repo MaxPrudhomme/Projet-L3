@@ -1,6 +1,5 @@
 <script>
 	import MarkItem from './MarkItem.svelte';
-	import { fly } from 'svelte/transition';
 	import { currentContent, currentView, userUid } from '../../store';
 	import { onMount } from 'svelte';
 	import { collection, doc, getDocs } from 'firebase/firestore';
@@ -10,6 +9,8 @@
 	let currentSemester = 1; // true if first semester, false if second semester
 
 	let marks = new Map();
+	let firstSemesterMarks = new Map(); // comment qu'on fait pour choper les dates de semestre ?
+	let secondSemesterMarks = new Map(); // demander à Max
 	onMount(async () => {
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
@@ -60,13 +61,11 @@
 		<button
 			on:click={() => {
 				currentSemester = 1;
-				console.log(currentSemester);
 			}}>P1</button
 		>
 		<button
 			on:click={() => {
 				currentSemester = 2;
-				console.log(currentSemester);
 			}}>P2</button
 		>
 	</div>
@@ -89,6 +88,25 @@
 		overflow-x: hidden;
 		align-items: center;
 		height: 90%;
+		transition: fadeIn 2s ease-in;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 100%;
+		}
+	}
+
+	@keyframes fadeOut {
+		from {
+			opacity: 100%;
+		}
+		to {
+			opacity: 0;
+		}
 	}
 
 	#title {

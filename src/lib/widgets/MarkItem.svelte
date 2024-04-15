@@ -44,17 +44,17 @@
 <style>
 	@import '../../global.css';
 	.hidden {
-		display: none;
-		visibility: hidden;
-		transition: margin-bottom 2s;
+		height: 0;
+		transition: height 0.5s ease-in-out;
+		overflow: hidden;
 	}
 
 	.visible {
-		display: block;
-		visibility: visible;
-		transition: margin-bottom 2s;
+		height: 150px;
+		transition: height 0.5s ease-in-out;
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
+		overflow-y: auto;
 	}
 
 	.visible::-webkit-scrollbar {

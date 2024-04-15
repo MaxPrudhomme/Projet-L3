@@ -6,7 +6,7 @@
 	import MarkTall from '$lib/widgets/Mark_Tall.svelte';
 
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
-  
+
 	export let content;
 	export let disabled = false;
 
@@ -18,8 +18,8 @@
 		'average-s': AverageSmall,
 		'homework-t': HomeworkTall,
 		'lastmark-l': MarkLarge,
-		'marks-t': MarkTall
-	  'exam-s': ExamSmall
+		'marks-t': MarkTall,
+		'exam-s': ExamSmall
 	};
 
 	onMount(() => {
