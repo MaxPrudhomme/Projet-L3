@@ -44,15 +44,15 @@
 <style>
 	@import '../../global.css';
 	.hidden {
-		overflow: hidden;
-		transition: all 0.5s ease-in-out;
-		height: 0;
+		display: none;
+		visibility: hidden;
+		transition: margin-bottom 2s;
 	}
 
 	.visible {
-		height: 150px;
-		overflow: hidden;
-		transition: all 0.5s ease-in-out;
+		display: block;
+		visibility: visible;
+		transition: margin-bottom 2s;
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 	}
@@ -72,9 +72,6 @@
 		margin-bottom: 10px;
 		display: flex;
 		flex-direction: column;
-		opacity: 1;
-		animation: fade 1s linear;
-		overflow-y: hidden;
 	}
 
 	@keyframes fade {

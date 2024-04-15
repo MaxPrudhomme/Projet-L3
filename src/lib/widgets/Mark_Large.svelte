@@ -6,7 +6,7 @@
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 
-	let i = 0;
+	let i = 1;
 
 	let flyParamsIn = {
 		x: 100,
@@ -46,7 +46,7 @@
 			return dateA - dateB;
 		});
 		marks = new Map(sortedMarks);
-		currentmark = marks.get(0);
+		currentmark = marks.get(i);
 		console.log(marks);
 		console.log(currentmark);
 	});
@@ -74,16 +74,14 @@
 </script>
 
 <div class="container">
-	{#if marks.size !== 0 && currentmark}
-		{#key currentmark}
-			<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-				<h1 class="widgetTitle">Marks</h1>
-				<h1 id="name">{currentmark.name}</h1>
-				<h1 id="mark">{currentmark.mark}</h1>
-				<p id="out-of">/{currentmark.maxMark}</p>
-				<p id="date">{currentmark.date}</p>
-			</div>
-		{/key}
+	{#if marks.size !== 0}
+		<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+			<h1 class="widgetTitle">Marks</h1>
+			<h1 id="name">{currentmark.name}</h1>
+			<h1 id="mark">{currentmark.mark}</h1>
+			<p id="out-of">/{currentmark.maxMark}</p>
+			<p id="date">{currentmark.date}</p>
+		</div>
 	{/if}
 
 	<button class="buttonReset bi-caret-left" on:click={previousMark}>
