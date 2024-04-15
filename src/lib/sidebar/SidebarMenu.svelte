@@ -1,12 +1,14 @@
 <script>
     import Icon from '$lib/Icon.svelte'
+    import { auth } from '$lib/firebase';
     import { currentView, user, userToken, userUid } from '../../store';
 
     function requestDashboard() {
         currentView.set("dashboard")
     }
 
-    function logOut() {
+    async function logOut() {
+        await auth.signOut()
         user.set(null)
         userToken.set(null)
         userUid.set(null)

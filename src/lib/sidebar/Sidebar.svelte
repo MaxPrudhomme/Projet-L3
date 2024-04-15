@@ -9,7 +9,7 @@
     import { getDoc, doc } from "firebase/firestore";
 
     onMount(async () => {
-        try {
+        try {   
             const userRef = doc(db, 'users', $userUid)
             const userData = (await getDoc(userRef)).data()
             currentContent.set(userData["content"])

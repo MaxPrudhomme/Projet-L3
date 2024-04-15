@@ -3,17 +3,17 @@
     import HomeworkForm from './Homework_Form.svelte'
     import { currentContent, currentView, userUid } from '../../store';
     import { onMount } from 'svelte';
-    import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+    import { collection, getDocs, query, orderBy, updateDoc, doc } from 'firebase/firestore';
     import { db } from '$lib/firebase';
     import Icon from '$lib/Icon.svelte';
     import { writable } from 'svelte/store';
-
     export const state = writable(false);
     export const refresh = writable(false);
 
     let homework = new Map();
     let firestoreSnapshot =  new Map();
     let toggleButton;
+    const today = new Date().setHours(0, 0, 0, 0)
 
     function sortHomeworkByDueDate(homeworkMap) {
         return new Map([...homeworkMap.entries()].sort((a, b) => {
@@ -22,7 +22,19 @@
     }
 
     async function loadContent() {
-		const existingHomework = $currentContent["homework"] 
+        let existingHomework = $currentContent["homework"]
+
+        Object.entries(existingHomework).forEach(([id, item]) => {
+            if (item.dueDate.toDate().setHours(0, 0, 0, 0) < today && item.status) {
+                delete existingHomework[id]
+            }
+        })
+
+        const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView)
+        await updateDoc(targetRef, {
+            homework: existingHomework
+        })
+
         try {
             const courseRef = collection(db, 'courses', $currentView, 'homework');
             const q = query(courseRef, orderBy('dueDate'));
@@ -31,7 +43,9 @@
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 data.status = data.status[$userUid];
-                homework.set(doc.id, data)
+                if (!data.status || data.dueDate.toDate().setHours(0, 0, 0, 0) >= today) {
+                    homework.set(doc.id, data)
+                }
             });
 
             firestoreSnapshot = new Map(homework)
@@ -42,7 +56,6 @@
                 });
             }
             let sorted = sortHomeworkByDueDate(homework);
-
             homework = new Map(sorted);
         } catch (error) {
             console.error('Error fetching documents:', error);
