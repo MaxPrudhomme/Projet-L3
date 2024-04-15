@@ -3,7 +3,7 @@
 	import AverageSmall from '$lib/widgets/Average_Small.svelte';
 	import HomeworkTall from '$lib/widgets/Homework_Tall.svelte';
 	import MarkLarge from '$lib/widgets/Mark_Large.svelte';
-	import MarksTall from '$lib/widgets/Marks_Tall.svelte';
+	import MarkTall from '$lib/widgets/Mark_Tall.svelte';
 
 	export let content;
 	export let disabled = false;
@@ -16,7 +16,7 @@
 		'average-s': AverageSmall,
 		'homework-t': HomeworkTall,
 		'lastmark-l': MarkLarge,
-		'marks-t': MarksTall
+		'marks-t': MarkTall
 	};
 
 	onMount(() => {
