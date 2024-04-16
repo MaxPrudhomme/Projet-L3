@@ -3,49 +3,47 @@ import ical from 'ical.js';
 import { getStorage, ref, uploadString } from 'firebase/storage';
 
 async function fetchICSFiles() {
-  try {
-    const storageRef = storage.ref();
-    const files = await storageRef.listAll();
-    const icsFiles = [];
+	try {
+		const storageRef = storage.ref();
+		const files = await storageRef.listAll();
+		const icsFiles = [];
 
-    for (const file of files.items) {
-      if (file.name.endsWith('.ics')) {
-        const url = await file.getDownloadURL();
-        icsFiles.push({ name: file.name, url: url });
-      }
-    }
+		for (const file of files.items) {
+			if (file.name.endsWith('.ics')) {
+				const url = await file.getDownloadURL();
+				icsFiles.push({ name: file.name, url: url });
+			}
+		}
 
-    return icsFiles;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des fichiers ICS depuis Firebase Storage :', error);
-    return [];
-  }
+		return icsFiles;
+	} catch (error) {
+		console.error('Error fetching ICS files from Firebase Storage :', error);
+		return [];
+	}
 }
 
 async function parseICSFile(fileURL) {
-  try {
-    const response = await fetch(fileURL);
-    const text = await response.text();
-    const jcalData = ical.parse(text);
-    const comp = new ical.Component(jcalData);
-    const vevents = comp.getAllProperties('vevent');
-    
-    const events = vevents.map(vevent => {
-      return {
-        summary: vevent.getFirstPropertyValue('summary'),
-        startDate: vevent.getFirstPropertyValue('dtstart'),
-        endDate: vevent.getFirstPropertyValue('dtend')
-      };
-    });
+	try {
+		const response = await fetch(fileURL);
+		const text = await response.text();
+		const jcalData = ical.parse(text);
+		const comp = new ical.Component(jcalData);
+		const vevents = comp.getAllProperties('vevent');
 
-    return events;
-  } catch (error) {
-    console.error('Erreur lors de l\'analyse du fichier ICS :', error);
-    return [];
-  }
+		const events = vevents.map((vevent) => {
+			return {
+				summary: vevent.getFirstPropertyValue('summary'),
+				startDate: vevent.getFirstPropertyValue('dtstart'),
+				endDate: vevent.getFirstPropertyValue('dtend')
+			};
+		});
+
+		return events;
+	} catch (error) {
+		console.error('Error analysing ICS files :', error);
+		return [];
+	}
 }
-
-
 
 /*
 <!-- App.svelte -->
@@ -82,7 +80,7 @@ END:VCALENDAR
 }*/
 
 function generateEmptyICS() {
-  const icsContent = `
+	const icsContent = `
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Example Corp.//CalDAV Client//EN
@@ -91,26 +89,25 @@ METHOD:PUBLISH
 END:VCALENDAR
 `;
 
-  return icsContent;
+	return icsContent;
 }
 
 async function uploadICSToStorage(icsContent, filePath) {
-  try {
-    const storage = getStorage();
-    const storageRef = ref(storage, filePath);
+	try {
+		const storage = getStorage();
+		const storageRef = ref(storage, filePath);
 
-    await uploadString(storageRef, icsContent, 'data:text/calendar');
-    
-    console.log('Fichier ICS ajouté à Firebase Storage avec succès !');
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout du fichier ICS à Firebase Storage :', error);
-  }
+		await uploadString(storageRef, icsContent, 'data:text/calendar');
+
+		console.log('Fichier ICS ajouté à Firebase Storage avec succès !');
+	} catch (error) {
+		console.error("Erreur lors de l'ajout du fichier ICS à Firebase Storage :", error);
+	}
 }
 
-function addICSFile(){
-  const emptyICSContent = generateEmptyICS();
-  uploadICSToStorage(emptyICSContent,'mon_calendrier.ics');
+function addICSFile() {
+	const emptyICSContent = generateEmptyICS();
+	uploadICSToStorage(emptyICSContent, 'mon_calendrier.ics');
 }
 
-
-export { fetchICSFiles,parseICSFile,addICSFile };
+export { fetchICSFiles, parseICSFile, addICSFile };
