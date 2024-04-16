@@ -4,7 +4,7 @@ import { getStorage, ref, uploadString } from 'firebase/storage';
 
 async function fetchICSFiles() {
 	try {
-		const storageRef = storage.ref();
+		const storageRef = await storage.ref();
 		const files = await storageRef.listAll();
 		const icsFiles = [];
 

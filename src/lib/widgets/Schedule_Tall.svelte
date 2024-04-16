@@ -20,8 +20,12 @@
 		ICSContents = new Array();
 		currentICSfiles.forEach(async (file) => {
 			let parsed = await parseICSFile(file.url);
+			let date = new Date(parsed.date);
+			parsed.date = date;
 			ICSContents.push(parsed);
 		});
+
+		console.log(ICSContents);
 	});
 </script>
 
@@ -56,21 +60,22 @@
 	#container {
 		z-index: 1;
 		position: relative;
+		padding: 5px;
 	}
 
 	#title {
 		text-align: center;
 		font-family: Arial, Helvetica, sans-serif;
-		color: grey;
+		color: rgb(255, 255, 255, 0.5);
 		font-size: large;
 		margin-top: 10px;
 		margin-bottom: 20px;
 	}
 
 	#separator {
-		width: 350px;
+		width: 100%;
 		height: 3px;
-		background-color: grey;
+		background-color: rgb(255, 255, 255, 0.5);
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -78,9 +83,17 @@
 	#hour-num {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: large;
-		margin: 15px;
-		color: grey;
+		margin-top: 15px;
+		margin-bottom: 15px;
+		margin-left: 2%;
+		color: rgb(255, 255, 255, 0.5);
 		text-align: center;
 		margin-right: 90%;
+	}
+
+	#schedule {
+		width: 350px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 </style>
