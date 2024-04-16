@@ -1,86 +1,64 @@
 import { storage } from './firebase';
 import ical from 'ical.js';
-import { getStorage, ref, uploadString } from 'firebase/storage';
+import { getStorage, ref, getBlob , getMetadata } from 'firebase/storage';
 
-async function fetchICSFiles() {
-  try {
-    const storageRef = storage.ref();
-    const files = await storageRef.listAll();
-    const icsFiles = [];
-
-    for (const file of files.items) {
-      if (file.name.endsWith('.ics')) {
-        const url = await file.getDownloadURL();
-        icsFiles.push({ name: file.name, url: url });
-      }
-    }
-
-    return icsFiles;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des fichiers ICS depuis Firebase Storage :', error);
-    return [];
-  }
+function test2(){
+  const Ref = ref(storage, 'icscalendar/4PSFgCCPpzaOdKChhgyG.ics');
+  console.log(Ref)
 }
-
-async function parseICSFile(fileURL) {
+// Fonction pour récupérer le contenu d'un fichier .ics à partir de son chemin dans Firebase Storage
+async function fetchICSContent(icsPath) {
   try {
-    const response = await fetch(fileURL);
-    const text = await response.text();
-    const jcalData = ical.parse(text);
-    const comp = new ical.Component(jcalData);
-    const vevents = comp.getAllProperties('vevent');
-    
-    const events = vevents.map(vevent => {
-      return {
-        summary: vevent.getFirstPropertyValue('summary'),
-        startDate: vevent.getFirstPropertyValue('dtstart'),
-        endDate: vevent.getFirstPropertyValue('dtend')
-      };
+    const icsFileRef = ref(storage, icsPath);
+    const metadata = await getMetadata(icsFileRef);
+    if (!metadata.contentType.startsWith('text')) {
+        throw new Error('Le fichier n\'est pas un fichier texte');
+    }
+    const blob = await getBlob(icsFileRef);
+    const reader = new FileReader();
+    reader.readAsText(blob);
+    return new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
     });
-
-    return events;
   } catch (error) {
-    console.error('Erreur lors de l\'analyse du fichier ICS :', error);
-    return [];
+      console.error('Erreur lors de la récupération du contenu du fichier .ics :', error);
+      return null;
   }
 }
 
+// Fonction pour analyser le contenu d'un fichier .ics en utilisant ical.js
+function parseICSContent(icsContent) {
+  try {
+      const parsedICS = ical.parseICS(icsContent);
+      const events = Object.values(parsedICS);
+      return events;
+  } catch (error) {
+      console.error('Erreur lors de l\'analyse du contenu du fichier .ics :', error);
+      return [];
+  }
+}
 
+function test() {
+// Exemple d'utilisation :
+const icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
 
+fetchICSContent(icsPath)
+.then((icsContent) => {
+  console.log('Contenu du fichier .ics :', icsContent);
+  const events = parseICSContent(icsContent);
+  console.log('Événements du fichier .ics :', events);
+  // Traitez les événements récupérés ici
+})
+.catch((error) => {
+  console.error('Erreur lors de la récupération du fichier .ics :', error);
+});
+}
+
+export { test }
+
+//-----------------------------------------------------------------------------//
 /*
-<!-- App.svelte -->
-<script>
-  import { onMount } from 'svelte';
-  import { fetchICSFiles } from './icsFetcher.js';
-  import { parseICSFile } from './icsParser.js';
-
-  let events = [];
-
-  onMount(async () => {
-    const icsFiles = await fetchICSFiles();
-    for (const file of icsFiles) {
-      const fileEvents = await parseICSFile(file.url);
-      events = events.concat(fileEvents);
-    }
-  });
-</script>
-
-{#if events.length > 0}
-  <ul>
-    {#each events as event}
-      <li>{event.summary} - {event.startDate} à {event.endDate}</li>
-    {/each}
-  </ul>
-{:else}
-  <p>Aucun événement trouvé.</p>
-{/if}
-import { getStorage, ref } from 'firebase/storage';
-END:VCALENDAR
-`;
-
-  return icsContent;
-}*/
-
 function generateEmptyICS() {
   const icsContent = `
 BEGIN:VCALENDAR
@@ -110,7 +88,4 @@ async function uploadICSToStorage(icsContent, filePath) {
 function addICSFile(){
   const emptyICSContent = generateEmptyICS();
   uploadICSToStorage(emptyICSContent,'mon_calendrier.ics');
-}
-
-
-export { fetchICSFiles,parseICSFile,addICSFile };
+}*/
