@@ -1,29 +1,37 @@
 <script>
 	import ScheduleItem from './ScheduleItem.svelte';
 	import { onMount } from 'svelte';
-	import { fetchICSFiles, parseICSFile, addICSFile } from '$lib/functionics';
+	import { fetchICSContent, parseICSContent } from '$lib/functionics';
 	import { currentView } from '../../store';
 
 	let ICSFiles;
 	let currentICSfiles;
 	let ICSContents;
+	let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
+	const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
 
 	onMount(async () => {
-		ICSFiles = await fetchICSFiles();
-		if ($currentView != 'dashboard') {
-			// if the view is on a specific course, only keep the ICS file for this course
-			currentICSfiles = ICSFiles.find((file) => {
-				file.name == $currentView + '.ics';
-			});
-		} else currentICSfiles = ICSFiles; // else we keep all the files
+		// if ($currentView != 'dashboard') {
+		// 	// if the view is on a specific course, only keep the ICS file for this course
+		// 	currentICSfiles = ICSFiles.find((file) => {
+		// 		file.name == $currentView + '.ics';
+		// 	});
+		// } else currentICSfiles = ICSFiles; // else we keep all the files
 
-		ICSContents = new Array();
-		currentICSfiles.forEach(async (file) => {
-			let parsed = await parseICSFile(file.url);
-			let date = new Date(parsed.date);
-			parsed.date = date;
-			ICSContents.push(parsed);
-		});
+		if ($currentView != 'dashboard') {
+			icsPath += '/' + $currentView + '.ics';
+		} else icsPath = defaultIcsPath;
+
+		fetchICSContent(icsPath)
+			.then((icsContent) => {
+				console.log('Contenu du fichier .ics :', icsContent);
+				const events = parseICSContent(icsContent);
+				console.log('Événements du fichier .ics :', events);
+				// Traitez les événements récupérés ici
+			})
+			.catch((error) => {
+				console.error('Erreur lors de la récupération du fichier .ics :', error);
+			});
 
 		console.log(ICSContents);
 	});

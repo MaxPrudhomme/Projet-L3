@@ -55,7 +55,7 @@ function test() {
 		});
 }
 
-export { test };
+export { test, fetchICSContent, parseICSContent };
 
 //-----------------------------------------------------------------------------//
 /*
