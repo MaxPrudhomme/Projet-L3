@@ -1,4 +1,7 @@
 <script>
+    import {addICSFile} from '../functionics';
+    addICSFile();
+
     import Widget from "./Widget.svelte";    
     import Grid, { GridItem } from 'svelte-grid-extended';
     import GridControls from "./GridControls.svelte";
