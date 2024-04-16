@@ -1,13 +1,4 @@
 <script>
-    import { onMount } from 'svelte';
-    import { test } from '../functionics';
-
-    let events = [];
-
-    onMount(() => {
-    test();
-  });
-
     import Widget from "./Widget.svelte";    
     import Grid, { GridItem } from 'svelte-grid-extended';
     import GridControls from "./GridControls.svelte";
