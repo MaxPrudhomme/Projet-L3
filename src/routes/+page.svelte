@@ -1,6 +1,6 @@
 <script>
     import "../global.css";
-    import { fade } from "svelte/transition";
+    import { fade, fly } from "svelte/transition";
     import Sidebar from "$lib/sidebar/Sidebar.svelte";
     import Main from "$lib/content/Main.svelte";
     import Login from "$lib/login/Login.svelte";
@@ -26,15 +26,14 @@
                 contentContainer.style.width = "400px"; 
             }
         }
-        }, 1000)
+        }, 500)
 
     }
 
     setPersistence(auth, browserSessionPersistence)
     .then(async () => {
         userUid.set(auth.currentUser.uid)
-        await 
-        currentView.set()
+        currentView.set("dashboard")
     })
     .catch((error) => {
         console.log(error)
@@ -50,11 +49,16 @@
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
     {#if isAuthenticated === false}
         <Login></Login>
-    {:else if $userUid }    
-        <Sidebar></Sidebar>
-        <Main></Main>
+    {:else if $userUid }
+        <div in:fly={{ x: -1000, duration: 750, delay: 900}} out:fly={{ x: -1000, duration: 750}}>
+            <Sidebar></Sidebar>
+        </div>
+        <div in:fade={{duration: 750, delay: 1100}} out:fade={{duration: 150}}>
+            <Main></Main>
+        </div>
     {/if}
 </div>
+
 
 <style>
     #contentContainer {
@@ -68,6 +72,7 @@
         background-color: rgba(255, 255, 255, 0.3);
         transition: all 1s ease;
     }
+
     #configContainer {
         width: 100vw;
         height: 100vh;

@@ -12,12 +12,12 @@
     <FileWidget {files}></FileWidget>
 </div>
 
+
 <style>
     #container {
         height: 51rem;
         width: 83rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
     }
 </style>

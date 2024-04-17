@@ -23,10 +23,12 @@
 <style>
     #container {
         display: flex;
+        margin-left: 5%;
         margin-top: 1rem;
         align-items: center;
         overflow: hidden;
         text-align: start;
+        width: 90%;
     }
     p {
         font-size: 1rem;

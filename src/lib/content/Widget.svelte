@@ -14,7 +14,9 @@
 	const widgetMap = {
 	  'average-s': AverageSmall,
 	  'homework-t': HomeworkTall,
-	  'exam-s': ExamSmall
+	  'exam-s': ExamSmall,
+	  'vacations-m': null,
+	  'schedule-t': null
 	};
   
 	onMount(() => {

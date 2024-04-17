@@ -20,3 +20,5 @@ export const user = writable(null) // Extracted from userToken
 export const currentView = writable("dashboard") // Represents the dashboard or the subjects
 export const currentContent =  writable([]) // Content taken from the user file
 export const currentTab = writable("widgets") // Represents the widgets, files, comms tab
+
+export const overrideAnimations = writable(false)

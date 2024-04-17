@@ -1,8 +1,13 @@
 <script>
     import { currentTab } from "../../store";
+    import { overrideAnimations } from "../../store";
 
     function handleSelection(event) {
         currentTab.set(event.target.value);
+        overrideAnimations.set(true)
+        setTimeout(() => {
+            overrideAnimations.set(false)
+        }, 500)
     }
 </script>
 
@@ -15,7 +20,7 @@
 <style>
     #container {
         background-color: rgba(0, 0, 0, 0.2);
-        width: 25px;
+        width: 1.8rem;
         height: 10%;
         border-radius: 15px;
         box-shadow: inset -1px -1px 4px rgba(0, 0, 0, 0.25);

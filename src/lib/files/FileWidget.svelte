@@ -22,6 +22,8 @@
         border-radius: 20px;
         height: 90%;
         width: 58%;
+        margin: 20px;
+        margin-left: 10px;
         overflow: hidden;
 	}
 
@@ -29,17 +31,11 @@
         display: flex;
         flex-direction: column;
         height: 90%;
-        width: 90%;
-        margin: auto;
-    }
-
-    p {
-        margin-bottom: 1rem;
+        width: 100%;
     }
 
     h3 {
-        width: 100%;
-        align-self: center;
+        margin: auto;
         text-align: center;
     }
 </style>
