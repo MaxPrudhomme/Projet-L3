@@ -1,7 +1,7 @@
 <script>
     import { auth } from "$lib/firebase";
     import { signInWithEmailAndPassword } from "firebase/auth";
-    import { userToken, userUid } from "../../store";
+    import { currentView, userToken, userUid } from "../../store";
     import { fly, fade } from "svelte/transition";
 
     let email = null;

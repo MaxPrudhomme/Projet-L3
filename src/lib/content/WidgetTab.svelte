@@ -27,10 +27,6 @@
     }
 
     $: {
-        load($currentView)
-    }
-
-    $: {
         move = $editMode;
     }
 
@@ -57,12 +53,12 @@
 
 <style>
     #container {
-        height: 820px;
-        width: 1340px;
+        height: 51rem;
+        width: 83rem;
     }
 
     #grid {
-        margin-top: -17px;
+        margin-top: -1rem;
     }
 
     .content {
