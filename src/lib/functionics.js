@@ -2,9 +2,64 @@ import { storage } from './firebase';
 import ical from 'ical.js';
 import { getStorage, ref, getBlob, getMetadata } from 'firebase/storage';
 
-function test2() {
-	const Ref = ref(storage, 'icscalendar/4PSFgCCPpzaOdKChhgyG.ics');
-	console.log(Ref);
+function parseICSContent(icsContent) {
+	const jcalData = ical.parse(icsContent);
+	const comp = new ical.Component(jcalData);
+	const vevents = comp.getAllSubcomponents('vevent');
+
+	const events = vevents.map((vevent) => {
+		const event = new ical.Event(vevent);
+		return {
+			summary: event.summary,
+			start: event.startDate.toString(),
+			end: event.endDate.toString(),
+			location: event.location,
+			description: event.description
+			// Vous pouvez ajouter d'autres propriétés de l'événement ici
+		};
+	});
+
+	return events;
+}
+function generateICSContent() {
+	const icsContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp.//CalDAV Client//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:1234567890
+DTSTAMP:20220415T120000Z
+DTSTART:20220415T130000Z
+DTEND:20220415T140000Z
+SUMMARY:Exemple d'événement
+DESCRIPTION:Ceci est un exemple d'événement dans un fichier ICS.
+LOCATION:Localisation de l'événement
+END:VEVENT
+END:VCALENDAR
+`;
+
+	return icsContent;
+}
+export { parseICSContent, generateICSContent };
+
+/* A METRE DANS LE WIDGET
+import { onMount } from 'svelte';
+    import { parseICSContent,generateICSContent } from '../functionics';
+
+    let events = [];
+
+    onMount(() => {
+        events = parseICSContent(generateICSContent());
+        console.log(events)
+  });
+*/
+//-----------------------------------------------------------------------------//
+/*
+function test2(){
+  const Ref = ref(storage, 'icscalendar/4PSFgCCPpzaOdKChhgyG.ics');
+  console.log(Ref)
 }
 // Fonction pour récupérer le contenu d'un fichier .ics à partir de son chemin dans Firebase Storage
 async function fetchICSContent(icsPath) {
@@ -53,7 +108,7 @@ function test() {
 		.catch((error) => {
 			console.error('Erreur lors de la récupération du fichier .ics :', error);
 		});
-}
+} */
 
 export { test, fetchICSContent, parseICSContent };
 
