@@ -11,14 +11,15 @@
 	// let ICSContents;
 	// let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
-	let events;
+	let events = new Array();
 	let color;
 	let icon;
 
 	onMount(async () => {
 		events = parseICSContent(generateICSContent());
+		events = new Array(events);
 
-		events.forEach((event) => {
+		events.forEach(async (event) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
 			event.start = startDate;
@@ -28,15 +29,17 @@
 
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
 			Object.assign(event, { pos: Math.abs(startDate - begin) / 1000 / 360 });
+
+			// let courses = collection(db, 'users', $userUid, 'userCourses');
+			// let courseSnapshot = await getDocs(courseRef);
+			// TODO : find way to get the icon from the specific course (and a possible color)
 		});
+		events = new Array(events);
 
 		console.log(events);
-
-		const courseRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
-		const courseData = (await getDoc(courseRef)).data();
-		color = courseData.color;
-		icon = courseData.icon;
 	});
+
+	console.log(events);
 </script>
 
 <div id="container">
@@ -47,9 +50,16 @@
 			<div id="hour-num">{i + 8}</div>
 		{/each}
 
-		<!-- {#each events as event}
-			<ScheduleItem name={event.summary} location={event.location} {color} {icon} height={event.height + "%"} pos={event.pos + "%"}/>
-		{/each} -->
+		{#if events}
+			{#each events as event}
+				<ScheduleItem
+					name={event.summary}
+					location={event.location}
+					height={event.height + '%'}
+					pos={event.pos + '%'}
+				/>
+			{/each}
+		{/if}
 	</div>
 </div>
 
