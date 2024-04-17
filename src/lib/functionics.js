@@ -7,16 +7,30 @@ function parseICSContent(icsContent) {
 	const comp = new ical.Component(jcalData);
 	const vevents = comp.getAllSubcomponents('vevent');
 
-	const events = vevents.map((vevent) => {
+	// const events = vevents.map((vevent) => {
+	// 	const event = new ical.Event(vevent);
+	// 	return {
+	// 		summary: event.summary,
+	// 		start: event.startDate.toString(),
+	// 		end: event.endDate.toString(),
+	// 		location: event.location,
+	// 		description: event.description
+	// 		// Vous pouvez ajouter d'autres propriétés de l'événement ici
+	// 	};
+	// });
+
+	let events = new Map();
+	let i = 0;
+	vevents.forEach((vevent) => {
 		const event = new ical.Event(vevent);
-		return {
+		events.set(i, {
 			summary: event.summary,
 			start: event.startDate.toString(),
 			end: event.endDate.toString(),
 			location: event.location,
 			description: event.description
 			// Vous pouvez ajouter d'autres propriétés de l'événement ici
-		};
+		});
 	});
 
 	return events;

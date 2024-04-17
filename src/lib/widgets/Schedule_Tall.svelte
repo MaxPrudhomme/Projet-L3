@@ -11,15 +11,19 @@
 	// let ICSContents;
 	// let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
-	let events = new Array();
+	let events = new Map();
 	let color;
 	let icon;
 
-	onMount(async () => {
+	onMount(() => {
 		events = parseICSContent(generateICSContent());
-		events = new Array(events);
+		events = new Map(events);
 
-		events.forEach(async (event) => {
+		console.log(events);
+	});
+
+	events.forEach(
+		/*async*/ (event) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
 			event.start = startDate;
@@ -33,11 +37,9 @@
 			// let courses = collection(db, 'users', $userUid, 'userCourses');
 			// let courseSnapshot = await getDocs(courseRef);
 			// TODO : find way to get the icon from the specific course (and a possible color)
-		});
-		events = new Array(events);
-
-		console.log(events);
-	});
+		}
+	);
+	events = new Map(events);
 
 	console.log(events);
 </script>

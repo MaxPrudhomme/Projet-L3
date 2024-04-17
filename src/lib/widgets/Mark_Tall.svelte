@@ -33,18 +33,17 @@
 			});
 			marks = new Map(marks);
 
-			// let k = 0;
-			// let l = 0;
-			// marks.forEach((mark) => {
-			// 	let semOneEnd = new Date(schoolData.semester1.end.seconds * 1000);
-			// 	if (mark.date <= semOneEnd) {
-			// 		firstSemesterMarks.set(k, mark);
-			// 		k++;
-			// 	} else {
-			// 		secondSemesterMarks.set(l, mark);
-			// 		l++;
-			// 	}
-			// });
+			let k = 0;
+			let l = 0;
+			marks.forEach((mark) => {
+				if (mark.semester == 1) {
+					firstSemesterMarks.set(k, mark);
+					k++;
+				} else {
+					secondSemesterMarks.set(l, mark);
+					l++;
+				}
+			});
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
@@ -62,7 +61,7 @@
 <div id="container">
 	<h1 id="title">Marks</h1>
 
-	<div id="display">
+	<!-- <div id="display">
 		{#key currentSemester}
 			{#if currentSemester == 1}
 				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
@@ -70,14 +69,14 @@
 				{/each}
 			{/if}
 			{#if currentSemester == 2}
-				<!-- {#each [...marks] as [id, { date, mark, maxMark, details, name }]}
+				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
 					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each} -->
+				{/each}
 			{/if}
 		{/key}
-	</div>
+	</div> -->
 
-	<!-- <div id="display">
+	<div id="display">
 		{#key currentSemester}
 			{#if currentSemester == 1}
 				{#each [...firstSemesterMarks] as [id, { date, mark, maxMark, details, name }]}
@@ -90,7 +89,7 @@
 				{/each}
 			{/if}
 		{/key}
-	</div> -->
+	</div>
 
 	<div id="periods">
 		<button
