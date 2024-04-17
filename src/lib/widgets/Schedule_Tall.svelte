@@ -1,66 +1,55 @@
 <script>
 	import ScheduleItem from './ScheduleItem.svelte';
 	import { onMount } from 'svelte';
-	import { fetchICSContent, parseICSContent } from '$lib/functionics';
-	import { currentView } from '../../store';
+	import { generateICSContent, parseICSContent } from '$lib/functionics';
+	import { currentView, userUid } from '../../store';
+	import { doc, getDoc } from 'firebase/firestore';
+	import { db } from '$lib/firebase';
 
-	let ICSFiles;
-	let currentICSfiles;
-	let ICSContents;
-	let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
-	const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
+	// let ICSFiles;
+	// let currentICSfiles;
+	// let ICSContents;
+	// let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
+	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
+	let events;
+	let color;
+	let icon;
 
 	onMount(async () => {
-		// if ($currentView != 'dashboard') {
-		// 	// if the view is on a specific course, only keep the ICS file for this course
-		// 	currentICSfiles = ICSFiles.find((file) => {
-		// 		file.name == $currentView + '.ics';
-		// 	});
-		// } else currentICSfiles = ICSFiles; // else we keep all the files
+		events = parseICSContent(generateICSContent());
 
-		if ($currentView != 'dashboard') {
-			icsPath += '/' + $currentView + '.ics';
-		} else icsPath = defaultIcsPath;
+		events.forEach((event) => {
+			let endDate = new Date(event.end);
+			let startDate = new Date(event.start);
+			event.start = startDate;
+			event.end = endDate;
 
-		fetchICSContent(icsPath)
-			.then((icsContent) => {
-				console.log('Contenu du fichier .ics :', icsContent);
-				const events = parseICSContent(icsContent);
-				console.log('Événements du fichier .ics :', events);
-				// Traitez les événements récupérés ici
-			})
-			.catch((error) => {
-				console.error('Erreur lors de la récupération du fichier .ics :', error);
-			});
+			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
-		console.log(ICSContents);
+			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
+			Object.assign(event, { pos: Math.abs(startDate - begin) / 1000 / 360 });
+		});
+
+		console.log(events);
+
+		const courseRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
+		const courseData = (await getDoc(courseRef)).data();
+		color = courseData.color;
+		icon = courseData.icon;
 	});
 </script>
 
 <div id="container">
 	<h1 id="title">Schedule</h1>
 	<div id="schedule">
-		{#each { length: 12 } as _, i}
+		{#each { length: 11 } as _, i}
 			<div id="separator"></div>
 			<div id="hour-num">{i + 8}</div>
 		{/each}
-		<ScheduleItem
-			name="Placeholder"
-			place="A113"
-			color="red"
-			height="50px"
-			pos="50px"
-			icon="%sveltekit.assets%/favicon.png"
-		></ScheduleItem>
-		<!-- paramètres à remplir avec les données du backend -->
-		<ScheduleItem
-			name="Placeholder2"
-			place="A113"
-			color="blue"
-			height="50px"
-			pos="150px"
-			icon="%sveltekit.assets%/favicon.png"
-		></ScheduleItem>
+
+		<!-- {#each events as event}
+			<ScheduleItem name={event.summary} location={event.location} {color} {icon} height={event.height + "%"} pos={event.pos + "%"}/>
+		{/each} -->
 	</div>
 </div>
 
@@ -91,8 +80,8 @@
 	#hour-num {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: large;
-		margin-top: 15px;
-		margin-bottom: 15px;
+		margin-top: 5%;
+		margin-bottom: 5%;
 		margin-left: 2%;
 		color: rgb(255, 255, 255, 0.5);
 		text-align: center;
@@ -103,5 +92,6 @@
 		width: 350px;
 		margin-left: auto;
 		margin-right: auto;
+		height: 90%;
 	}
 </style>

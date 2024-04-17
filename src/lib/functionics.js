@@ -108,7 +108,7 @@ function test() {
 		.catch((error) => {
 			console.error('Erreur lors de la récupération du fichier .ics :', error);
 		});
-} */
+} 
 
 export { test, fetchICSContent, parseICSContent };
 

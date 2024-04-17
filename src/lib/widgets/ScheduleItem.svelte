@@ -1,26 +1,29 @@
 <script>
-	export let name; // name of the item  (ex: "CM - Database")
-	export let place; // name of the place (ex: "Amphi L001")
-	export let icon; // location of the icon file
-	export let color; // background color
-	export let height; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
-	// export let pos; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	import Icon from '$lib/Icon.svelte';
+
+	export let name = 'Undefined'; // name of the item  (ex: "CM - Database")
+	export let location = 'Undefined'; // name of the place (ex: "Amphi L001")
+	export let icon = 'slash-square'; // location of the icon file
+	export let color = 'white'; // background color
+	export let height = '10%'; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	export let pos = '10%'; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
 
 	let itemRef;
 
 	$: if (itemRef) {
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
-		// itemRef.style.top = pos;
+		itemRef.style.top = pos;
 	}
 </script>
 
 <div id="schedule-item" bind:this={itemRef}>
 	<div id="align">
-		<img src={icon} alt="icon" />
+		<div id="icon"><Icon name={icon} /></div>
+
 		<div>
 			<h1>{name}</h1>
-			<p>{place}</p>
+			<p>{location}</p>
 		</div>
 	</div>
 </div>
@@ -42,7 +45,7 @@
 		display: flex;
 	}
 
-	img {
+	#icon {
 		margin-right: 20px;
 	}
 
