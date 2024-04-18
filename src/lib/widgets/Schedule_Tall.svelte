@@ -3,43 +3,47 @@
 	import { onMount } from 'svelte';
 	import { generateICSContent, parseICSContent } from '$lib/functionics';
 	import { currentView, userUid } from '../../store';
-	import { doc, getDoc } from 'firebase/firestore';
+	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 
 	// let ICSFiles;
 	// let currentICSfiles;
 	// let ICSContents;
 	// let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
+	// let goodIcsPath = 'icscalendar';
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
-	let events = new Map();
+	let events = [];
 	let color;
 	let icon;
 
 	onMount(() => {
 		events = parseICSContent(generateICSContent());
-		events = new Map(events);
 
 		console.log(events);
-	});
 
-	events.forEach(
-		/*async*/ (event) => {
+		events.forEach(async (event) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
 			event.start = startDate;
 			event.end = endDate;
 
-			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			Object.assign(event, { pos: Math.abs(startDate - begin) / 1000 / 360 });
+			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 });
 
-			// let courses = collection(db, 'users', $userUid, 'userCourses');
-			// let courseSnapshot = await getDocs(courseRef);
+			try {
+				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+				let courseData = (await getDoc(courseRef)).data();
+				color = courseData.color;
+				icon = courseData.icon;
+			} catch (error) {
+				console.error('Error fetching documents:', error);
+			}
+
 			// TODO : find way to get the icon from the specific course (and a possible color)
-		}
-	);
-	events = new Map(events);
+		});
+	});
 
 	console.log(events);
 </script>
@@ -52,16 +56,18 @@
 			<div id="hour-num">{i + 8}</div>
 		{/each}
 
-		{#if events}
+		{#key events}
 			{#each events as event}
 				<ScheduleItem
 					name={event.summary}
 					location={event.location}
 					height={event.height + '%'}
 					pos={event.pos + '%'}
+					{color}
+					{icon}
 				/>
 			{/each}
-		{/if}
+		{/key}
 	</div>
 </div>
 
@@ -101,6 +107,7 @@
 	}
 
 	#schedule {
+		position: relative;
 		width: 350px;
 		margin-left: auto;
 		margin-right: auto;

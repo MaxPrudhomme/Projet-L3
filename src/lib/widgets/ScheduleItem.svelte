@@ -38,7 +38,14 @@
 		margin-left: 45px;
 
 		font-family: Arial, Helvetica, sans-serif;
-		top: 40%;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+		overflow-x: scroll;
+	}
+
+	#schedule-item::-webkit-scrollbar {
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		display: none;
 	}
 
 	#align {
@@ -52,6 +59,7 @@
 	h1 {
 		margin-top: -5px;
 		margin-bottom: 5px;
-		font-size: x-large;
+		font-size: large;
+		text-wrap: nowrap;
 	}
 </style>

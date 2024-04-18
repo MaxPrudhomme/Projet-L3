@@ -56,6 +56,8 @@
 		});
 		marks = new Map(sortedMarks);
 	});
+
+	console.log(marks);
 </script>
 
 <div id="container">

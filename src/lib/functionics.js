@@ -19,11 +19,11 @@ function parseICSContent(icsContent) {
 	// 	};
 	// });
 
-	let events = new Map();
+	let events = new Array();
 	let i = 0;
 	vevents.forEach((vevent) => {
 		const event = new ical.Event(vevent);
-		events.set(i, {
+		events.push({
 			summary: event.summary,
 			start: event.startDate.toString(),
 			end: event.endDate.toString(),
