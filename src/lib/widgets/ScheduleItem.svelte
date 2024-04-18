@@ -15,6 +15,7 @@
 		itemRef.style.height = height;
 		itemRef.style.top = pos;
 	}
+	console.log(icon);
 </script>
 
 <div id="schedule-item" bind:this={itemRef}>

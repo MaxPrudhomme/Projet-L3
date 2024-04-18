@@ -13,8 +13,8 @@
 	// let goodIcsPath = 'icscalendar';
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
 	let events = [];
-	let color;
-	let icon;
+	let colorr;
+	let iconn;
 
 	onMount(() => {
 		events = parseICSContent(generateICSContent());
@@ -30,18 +30,20 @@
 			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 });
+			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
 			try {
 				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
-				let courseData = (await getDoc(courseRef)).data();
-				color = courseData.color;
-				icon = courseData.icon;
+				let courseData = (await getDoc(course)).data();
+				colorr = courseData.color;
+				iconn = courseData.icon;
+				console.log(colorr, iconn);
 			} catch (error) {
 				console.error('Error fetching documents:', error);
 			}
 
 			// TODO : find way to get the icon from the specific course (and a possible color)
+			// TODO : MAKE THE SCHEDULE WORK OVER MULTIPLE DAYS
 		});
 	});
 
@@ -56,18 +58,19 @@
 			<div id="hour-num">{i + 8}</div>
 		{/each}
 
-		{#key events}
+		{#if iconn}
+			<!-- nécessaire pour que le widget attende que la variable iconn soit proprement chargée -->
 			{#each events as event}
 				<ScheduleItem
 					name={event.summary}
 					location={event.location}
 					height={event.height + '%'}
 					pos={event.pos + '%'}
-					{color}
-					{icon}
+					color={colorr}
+					icon={iconn}
 				/>
 			{/each}
-		{/key}
+		{/if}
 	</div>
 </div>
 
