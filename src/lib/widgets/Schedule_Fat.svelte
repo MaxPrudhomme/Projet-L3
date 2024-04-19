@@ -1,4 +1,5 @@
 <script>
+	// IDEA : put 5 (or 7) days of a week in horizontal scroll, with the buttons switching between weeks
 	import ScheduleItem from './ScheduleItem.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { onMount } from 'svelte';

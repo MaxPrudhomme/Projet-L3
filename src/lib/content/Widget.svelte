@@ -5,6 +5,7 @@
 	import MarkLarge from '$lib/widgets/Mark_Large.svelte';
 	import MarkTall from '$lib/widgets/Mark_Tall.svelte';
 	import ScheduleTall from '$lib/widgets/Schedule_Tall.svelte';
+	import ScheduleFat from '$lib/widgets/Schedule_Fat.svelte';
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
 
 	export let content;
@@ -20,7 +21,8 @@
 		'lastmark-l': MarkLarge,
 		'marks-t': MarkTall,
 		'exam-s': ExamSmall,
-		'schedule-t': ScheduleTall
+		'schedule-t': ScheduleTall,
+		'schedule-f': ScheduleFat
 	};
 
 	onMount(() => {
