@@ -6,7 +6,7 @@
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 
-	let currentSemester = 1; // true if first semester, false if second semester
+	let currentSemester;
 
 	export const getSchoolDataById = async (schoolDocRef) => {
 		const schoolSnapshot = await getDoc(schoolDocRef);
@@ -55,6 +55,7 @@
 			return dateA - dateB;
 		});
 		marks = new Map(sortedMarks);
+		currentSemester = 1;
 	});
 
 	console.log(marks);

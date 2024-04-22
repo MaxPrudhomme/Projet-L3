@@ -175,6 +175,7 @@
 		padding: 5px;
 
 		margin-top: 40px;
+		width: 40%;
 	}
 
 	#title {
@@ -188,14 +189,14 @@
 		margin-right: auto;
 		position: absolute;
 		z-index: 2;
-		left: 50%;
+		left: 45%;
 	}
 
 	#separator {
-		width: 100%;
+		width: 80%;
 		height: 3px;
 		background-color: rgb(255, 255, 255, 0.5);
-		margin-left: auto;
+		margin-left: 5px;
 		margin-right: auto;
 	}
 
@@ -231,8 +232,8 @@
 	#arrows {
 		position: absolute;
 		top: 15px;
-		width: 90%;
-		margin-left: 13px;
+		width: 93%;
+		margin-left: 3%;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
