@@ -133,8 +133,9 @@
 						<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 
 						<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
-						{#each events as event}
-							{#if compareDates(event.start, currentDate)}
+						{#each eventsArray as event}
+							{#if compareDates(event.start, currentWeek[i + 1])}
+								<!-- un semaine en JS commence le dimanche, d'où le +1 -->
 								<ScheduleItem
 									name={event.summary}
 									location={event.location}
@@ -159,13 +160,21 @@
 		flex-direction: row;
 		overflow-x: auto;
 		overflow-y: hidden;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
+
+	#container::-webkit-scrollbar {
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		display: none;
+	}
+
 	.subcontainer {
 		z-index: 1;
 		position: relative;
 		padding: 5px;
 
-		margin-top: 25px;
+		margin-top: 40px;
 	}
 
 	#title {

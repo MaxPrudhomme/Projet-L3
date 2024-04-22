@@ -105,7 +105,7 @@
 				<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 
 				<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
-				{#each events as event}
+				{#each eventsArray as event}
 					{#if compareDates(event.start, currentDate)}
 						<ScheduleItem
 							name={event.summary}
