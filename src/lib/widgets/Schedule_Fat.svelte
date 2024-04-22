@@ -92,7 +92,7 @@
 			return d;
 		});
 		currentWeek = newCurrentWeek;
-		for (let i = 0; i < currentWeek; i++) {
+		for (let i = 0; i < currentWeek.length; i++) {
 			stringDates[i] = dateToString(currentWeek[i]);
 		}
 	}
@@ -105,8 +105,8 @@
 			return d;
 		});
 		currentWeek = newCurrentWeek;
-		for (let i = 0; i < currentWeek; i++) {
-			stringDates[i] = dateToString(currentWeek[i]);
+		for (let i = 0; i < currentWeek.length; i++) {
+			stringDates[i] = dateToString(newCurrentWeek[i]);
 		}
 	}
 </script>
@@ -116,9 +116,9 @@
 		<button class="buttonReset" on:click={previousWeek}><Icon name="arrow-left" /></button>
 		<button class="buttonReset" on:click={nextWeek}><Icon name="arrow-right" /></button>
 	</div>
+	<h1 id="title">Schedule</h1>
 	{#each { length: 5 } as _, i}
 		<div class="subcontainer">
-			<h1 id="title">Schedule</h1>
 			{#key stringDates}
 				<p>{stringDates[i + 1]}</p>
 			{/key}
@@ -164,6 +164,8 @@
 		z-index: 1;
 		position: relative;
 		padding: 5px;
+
+		margin-top: 25px;
 	}
 
 	#title {
@@ -173,6 +175,11 @@
 		font-size: large;
 		margin-top: 10px;
 		margin-bottom: 15px;
+		margin-left: auto;
+		margin-right: auto;
+		position: absolute;
+		z-index: 2;
+		left: 50%;
 	}
 
 	#separator {
@@ -189,6 +196,8 @@
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-left: auto;
 		margin-right: auto;
+		position: relative;
+		z-index: 2;
 	}
 
 	#hour-num {
