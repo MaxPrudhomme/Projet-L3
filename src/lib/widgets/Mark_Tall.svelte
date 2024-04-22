@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { collection, doc, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
+	import { fade } from 'svelte/transition';
 	import Icon from '$lib/Icon.svelte';
 
 	let currentSemester;
@@ -79,8 +80,9 @@
 		{/key}
 	</div> -->
 
-	<div id="display">
-		{#key currentSemester}
+	{#key currentSemester}
+		<div id="display" in:fade={{ delay: 250, duration: 300 }}>
+			<!-- transition foireuse sur le out -->
 			{#if currentSemester == 1}
 				{#each [...firstSemesterMarks] as [id, { date, mark, maxMark, details, name }]}
 					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
@@ -91,8 +93,8 @@
 					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
 				{/each}
 			{/if}
-		{/key}
-	</div>
+		</div>
+	{/key}
 
 	<div id="periods">
 		<button
