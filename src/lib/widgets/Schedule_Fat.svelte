@@ -20,6 +20,12 @@
 	let today = new Date();
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	let currentWeek = Array.from(Array(7).keys()).map((idx) => {
+		// array containing all the dates of the current week
+		const d = new Date();
+		d.setDate(d.getDate() - d.getDay() + idx);
+		return d;
+	});
 
 	function compareDatesForSorting(date1, date2) {
 		return date1 - date2;
@@ -45,7 +51,10 @@
 			date.getFullYear()
 		);
 	}
-	let stringDate = dateToString(currentDate);
+	let stringDates = [];
+	currentWeek.forEach((day) => {
+		stringDates.push(dateToString(day));
+	});
 
 	onMount(() => {
 		eventsArray = parseICSContent(generateICSContent());
@@ -75,56 +84,83 @@
 		console.log(eventsArray);
 	});
 
-	function nextDay(event) {
-		currentDate.setDate(currentDate.getDate() + 1);
-		stringDate = dateToString(currentDate);
+	function nextWeek(event) {
+		let newCurrentWeek = Array.from(Array(7).keys()).map((idx) => {
+			// array containing all the dates of the current week
+			const d = new Date(new Date(currentWeek[1].getTime() + 7 * 24 * 60 * 60 * 1000));
+			d.setDate(d.getDate() - d.getDay() + idx);
+			return d;
+		});
+		currentWeek = newCurrentWeek;
+		for (let i = 0; i < currentWeek; i++) {
+			stringDates[i] = dateToString(currentWeek[i]);
+		}
 	}
 
-	function previousDay(event) {
-		currentDate.setDate(currentDate.getDate() - 1);
-		stringDate = dateToString(currentDate);
+	function previousWeek(event) {
+		let newCurrentWeek = Array.from(Array(7).keys()).map((idx) => {
+			// array containing all the dates of the current week
+			const d = new Date(new Date(currentWeek[1].getTime() - 7 * 24 * 60 * 60 * 1000));
+			d.setDate(d.getDate() - d.getDay() + idx);
+			return d;
+		});
+		currentWeek = newCurrentWeek;
+		for (let i = 0; i < currentWeek; i++) {
+			stringDates[i] = dateToString(currentWeek[i]);
+		}
 	}
 </script>
 
 <div id="container">
-	<h1 id="title">Schedule</h1>
 	<div id="arrows">
-		<button class="buttonReset" on:click={previousDay}><Icon name="arrow-left" /></button>
-		<button class="buttonReset" on:click={nextDay}><Icon name="arrow-right" /></button>
+		<button class="buttonReset" on:click={previousWeek}><Icon name="arrow-left" /></button>
+		<button class="buttonReset" on:click={nextWeek}><Icon name="arrow-right" /></button>
 	</div>
-	{#key stringDate}
-		<p>{stringDate}</p>
-	{/key}
-	<div id="schedule">
-		{#each { length: 11 } as _, i}
-			<div id="separator"></div>
-			<div id="hour-num">{i + 8}</div>
-		{/each}
-
-		{#key stringDate}
-			{#if eventsArray}
-				<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
-
-				<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
-				{#each events as event}
-					{#if compareDates(event.start, currentDate)}
-						<ScheduleItem
-							name={event.summary}
-							location={event.location}
-							height={event.height + '%'}
-							pos={event.pos + '%'}
-							color={event.color}
-							icon={event.icon}
-						/>
-					{/if}
+	{#each { length: 5 } as _, i}
+		<div class="subcontainer">
+			<h1 id="title">Schedule</h1>
+			{#key stringDates}
+				<p>{stringDates[i + 1]}</p>
+			{/key}
+			<div id="schedule">
+				{#each { length: 11 } as _, i}
+					<div id="separator"></div>
+					<div id="hour-num">{i + 8}</div>
 				{/each}
-			{/if}
-		{/key}
-	</div>
+
+				{#key stringDates}
+					{#if eventsArray}
+						<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
+
+						<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
+						{#each events as event}
+							{#if compareDates(event.start, currentDate)}
+								<ScheduleItem
+									name={event.summary}
+									location={event.location}
+									height={event.height + '%'}
+									pos={event.pos + '%'}
+									color={event.color}
+									icon={event.icon}
+								/>
+							{/if}
+						{/each}
+					{/if}
+				{/key}
+			</div>
+		</div>
+		<div class="verticalseparator"></div>
+	{/each}
 </div>
 
 <style>
 	#container {
+		display: flex;
+		flex-direction: row;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+	.subcontainer {
 		z-index: 1;
 		position: relative;
 		padding: 5px;
@@ -142,6 +178,14 @@
 	#separator {
 		width: 100%;
 		height: 3px;
+		background-color: rgb(255, 255, 255, 0.5);
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.verticalseparator {
+		height: 90%;
+		width: 3px;
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-left: auto;
 		margin-right: auto;
