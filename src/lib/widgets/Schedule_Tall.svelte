@@ -60,34 +60,30 @@
 		return eventsMap;
 	}
 
-	onMount(() => {
-		eventsArray = parseICSContent(generateICSContent());
+	eventsArray = parseICSContent(generateICSContent());
 
-		eventsArray.forEach(async (event) => {
-			let endDate = new Date(event.end);
-			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+	eventsArray.forEach(async (event) => {
+		let endDate = new Date(event.end);
+		let startDate = new Date(event.start);
+		event.start = startDate;
+		event.end = endDate;
 
-			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+		Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
-			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
+		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
-			try {
-				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
-				let courseData = (await getDoc(course)).data();
-				Object.assign(event, { color: courseData.color });
-				Object.assign(event, { icon: courseData.icon });
-			} catch (error) {
-				console.error('Error fetching documents:', error);
-			}
-
-			// TODO : REWORK TO BE BETTER OPTIMIZED
-		});
-
-		events = new Map(convertEventsArrayToMap(eventsArray));
+		try {
+			let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+			let courseData = (await getDoc(course)).data();
+			Object.assign(event, { color: courseData.color });
+			Object.assign(event, { icon: courseData.icon });
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
 	});
+
+	events = new Map(convertEventsArrayToMap(eventsArray));
 
 	function nextDay(event) {
 		currentDate.setDate(currentDate.getDate() + 1);
