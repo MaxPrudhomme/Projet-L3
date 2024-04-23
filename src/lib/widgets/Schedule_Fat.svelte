@@ -7,6 +7,7 @@
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
+	import { fade } from 'svelte/transition';
 
 	// let ICSFiles;
 	// let currentICSfiles;
@@ -71,7 +72,7 @@
 			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
 			try {
-				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
 				let courseData = (await getDoc(course)).data();
 				Object.assign(event, { color: courseData.color });
 				Object.assign(event, { icon: courseData.icon });

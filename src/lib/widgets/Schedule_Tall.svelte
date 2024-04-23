@@ -46,6 +46,20 @@
 	}
 	let stringDate = dateToString(currentDate);
 
+	function convertEventsArrayToMap(eventsArray) {
+		// converts an array of events into a map of array with key/value for each day
+		let eventsMap = new Map();
+
+		eventsArray.forEach((event) => {
+			let eventDate = dateToString(event.start);
+			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
+
+			eventsMap.get(eventDate).push(event);
+		});
+
+		return eventsMap;
+	}
+
 	onMount(() => {
 		eventsArray = parseICSContent(generateICSContent());
 
@@ -71,7 +85,8 @@
 
 			// TODO : REWORK TO BE BETTER OPTIMIZED
 		});
-		console.log(eventsArray);
+
+		events = new Map(convertEventsArrayToMap(eventsArray));
 	});
 
 	function nextDay(event) {
@@ -101,11 +116,11 @@
 		{/each}
 
 		{#key stringDate}
-			{#if eventsArray}
-				<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
+			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 
-				<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
-				{#each eventsArray as event}
+			<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
+			{#if events[stringDate]}
+				{#each events[stringDate] as event}
 					{#if compareDates(event.start, currentDate)}
 						<ScheduleItem
 							name={event.summary}
