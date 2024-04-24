@@ -85,7 +85,7 @@
 		Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
 		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 2.8 }); // -2.8% so that the position properly aligns with the background
 
 		try {
 			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
