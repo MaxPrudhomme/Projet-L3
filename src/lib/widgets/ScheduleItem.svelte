@@ -31,7 +31,7 @@
 <style>
 	#schedule-item {
 		border-radius: 10px;
-		width: 70%; /* to make responsive if multiple items at the same height/time */
+		width: calc(70% - 30px); /* to make responsive if multiple items at the same height/time */
 		padding: 10px;
 		z-index: 2;
 		position: absolute;

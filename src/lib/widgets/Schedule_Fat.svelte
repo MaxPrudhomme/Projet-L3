@@ -71,8 +71,11 @@
 		return eventsMap;
 	}
 
+	/////////// DATA FETCHING AND TREATMENT //////////
 	eventsArray = parseICSContent(generateICSContent());
 
+	let course;
+	let courseData; // declared here so its state can be checked with a logic block. This is to avoid using OnMount which is a bitch. It works just as good like this.
 	eventsArray.forEach(async (event) => {
 		let endDate = new Date(event.end);
 		let startDate = new Date(event.start);
@@ -85,8 +88,8 @@
 		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
 		try {
-			let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
-			let courseData = (await getDoc(course)).data();
+			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
+			courseData = (await getDoc(course)).data();
 			Object.assign(event, { color: courseData.color });
 			Object.assign(event, { icon: courseData.icon });
 		} catch (error) {
@@ -95,6 +98,7 @@
 	});
 
 	events = new Map(convertEventsArrayToMap(eventsArray));
+	///////////////////////////////////////////////////
 
 	function nextWeek(event) {
 		let newCurrentWeek = Array.from(Array(7).keys()).map((idx) => {
@@ -141,7 +145,7 @@
 				{/each}
 
 				{#key stringDates}
-					{#if events.get(stringDates[i + 1])}
+					{#if events.get(stringDates[i + 1]) && courseData}
 						<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 
 						{#each events.get(stringDates[i + 1]) as event}

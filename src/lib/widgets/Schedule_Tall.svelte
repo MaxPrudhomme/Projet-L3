@@ -60,8 +60,11 @@
 		return eventsMap;
 	}
 
+	/////////// DATA FETCHING AND TREATMENT //////////
 	eventsArray = parseICSContent(generateICSContent());
 
+	let course;
+	let courseData; // declared here so its state can be checked with a logic block. This is to avoid using OnMount which is a bitch. It works just as good like this.
 	eventsArray.forEach(async (event) => {
 		let endDate = new Date(event.end);
 		let startDate = new Date(event.start);
@@ -74,8 +77,8 @@
 		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
 		try {
-			let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
-			let courseData = (await getDoc(course)).data();
+			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+			courseData = (await getDoc(course)).data();
 			Object.assign(event, { color: courseData.color });
 			Object.assign(event, { icon: courseData.icon });
 		} catch (error) {
@@ -84,6 +87,7 @@
 	});
 
 	events = new Map(convertEventsArrayToMap(eventsArray));
+	///////////////////////////////////////////////////
 
 	function nextDay(event) {
 		currentDate.setDate(currentDate.getDate() + 1);
@@ -113,8 +117,7 @@
 
 		{#key stringDate}
 			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
-
-			{#if events.get(stringDate)}
+			{#if events.get(stringDate) && courseData}
 				{#each events.get(stringDate) as event}
 					<ScheduleItem
 						name={event.summary}
@@ -183,6 +186,11 @@
 		justify-content: space-between;
 		fill: rgb(255, 255, 255, 0.5);
 	}
+
+	/* #items {
+		margin-left: 10%;
+		margin-right: auto;
+	} */
 
 	p {
 		color: rgb(0, 0, 0, 0.5);
