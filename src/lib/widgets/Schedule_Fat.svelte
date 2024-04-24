@@ -57,33 +57,44 @@
 		stringDates.push(dateToString(day));
 	});
 
-	onMount(() => {
-		eventsArray = parseICSContent(generateICSContent());
+	function convertEventsArrayToMap(eventsArray) {
+		// converts an array of events into a map of array with key/value for each day
+		let eventsMap = new Map();
 
-		eventsArray.forEach(async (event) => {
-			let endDate = new Date(event.end);
-			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+		eventsArray.forEach((event) => {
+			let eventDate = dateToString(event.start);
+			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
 
-			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
-
-			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
-
-			try {
-				let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
-				let courseData = (await getDoc(course)).data();
-				Object.assign(event, { color: courseData.color });
-				Object.assign(event, { icon: courseData.icon });
-			} catch (error) {
-				console.error('Error fetching documents:', error);
-			}
-
-			// TODO : REWORK TO BE BETTER OPTIMIZED
+			eventsMap.get(eventDate).push(event);
 		});
-		console.log(eventsArray);
+
+		return eventsMap;
+	}
+
+	eventsArray = parseICSContent(generateICSContent());
+
+	eventsArray.forEach(async (event) => {
+		let endDate = new Date(event.end);
+		let startDate = new Date(event.start);
+		event.start = startDate;
+		event.end = endDate;
+
+		Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+
+		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
+		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+
+		try {
+			let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG');
+			let courseData = (await getDoc(course)).data();
+			Object.assign(event, { color: courseData.color });
+			Object.assign(event, { icon: courseData.icon });
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
 	});
+
+	events = new Map(convertEventsArrayToMap(eventsArray));
 
 	function nextWeek(event) {
 		let newCurrentWeek = Array.from(Array(7).keys()).map((idx) => {
@@ -130,22 +141,19 @@
 				{/each}
 
 				{#key stringDates}
-					{#if eventsArray}
+					{#if events.get(stringDates[i + 1])}
 						<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 
-						<!-- oui c'est explosé pour l'optimisation mais c'est temporaire -->
-						{#each eventsArray as event}
-							{#if compareDates(event.start, currentWeek[i + 1])}
-								<!-- un semaine en JS commence le dimanche, d'où le +1 -->
-								<ScheduleItem
-									name={event.summary}
-									location={event.location}
-									height={event.height + '%'}
-									pos={event.pos + '%'}
-									color={event.color}
-									icon={event.icon}
-								/>
-							{/if}
+						{#each events.get(stringDates[i + 1]) as event}
+							<!-- un semaine en JS commence le dimanche, d'où le +1 -->
+							<ScheduleItem
+								name={event.summary}
+								location={event.location}
+								height={event.height + '%'}
+								pos={event.pos + '%'}
+								color={event.color}
+								icon={event.icon}
+							/>
 						{/each}
 					{/if}
 				{/key}

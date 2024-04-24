@@ -85,56 +85,80 @@
 
 	events = new Map(convertEventsArrayToMap(eventsArray));
 
-	function nextDay(event) {
-		currentDate.setDate(currentDate.getDate() + 1);
-		stringDate = dateToString(currentDate);
+	function nextHour(event) {
+		i++;
 	}
 
-	function previousDay(event) {
-		currentDate.setDate(currentDate.getDate() - 1);
-		stringDate = dateToString(currentDate);
+	function previousHour(event) {
+		i--;
 	}
+
+	let i;
 </script>
 
 <div id="container">
 	<h1 id="title">Schedule</h1>
-	<div id="arrows">
-		<button class="buttonReset" on:click={previousDay}><Icon name="arrow-left" /></button>
-		<button class="buttonReset" on:click={nextDay}><Icon name="arrow-right" /></button>
-	</div>
-	{#key stringDate}
-		<p>{stringDate}</p>
-	{/key}
-	<div id="schedule">
-		{#each { length: 11 } as _, i}
+	{#key i}
+		<div id="schedule">
 			<div id="separator"></div>
 			<div id="hour-num">{i + 8}</div>
-		{/each}
-
-		{#key stringDate}
-			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
-
-			{#if events.get(stringDate)}
-				{#each events.get(stringDate) as event}
+			<div id="separator"></div>
+			<div id="hour-num">{i + 9}</div>
+			{#each hours as hour, j}
+				{#if hour == i + 8}
 					<ScheduleItem
-						name={event.summary}
-						location={event.location}
-						height={event.height + '%'}
-						pos={event.pos + '%'}
-						color={event.color}
-						icon={event.icon}
-					/>
-				{/each}
-			{/if}
-		{/key}
-	</div>
+						name={events[stringDate].summary}
+						location={events[stringDate].location}
+						height={events[stringDate].height + '%'}
+						pos={events[stringDate].pos + '%'}
+						color={events[stringDate].color}
+						icon={events[stringDate].icon}
+					></ScheduleItem>
+				{/if}
+			{/each}
+			<!-- paramètres à remplir avec les données du backend -->
+		</div>
+	{/key}
+
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		fill="currentColor"
+		class="bi bi-caret-left"
+		viewBox="0 0 16 16"
+		on:click={previousHour}
+	>
+		<path
+			d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753"
+		/>
+	</svg>
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		fill="currentColor"
+		class="bi bi-caret-right"
+		viewBox="0 0 16 16"
+		on:click={nextHour}
+	>
+		<path
+			d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"
+		/>
+	</svg>
 </div>
 
 <style>
 	#container {
 		z-index: 1;
 		position: relative;
-		padding: 5px;
+		height: 150px;
+		width: 350px;
+		padding: 3%;
 	}
 
 	#title {
@@ -143,11 +167,11 @@
 		color: rgb(255, 255, 255, 0.5);
 		font-size: large;
 		margin-top: 10px;
-		margin-bottom: 15px;
+		margin-bottom: 20px;
 	}
 
 	#separator {
-		width: 100%;
+		width: 330px;
 		height: 3px;
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-left: auto;
@@ -157,38 +181,24 @@
 	#hour-num {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: large;
-		margin-top: 5%;
-		margin-bottom: 5%;
-		margin-left: 2%;
+		margin: 15px;
 		color: rgb(255, 255, 255, 0.5);
 		text-align: center;
 		margin-right: 90%;
 	}
 
-	#schedule {
-		position: relative;
-		width: 350px;
-		margin-left: auto;
-		margin-right: auto;
-		height: 90%;
-	}
-
-	#arrows {
-		position: absolute;
-		top: 15px;
-		width: 90%;
-		margin-left: 13px;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+	.bi {
 		fill: rgb(255, 255, 255, 0.5);
+		position: absolute;
 	}
 
-	p {
-		color: rgb(0, 0, 0, 0.5);
-		text-align: center;
-		margin: 2%;
-		font-size: large;
-		margin-bottom: 5px;
+	.bi-caret-left {
+		left: 0;
+		top: 10%;
+	}
+
+	.bi-caret-right {
+		left: 95%;
+		top: 10%;
 	}
 </style>
