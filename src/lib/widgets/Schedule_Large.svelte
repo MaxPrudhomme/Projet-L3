@@ -62,6 +62,8 @@
 
 	eventsArray = parseICSContent(generateICSContent());
 
+	let course;
+	let courseData;
 	eventsArray.forEach(async (event) => {
 		let endDate = new Date(event.end);
 		let startDate = new Date(event.start);
@@ -74,8 +76,8 @@
 		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
 
 		try {
-			let course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
-			let courseData = (await getDoc(course)).data();
+			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+			courseData = (await getDoc(course)).data();
 			Object.assign(event, { color: courseData.color });
 			Object.assign(event, { icon: courseData.icon });
 		} catch (error) {
@@ -83,73 +85,45 @@
 		}
 	});
 
-	events = new Map(convertEventsArrayToMap(eventsArray));
+	events = convertEventsArrayToMap(eventsArray).get(dateToString(today));
+	console.log(events);
 
-	function nextHour(event) {
-		i++;
+	function nextItem(event) {
+		if (i < events.length - 1) i++;
 	}
 
-	function previousHour(event) {
-		i--;
+	function previousItem(event) {
+		if (i > 0) i--;
 	}
 
-	let i;
+	let i = 0;
 </script>
 
 <div id="container">
 	<h1 id="title">Schedule</h1>
-	{#key i}
-		<div id="schedule">
-			<div id="separator"></div>
-			<div id="hour-num">{i + 8}</div>
-			<div id="separator"></div>
-			<div id="hour-num">{i + 9}</div>
-			{#each hours as hour, j}
-				{#if hour == i + 8}
-					<ScheduleItem
-						name={events[stringDate].summary}
-						location={events[stringDate].location}
-						height={events[stringDate].height + '%'}
-						pos={events[stringDate].pos + '%'}
-						color={events[stringDate].color}
-						icon={events[stringDate].icon}
-					></ScheduleItem>
-				{/if}
-			{/each}
-			<!-- paramètres à remplir avec les données du backend -->
-		</div>
-	{/key}
+	{#if events && courseData}
+		{#key i}
+			<div id="schedule">
+				<ScheduleItem
+					name={events[i].summary}
+					location={events[i].location}
+					height={events[i].height + '%'}
+					pos={events[i].pos + '%'}
+					color={events[i].color}
+					icon={events[i].icon}
+				></ScheduleItem>
+			</div>
+		{/key}
+	{/if}
 
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="16"
-		height="16"
-		fill="currentColor"
-		class="bi bi-caret-left"
-		viewBox="0 0 16 16"
-		on:click={previousHour}
-	>
-		<path
-			d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753"
-		/>
-	</svg>
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="16"
-		height="16"
-		fill="currentColor"
-		class="bi bi-caret-right"
-		viewBox="0 0 16 16"
-		on:click={nextHour}
-	>
-		<path
-			d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"
-		/>
-	</svg>
+	<div id="arrows">
+		<button class="buttonReset bi-caret-left" on:click={previousItem}>
+			<Icon name="arrow-left" width="16" height="16" />
+		</button>
+		<button class="buttonReset bi-caret-right" on:click={nextItem}>
+			<Icon name="arrow-right" width="16" height="16" />
+		</button>
+	</div>
 </div>
 
 <style>
@@ -170,35 +144,14 @@
 		margin-bottom: 20px;
 	}
 
-	#separator {
-		width: 330px;
-		height: 3px;
-		background-color: rgb(255, 255, 255, 0.5);
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	#hour-num {
-		font-family: Arial, Helvetica, sans-serif;
-		font-size: large;
-		margin: 15px;
-		color: rgb(255, 255, 255, 0.5);
-		text-align: center;
-		margin-right: 90%;
-	}
-
-	.bi {
-		fill: rgb(255, 255, 255, 0.5);
+	#arrows {
 		position: absolute;
-	}
-
-	.bi-caret-left {
-		left: 0;
-		top: 10%;
-	}
-
-	.bi-caret-right {
-		left: 95%;
-		top: 10%;
+		top: 15px;
+		width: 90%;
+		margin-left: 13px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		fill: rgb(255, 255, 255, 0.5);
 	}
 </style>

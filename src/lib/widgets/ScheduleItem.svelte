@@ -62,4 +62,8 @@
 		font-size: large;
 		text-wrap: nowrap;
 	}
+
+	p {
+		text-wrap: nowrap;
+	}
 </style>
