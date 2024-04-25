@@ -16,10 +16,11 @@
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
 	let events = new Map();
 	let eventsArray = [];
-	let todayEvents;
 	let today = new Date();
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+	const overlapValues = ['0%', ['0%', '50%'], ['0%', '33%', '66%']];
 
 	let flyParamsIn = {
 		x: 100,
@@ -49,10 +50,10 @@
 		return (
 			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
 			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
-			(event1.end >= event2.start && event1.end <= event2.end) || // event1's end contained within event2
-			(event1.start <= event2.end && event1.end >= event2.end) || // event2's end contained within event1
-			(event1.start <= event2.end && event1.start >= event2.start) || // event1's start contained within event2
-			(event1.end >= event2.start && event1.start <= event2.start)
+			(event1.end > event2.start && event1.end <= event2.end) || // event1's end contained within event2
+			(event1.start < event2.end && event1.end >= event2.end) || // event2's end contained within event1
+			(event1.start < event2.end && event1.start >= event2.start) || // event1's start contained within event2
+			(event1.end > event2.start && event1.start <= event2.start)
 		); // event2's start contained within event1
 	}
 
@@ -126,6 +127,7 @@
 	calculateOverlap(eventsArray);
 
 	events = new Map(convertEventsArrayToMap(eventsArray));
+	console.log(events);
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
@@ -159,17 +161,22 @@
 
 			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 			{#if events.get(stringDate) && courseData}
-				{#each events.get(stringDate) as event}
-					<ScheduleItem
-						name={event.summary}
-						location={event.location}
-						height={event.height + '%'}
-						pos={event.pos + '%'}
-						color={event.color}
-						icon={event.icon}
-						overlap={event.overlap}
-					/>
-				{/each}
+				{#key courseData}
+					<div id="items">
+						{#each events.get(stringDate) as event}
+							<ScheduleItem
+								name={event.summary}
+								location={event.location}
+								height={event.height + '%'}
+								pos={event.pos + '%'}
+								color={event.color}
+								icon={event.icon}
+								overlap={event.overlap}
+								left={overlapValues[event.overlap - 1]}
+							/>
+						{/each}
+					</div>
+				{/key}
 			{/if}
 		</div>
 	{/key}

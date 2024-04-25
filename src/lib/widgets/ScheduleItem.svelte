@@ -5,9 +5,10 @@
 	export let location = 'Undefined'; // name of the place (ex: "Amphi L001")
 	export let icon = 'slash-square'; // location of the icon file
 	export let color = 'white'; // background color
-	export let height = '25%'; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
-	export let pos = '50%'; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	export let height = '25%'; // height of the item
+	export let pos = '50%'; // vertical position of the item on the schedule
 	export let overlap = 1;
+	export let left = '0%';
 
 	let itemRef;
 
@@ -15,7 +16,8 @@
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
 		itemRef.style.top = pos;
-		itemRef.style.width = 'calc(80% /' + { overlap } + ')';
+		itemRef.style.width = 'calc(80% /' + overlap + '- 30px)';
+		itemRef.style.marginLeft = 'calc(45px + ' + left + ')';
 	}
 </script>
 
@@ -38,8 +40,6 @@
 		z-index: 2;
 		position: absolute;
 		margin-left: 45px;
-		margin-top: 0;
-		margin-bottom: 0;
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */
