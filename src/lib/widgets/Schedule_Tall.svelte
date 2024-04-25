@@ -6,6 +6,7 @@
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
+	import { fly, fade } from 'svelte/transition';
 
 	// let ICSFiles;
 	// let currentICSfiles;
@@ -20,6 +21,17 @@
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+	let flyParamsIn = {
+		x: 100,
+		delay: 150,
+		opacity: 1
+	};
+	let flyParamsOut = {
+		x: -100,
+		delay: 150,
+		opacity: 1
+	};
+
 	function compareDatesForSorting(date1, date2) {
 		return date1 - date2;
 	}
@@ -31,6 +43,17 @@
 			date1.getMonth() == date2.getMonth() &&
 			date1.getDate() == date2.getDate()
 		);
+	}
+
+	function compareHours(event1, event2) {
+		return (
+			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
+			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
+			(event1.end >= event2.start && event1.end <= event2.end) || // event1's end contained within event2
+			(event1.start <= event2.end && event1.end >= event2.end) || // event2's end contained within event1
+			(event1.start <= event2.end && event1.start >= event2.start) || // event1's start contained within event2
+			(event1.end >= event2.start && event1.start <= event2.start)
+		); // event2's start contained within event1
 	}
 
 	function dateToString(date) {
@@ -60,6 +83,15 @@
 		return eventsMap;
 	}
 
+	function calculateOverlap(array) {
+		for (let i = 0; i < array.length - 1; i++) {
+			if (compareHours(array[i], array[i + 1])) {
+				array[i].overlap += 1;
+				array[i + 1].overlap += 1;
+			}
+		}
+	}
+
 	/////////// DATA FETCHING AND TREATMENT //////////
 	eventsArray = parseICSContent(generateICSContent());
 
@@ -75,6 +107,7 @@
 
 		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
 		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+		Object.assign(event, { overlap: 1 });
 
 		try {
 			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
@@ -86,17 +119,27 @@
 		}
 	});
 
+	eventsArray.sort((eventA, eventB) => {
+		return eventA.start - eventB.start;
+	});
+
+	calculateOverlap(eventsArray);
+
 	events = new Map(convertEventsArrayToMap(eventsArray));
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
 		currentDate.setDate(currentDate.getDate() + 1);
 		stringDate = dateToString(currentDate);
+		flyParamsIn.x = 300;
+		flyParamsOut.x = -300;
 	}
 
 	function previousDay(event) {
 		currentDate.setDate(currentDate.getDate() - 1);
 		stringDate = dateToString(currentDate);
+		flyParamsIn.x = -300;
+		flyParamsOut.x = 300;
 	}
 </script>
 
@@ -108,14 +151,12 @@
 	</div>
 	{#key stringDate}
 		<p>{stringDate}</p>
-	{/key}
-	<div id="schedule">
-		{#each { length: 11 } as _, i}
-			<div id="separator"></div>
-			<div id="hour-num">{i + 8}</div>
-		{/each}
+		<div id="schedule" in:fade out:fade>
+			{#each { length: 11 } as _, i}
+				<div id="separator"></div>
+				<div id="hour-num">{i + 8}</div>
+			{/each}
 
-		{#key stringDate}
 			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
 			{#if events.get(stringDate) && courseData}
 				{#each events.get(stringDate) as event}
@@ -126,11 +167,12 @@
 						pos={event.pos + '%'}
 						color={event.color}
 						icon={event.icon}
+						overlap={event.overlap}
 					/>
 				{/each}
 			{/if}
-		{/key}
-	</div>
+		</div>
+	{/key}
 </div>
 
 <style>

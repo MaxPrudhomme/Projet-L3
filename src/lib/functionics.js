@@ -51,6 +51,15 @@ SUMMARY:Exemple d'événement
 DESCRIPTION:Ceci est un exemple d'événement dans un fichier ICS.
 LOCATION:Localisation de l'événement
 END:VEVENT
+BEGIN:VEVENT
+UID:9876543210
+DTSTAMP:20240425T130000Z
+DTSTART:20240425T140000Z
+DTEND:20240425T150000Z
+SUMMARY:Exemple d'événement
+DESCRIPTION:Ceci est un exemple d'événement dans un fichier ICS.
+LOCATION:Localisation de l'événement
+END:VEVENT
 END:VCALENDAR
 `;
 

@@ -6,6 +6,7 @@
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
+	import { fly, fade } from 'svelte/transition';
 
 	// let ICSFiles;
 	// let currentICSfiles;
@@ -19,6 +20,17 @@
 	let today = new Date();
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+	let flyParamsIn = {
+		x: 100,
+		delay: 150,
+		opacity: 1
+	};
+	let flyParamsOut = {
+		x: -100,
+		delay: 150,
+		opacity: 1
+	};
 
 	function compareDatesForSorting(date1, date2) {
 		return date1 - date2;
@@ -88,10 +100,14 @@
 
 	function nextItem(event) {
 		if (i < events.length - 1) i++;
+		flyParamsIn.x = 300;
+		flyParamsOut.x = -300;
 	}
 
 	function previousItem(event) {
 		if (i > 0) i--;
+		flyParamsIn.x = -300;
+		flyParamsOut.x = 300;
 	}
 
 	let i = 0;
@@ -102,7 +118,7 @@
 	<p>{stringDate}</p>
 	{#if events && courseData}
 		{#key i}
-			<div id="schedule">
+			<div id="schedule" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 				<ScheduleItem
 					name={events[i].summary}
 					location={events[i].location}

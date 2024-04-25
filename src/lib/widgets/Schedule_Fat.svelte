@@ -41,6 +41,17 @@
 		);
 	}
 
+	function compareHours(event1, event2) {
+		return (
+			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
+			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
+			(event1.end >= event2.start && event1.end <= event2.end) || // event1's end contained within event2
+			(event1.start <= event2.end && event1.end >= event2.end) || // event2's end contained within event1
+			(event1.start <= event2.end && event1.start >= event2.start) || // event1's start contained within event2
+			(event1.end >= event2.start && event1.start <= event2.start)
+		); // event2's start contained within event1
+	}
+
 	function dateToString(date) {
 		return (
 			weekday[date.getDay()] +
@@ -71,6 +82,15 @@
 		return eventsMap;
 	}
 
+	function calculateOverlap(array) {
+		for (let i = 0; i < array.length - 1; i++) {
+			if (compareHours(array[i], array[i + 1])) {
+				array[i].overlap += 1;
+				array[i + 1].overlap += 1;
+			}
+		}
+	}
+
 	/////////// DATA FETCHING AND TREATMENT //////////
 	eventsArray = parseICSContent(generateICSContent());
 
@@ -96,6 +116,12 @@
 			console.error('Error fetching documents:', error);
 		}
 	});
+
+	eventsArray.sort((eventA, eventB) => {
+		return eventA.start - eventB.start;
+	});
+
+	calculateOverlap(eventsArray);
 
 	events = new Map(convertEventsArrayToMap(eventsArray));
 	///////////////////////////////////////////////////

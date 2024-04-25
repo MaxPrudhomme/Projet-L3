@@ -7,7 +7,7 @@
 	export let color = 'white'; // background color
 	export let height = '25%'; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
 	export let pos = '50%'; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
-	export let width = 'calc(70% - 30px)';
+	export let overlap = 1;
 
 	let itemRef;
 
@@ -15,7 +15,7 @@
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
 		itemRef.style.top = pos;
-		itemRef.style.width = width;
+		itemRef.style.width = 'calc(80% /' + { overlap } + ')';
 	}
 </script>
 
@@ -38,6 +38,8 @@
 		z-index: 2;
 		position: absolute;
 		margin-left: 45px;
+		margin-top: 0;
+		margin-bottom: 0;
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */
@@ -55,17 +57,17 @@
 	}
 
 	#icon {
-		margin-right: 20px;
+		margin-right: 10px;
 	}
 
 	h1 {
 		margin-top: -5px;
 		margin-bottom: 5px;
 		font-size: large;
-		text-wrap: nowrap;
+		text-wrap: wrap;
 	}
 
 	p {
-		text-wrap: nowrap;
+		text-wrap: wrap;
 	}
 </style>
