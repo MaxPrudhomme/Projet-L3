@@ -5,8 +5,9 @@
 	export let location = 'Undefined'; // name of the place (ex: "Amphi L001")
 	export let icon = 'slash-square'; // location of the icon file
 	export let color = 'white'; // background color
-	export let height = '10%'; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
-	export let pos = '10%'; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	export let height = '25%'; // height of the item (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	export let pos = '50%'; // vertical position of the item on the schedule (TO BE REPLACED BY AN ACTUAL MEASURE OF TIME)
+	export let width = 'calc(70% - 30px)';
 
 	let itemRef;
 
@@ -14,6 +15,7 @@
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
 		itemRef.style.top = pos;
+		itemRef.style.width = width;
 	}
 </script>
 
@@ -31,7 +33,7 @@
 <style>
 	#schedule-item {
 		border-radius: 10px;
-		width: calc(70% - 30px); /* to make responsive if multiple items at the same height/time */
+		/* width: calc(70% - 30px); to make responsive if multiple items at the same height/time */
 		padding: 10px;
 		z-index: 2;
 		position: absolute;

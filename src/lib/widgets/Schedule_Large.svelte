@@ -13,7 +13,7 @@
 	// let icsPath = 'gs://projet-l3-88394.appspot.com/icscalendar';
 	// let goodIcsPath = 'icscalendar';
 	// const defaultIcsPath = 'gs://projet-l3-88394.appspot.com/icscalendar/4PSFgCCPpzaOdKChhgyG.ics';
-	let events = new Map();
+	let events;
 	let eventsArray = [];
 	let todayEvents;
 	let today = new Date();
@@ -46,21 +46,19 @@
 	}
 	let stringDate = dateToString(currentDate);
 
-	function convertEventsArrayToMap(eventsArray) {
+	function getSingleDayFromEventsArray(eventsArray) {
 		// converts an array of events into a map of array with key/value for each day
-		let eventsMap = new Map();
+		let dayEvents = [];
 
 		eventsArray.forEach((event) => {
-			let eventDate = dateToString(event.start);
-			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
-
-			eventsMap.get(eventDate).push(event);
+			if (dateToString(event.start) == stringDate) dayEvents.push(event);
 		});
 
-		return eventsMap;
+		return dayEvents;
 	}
 
 	eventsArray = parseICSContent(generateICSContent());
+	console.log(eventsArray);
 
 	let course;
 	let courseData;
@@ -85,7 +83,7 @@
 		}
 	});
 
-	events = convertEventsArrayToMap(eventsArray).get(dateToString(today));
+	events = getSingleDayFromEventsArray(eventsArray);
 	console.log(events);
 
 	function nextItem(event) {
@@ -101,14 +99,13 @@
 
 <div id="container">
 	<h1 id="title">Schedule</h1>
+	<p>{stringDate}</p>
 	{#if events && courseData}
 		{#key i}
 			<div id="schedule">
 				<ScheduleItem
 					name={events[i].summary}
 					location={events[i].location}
-					height={events[i].height + '%'}
-					pos={events[i].pos + '%'}
 					color={events[i].color}
 					icon={events[i].icon}
 				></ScheduleItem>
@@ -130,9 +127,11 @@
 	#container {
 		z-index: 1;
 		position: relative;
-		height: 150px;
-		width: 350px;
-		padding: 3%;
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	#title {
@@ -141,17 +140,29 @@
 		color: rgb(255, 255, 255, 0.5);
 		font-size: large;
 		margin-top: 10px;
-		margin-bottom: 20px;
 	}
 
 	#arrows {
 		position: absolute;
-		top: 15px;
+		top: 10px;
 		width: 90%;
-		margin-left: 13px;
+		margin-left: 5%;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 		fill: rgb(255, 255, 255, 0.5);
+	}
+
+	#schedule {
+		width: 90%;
+		height: 70%;
+	}
+
+	p {
+		color: rgb(0, 0, 0, 0.5);
+		text-align: center;
+		margin: 2%;
+		font-size: large;
+		margin-bottom: 5px;
 	}
 </style>
