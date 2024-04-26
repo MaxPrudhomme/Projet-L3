@@ -94,40 +94,45 @@
 	}
 
 	/////////// DATA FETCHING AND TREATMENT //////////
-	eventsArray = parseICSContent(generateICSContent());
+	onMount(async () => {
+		eventsArray = parseICSContent(generateICSContent());
 
-	let course;
-	let courseData; // declared here so its state can be checked with a logic block. This is to avoid using OnMount which is a bitch. It works just as good like this.
-	eventsArray.forEach(async (event) => {
-		let endDate = new Date(event.end);
-		let startDate = new Date(event.start);
-		event.start = startDate;
-		event.end = endDate;
-
-		Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
-
-		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
-		Object.assign(event, { overlap: 1 });
-
+		let course;
+		let courseData;
 		try {
-			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+			course = doc(db, 'courses', 'courseInfos'); // temporary
 			courseData = (await getDoc(course)).data();
-			Object.assign(event, { color: courseData.color });
-			Object.assign(event, { icon: courseData.icon });
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
+
+		console.log(courseData);
+		eventsArray.forEach((event) => {
+			let endDate = new Date(event.end);
+			let startDate = new Date(event.start);
+			event.start = startDate;
+			event.end = endDate;
+
+			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+
+			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
+			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+			Object.assign(event, { overlap: 1 });
+
+			Object.assign(event, { color: courseData['CSC 405'].color }); // to replace by course name variable
+			Object.assign(event, { icon: courseData['CSC 405'].icon });
+		});
+
+		eventsArray.sort((eventA, eventB) => {
+			return eventA.start - eventB.start;
+		});
+
+		calculateOverlap(eventsArray);
+
+		events = new Map(convertEventsArrayToMap(eventsArray));
+		console.log(events);
 	});
 
-	eventsArray.sort((eventA, eventB) => {
-		return eventA.start - eventB.start;
-	});
-
-	calculateOverlap(eventsArray);
-
-	events = new Map(convertEventsArrayToMap(eventsArray));
-	console.log(events);
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
@@ -160,23 +165,22 @@
 			{/each}
 
 			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
-			{#if events.get(stringDate) && courseData}
-				{#key courseData}
-					<div id="items">
-						{#each events.get(stringDate) as event}
-							<ScheduleItem
-								name={event.summary}
-								location={event.location}
-								height={event.height + '%'}
-								pos={event.pos + '%'}
-								color={event.color}
-								icon={event.icon}
-								overlap={event.overlap}
-								left={overlapValues[event.overlap - 1]}
-							/>
-						{/each}
-					</div>
-				{/key}
+			{#if events.get(stringDate)}
+				<!-- TODO : ajouter icone et couleurs de tous les cours dans un seul document Firebase -->
+				<div id="items">
+					{#each events.get(stringDate) as event}
+						<ScheduleItem
+							name={event.summary}
+							location={event.location}
+							height={event.height + '%'}
+							pos={event.pos + '%'}
+							color={event.color}
+							icon={event.icon}
+							overlap={event.overlap}
+							left={overlapValues[event.overlap - 1]}
+						/>
+					{/each}
+				</div>
 			{/if}
 		</div>
 	{/key}
