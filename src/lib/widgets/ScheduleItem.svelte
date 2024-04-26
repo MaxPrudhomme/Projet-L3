@@ -15,7 +15,7 @@
 	$: if (itemRef) {
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
-		itemRef.style.top = pos;
+		itemRef.style.marginTop = pos;
 		itemRef.style.width = 'calc(80% /' + overlap + '- 30px)';
 		itemRef.style.marginLeft = 'calc(45px + ' + left + ')';
 	}
@@ -38,7 +38,7 @@
 		/* width: calc(70% - 30px); to make responsive if multiple items at the same height/time */
 		padding: 10px;
 		z-index: 2;
-		position: absolute;
+		position: relative;
 		margin-left: 45px;
 
 		font-family: Arial, Helvetica, sans-serif;

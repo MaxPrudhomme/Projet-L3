@@ -176,21 +176,23 @@
 					<div id="hour-num">{i + 8}</div>
 				{/each}
 
-				{#key stringDates}
-					{#if events.get(stringDates[i + 1])}
-						{#each events.get(stringDates[i + 1]) as event}
-							<!-- un semaine en JS commence le dimanche, d'où le +1 -->
-							<ScheduleItem
-								name={event.summary}
-								location={event.location}
-								height={event.height + '%'}
-								pos={event.pos + '%'}
-								color={event.color}
-								icon={event.icon}
-							/>
-						{/each}
-					{/if}
-				{/key}
+				<div id="item-container">
+					{#key stringDates}
+						{#if events.get(stringDates[i + 1])}
+							{#each events.get(stringDates[i + 1]) as event}
+								<!-- un semaine en JS commence le dimanche, d'où le +1 -->
+								<ScheduleItem
+									name={event.summary}
+									location={event.location}
+									height={event.height + '%'}
+									pos={event.pos + '%'}
+									color={event.color}
+									icon={event.icon}
+								/>
+							{/each}
+						{/if}
+					{/key}
+				</div>
 			</div>
 		</div>
 		<div class="verticalseparator"></div>
@@ -219,6 +221,15 @@
 
 		margin-top: 40px;
 		width: 40%;
+	}
+
+	#item-container {
+		position: absolute;
+		z-index: 2;
+		width: 100%;
+		top: 75px;
+		left: 45px;
+		height: 100%;
 	}
 
 	#title {

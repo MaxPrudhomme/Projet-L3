@@ -165,9 +165,10 @@
 			{/each}
 
 			<!-- nécessaire pour que le widget attende que la variable icon soit proprement chargée -->
-			{#if events.get(stringDate)}
-				<!-- TODO : ajouter icone et couleurs de tous les cours dans un seul document Firebase -->
-				<div id="items">
+			<div id="item-container">
+				{#if events.get(stringDate)}
+					<!-- TODO : ajouter icone et couleurs de tous les cours dans un seul document Firebase -->
+
 					{#each events.get(stringDate) as event}
 						<ScheduleItem
 							name={event.summary}
@@ -180,8 +181,8 @@
 							left={overlapValues[event.overlap - 1]}
 						/>
 					{/each}
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 	{/key}
 </div>
@@ -200,6 +201,15 @@
 		font-size: large;
 		margin-top: 10px;
 		margin-bottom: 15px;
+	}
+
+	#item-container {
+		position: absolute;
+		z-index: 2;
+		width: 100%;
+		height: 100%;
+		top: 75px;
+		left: 0;
 	}
 
 	#separator {
