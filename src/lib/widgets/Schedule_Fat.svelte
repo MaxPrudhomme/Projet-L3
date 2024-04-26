@@ -21,6 +21,9 @@
 	let today = new Date();
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+	const overlapValues = ['0%', ['0%', '50%'], ['0%', '33%', '66%']];
+
 	let currentWeek = Array.from(Array(7).keys()).map((idx) => {
 		// array containing all the dates of the current week
 		const d = new Date();
@@ -105,7 +108,7 @@
 		}
 
 		console.log(courseData);
-		eventsArray.forEach((event) => {
+		eventsArray.forEach((event, index, arr) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
 			event.start = startDate;
@@ -114,7 +117,16 @@
 			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+			if (index == 0) {
+				Object.assign(event, {
+					pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5
+				});
+			} // -7% pour compenser la hauteur du titre
+			else {
+				Object.assign(event, {
+					pos: Math.abs(begin - startDate) / 1000 / 360 - 5 - arr[index - 1].pos - 10
+				});
+			}
 			Object.assign(event, { overlap: 1 });
 
 			Object.assign(event, { color: courseData['CSC 405'].color }); // to replace by course name variable
@@ -188,6 +200,7 @@
 									pos={event.pos + '%'}
 									color={event.color}
 									icon={event.icon}
+									left={overlapValues[event.overlap - 1]}
 								/>
 							{/each}
 						{/if}
@@ -228,7 +241,6 @@
 		z-index: 2;
 		width: 100%;
 		top: 75px;
-		left: 45px;
 		height: 100%;
 	}
 

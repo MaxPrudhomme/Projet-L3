@@ -16,7 +16,7 @@
 		itemRef.style.backgroundColor = color;
 		itemRef.style.height = height;
 		itemRef.style.marginTop = pos;
-		itemRef.style.width = 'calc(80% /' + overlap + '- 30px)';
+		itemRef.style.width = 'calc(80% /' + overlap + '- 70px)';
 		itemRef.style.marginLeft = 'calc(45px + ' + left + ')';
 	}
 </script>
