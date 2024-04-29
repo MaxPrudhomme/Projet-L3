@@ -22,7 +22,7 @@
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-	const overlapValues = ['0%', ['0%', '50%'], ['0%', '33%', '66%']];
+	const overlapValues = [['0%'], ['0%', '10%'], ['0%', '10%', '20%']];
 
 	let currentWeek = Array.from(Array(7).keys()).map((idx) => {
 		// array containing all the dates of the current week
@@ -88,8 +88,8 @@
 	function calculateOverlap(array) {
 		for (let i = 0; i < array.length - 1; i++) {
 			if (compareHours(array[i], array[i + 1])) {
-				array[i].overlap += 1;
-				array[i + 1].overlap += 1;
+				// array[i].overlap += 1;
+				array[i + 1].overlap = array[i].overlap + 1;
 			}
 		}
 	}
@@ -119,18 +119,17 @@
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
 			if (index == 0) {
 				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5
+					pos: Math.abs(begin - startDate) / 1000 / 360 + 25
 				});
-			} // -7% pour compenser la hauteur du titre
-			else {
+			} else {
 				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - 5 - arr[index - 1].pos - 10
+					pos: Math.abs(begin - startDate) / 1000 / 360 - 5 - arr[index - 1].pos + 14.5
 				});
 			}
 			Object.assign(event, { overlap: 1 });
 
-			Object.assign(event, { color: courseData['CSC 405'].color }); // to replace by course name variable
-			Object.assign(event, { icon: courseData['CSC 405'].icon });
+			Object.assign(event, { color: courseData[event.summary].color });
+			Object.assign(event, { icon: courseData[event.summary].icon });
 		});
 
 		eventsArray.sort((eventA, eventB) => {
@@ -191,7 +190,7 @@
 				<div id="item-container">
 					{#key stringDates}
 						{#if events.get(stringDates[i + 1])}
-							{#each events.get(stringDates[i + 1]) as event}
+							{#each events.get(stringDates[i + 1]) as event, i}
 								<!-- un semaine en JS commence le dimanche, d'où le +1 -->
 								<ScheduleItem
 									name={event.summary}
@@ -200,7 +199,7 @@
 									pos={event.pos + '%'}
 									color={event.color}
 									icon={event.icon}
-									left={overlapValues[event.overlap - 1]}
+									left={overlapValues[event.overlap - 1][i]}
 								/>
 							{/each}
 						{/if}
@@ -233,14 +232,16 @@
 		padding: 5px;
 
 		margin-top: 40px;
-		width: 40%;
+		width: 50%;
 	}
 
 	#item-container {
 		position: absolute;
 		z-index: 2;
-		width: 100%;
-		top: 75px;
+		width: 90%;
+		top: 0;
+		left: 0;
+		padding-left: 15px;
 		height: 100%;
 	}
 
@@ -259,7 +260,7 @@
 	}
 
 	#separator {
-		width: 80%;
+		width: 100%;
 		height: 3px;
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-left: 5px;

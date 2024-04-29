@@ -12,15 +12,19 @@
 
 	let itemRef;
 
-	$: if (itemRef) {
-		itemRef.style.backgroundColor = color;
-		itemRef.style.height = height;
-		itemRef.style.marginTop = pos;
-		itemRef.style.width = 'calc(80% /' + overlap + '- 70px)';
-		itemRef.style.marginLeft = 'calc(45px + ' + left + ')';
+	$: {
+		if (itemRef) {
+			itemRef.style.backgroundColor = color;
+			itemRef.style.height = height;
+			itemRef.style.marginTop = pos;
+			itemRef.style.width = 'calc(80% - (' + overlap + '*10))';
+			itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
+		}
 	}
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div id="schedule-item" bind:this={itemRef}>
 	<div id="align">
 		<div id="icon"><Icon name={icon} /></div>

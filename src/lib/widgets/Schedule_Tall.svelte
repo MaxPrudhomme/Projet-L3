@@ -20,7 +20,7 @@
 	let currentDate = today;
 	const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-	const overlapValues = ['0%', ['0%', '50%'], ['0%', '33%', '66%']];
+	const overlapValues = ['0%', '10%', '20%'];
 
 	let flyParamsIn = {
 		x: 100,
@@ -97,6 +97,12 @@
 	onMount(async () => {
 		eventsArray = parseICSContent(generateICSContent());
 
+		eventsArray.sort((eventA, eventB) => {
+			let dateA = new Date(eventA.start);
+			let dateB = new Date(eventB.start);
+			return dateA - dateB;
+		});
+
 		let course;
 		let courseData;
 		try {
@@ -118,22 +124,17 @@
 			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
 			if (index == 0) {
 				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5
+					pos: Math.abs(begin - startDate) / 1000 / 360 + 15
 				});
-			} // -7% pour compenser la hauteur du titre
-			else {
+			} else {
 				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - 5 - arr[index - 1].pos - 10
+					pos: Math.abs(begin - startDate) / 1000 / 360 - arr[index - 1].pos - 5 + 9.5
 				});
-			}
+			} // ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID
 			Object.assign(event, { overlap: 1 });
 
-			Object.assign(event, { color: courseData['CSC 405'].color }); // to replace by course name variable
-			Object.assign(event, { icon: courseData['CSC 405'].icon });
-		});
-
-		eventsArray.sort((eventA, eventB) => {
-			return eventA.start - eventB.start;
+			Object.assign(event, { color: courseData[event.summary].color });
+			Object.assign(event, { icon: courseData[event.summary].icon });
 		});
 
 		calculateOverlap(eventsArray);
@@ -214,10 +215,11 @@
 	#item-container {
 		position: absolute;
 		z-index: 2;
-		width: 100%;
+		width: 95%;
 		height: 100%;
-		top: 75px;
+		top: 0;
 		left: 0;
+		padding-left: 15px;
 	}
 
 	#separator {
