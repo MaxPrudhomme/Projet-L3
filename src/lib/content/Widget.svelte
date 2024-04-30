@@ -9,6 +9,8 @@
 	import ScheduleLarge from '$lib/widgets/Schedule_Large.svelte';
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
 
+	import ExamMediumTeacher from '$lib/widgets/teacher/Exam_Medium_Teacher.svelte';
+
 	export let content;
 	export let disabled = false;
 
@@ -24,7 +26,8 @@
 		'exam-s': ExamSmall,
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,
-		'schedule-l': ScheduleLarge
+		'schedule-l': ScheduleLarge,
+		'examteacher-m': ExamMediumTeacher
 	};
 
 	onMount(() => {

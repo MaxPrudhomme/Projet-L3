@@ -63,7 +63,7 @@
 </script>
 
 <div id="container">
-	<h1 id="title">Marks</h1>
+	<h1 class="widgetTitle">Marks</h1>
 
 	<!-- <div id="display">
 		{#key currentSemester}
@@ -111,6 +111,8 @@
 </div>
 
 <style>
+	@import '../../global.css';
+
 	#container {
 		display: flex;
 		flex-direction: column;
@@ -148,7 +150,7 @@
 		}
 	}
 
-	#title {
+	/* #title {
 		text-align: center;
 		align-self: center;
 		font-family: 'SF Pro Display';
@@ -157,7 +159,7 @@
 		font-size: 20px;
 		margin-top: 10px;
 		margin-bottom: 20px;
-	}
+	} */
 
 	#periods {
 		display: flex;
