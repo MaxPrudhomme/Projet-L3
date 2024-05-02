@@ -114,18 +114,17 @@
 			event.start = startDate;
 			event.end = endDate;
 
-			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+			Object.assign(event, { height: (Math.abs(endDate - startDate) / 1000 / 3600) * 4 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
-			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			if (index == 0) {
-				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 + 25
-				});
-			} else {
-				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - 5 - arr[index - 1].pos + 14.5
-				});
-			}
+			let begin = new Date(
+				startDate.getFullYear(),
+				startDate.getMonth(),
+				startDate.getDate(),
+				8
+			);
+			Object.assign(event, {
+				pos: (Math.abs(begin - startDate) / 1000 / 3600) * 4 + 2
+			});
 			Object.assign(event, { overlap: 1 });
 
 			Object.assign(event, { color: courseData[event.summary].color });
@@ -195,8 +194,8 @@
 								<ScheduleItem
 									name={event.summary}
 									location={event.location}
-									height={event.height + '%'}
-									pos={event.pos + '%'}
+									height={event.height}
+									pos={event.pos}
 									color={event.color}
 									icon={event.icon}
 									left={overlapValues[event.overlap - 1][i]}
@@ -241,8 +240,11 @@
 		width: 90%;
 		top: 0;
 		left: 0;
-		padding-left: 15px;
 		height: 100%;
+		padding-left: 40px;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: repeat(44, 1fr);
 	}
 
 	#title {
@@ -305,6 +307,7 @@
 		flex-direction: row;
 		justify-content: space-between;
 		fill: rgb(255, 255, 255, 0.5);
+		height: 100%;
 	}
 
 	p {

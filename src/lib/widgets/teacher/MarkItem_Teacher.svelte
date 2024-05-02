@@ -4,35 +4,38 @@
 	import { db } from '$lib/firebase';
 	import { onMount } from 'svelte';
 
-	export let marks = new Map();
+	export let marks;
 	export let maxMark;
 	export let date;
 	export let name;
 
-	let studentNames = [];
+	let studentNames = new Map();
 
 	let up = false;
 	let btn;
 
 	let average = 0;
 
-	onMount(async () => {
-		let counter = 0;
-		Object.entries(marks).forEach(async ([id, mark]) => {
-			average += (mark / maxMark) * 100; // standardise the mark to be out of 100
-			counter++;
+	let counter = 0;
+	Object.entries(marks).forEach(async ([id, mark]) => {
+		average += (mark / maxMark) * 100; // standardise the mark to be out of 100
+		counter++;
 
-			try {
-				let userRef = doc(db, 'users', id);
-				let userSnapshot = await getDoc(userRef);
-				let data = userSnapshot.data();
-				studentNames.push(data.name.first + ' ' + data.name.last);
-			} catch (error) {
-				console.error('Error fetching documents:', error);
-			}
-		});
-		average /= counter;
+		try {
+			let userRef = doc(db, 'users', id);
+			let userSnapshot = await getDoc(userRef);
+			let data = userSnapshot.data();
+			studentNames.set(id, data.name.first + ' ' + data.name.last);
+
+			console.log(studentNames.get(id));
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
 	});
+	average /= counter;
+	console.log(studentNames);
+
+	console.log(Object.entries(marks));
 </script>
 
 <div id="container">
@@ -56,19 +59,19 @@
 		>
 	</div>
 
-	<div id="details" class="card {!up ? 'hidden' : 'visible'}">
-		<p>{name}</p>
-		<p id="date">{date}</p>
-		<div id="separator"></div>
-		<p id="notes">Individual marks</p>
-		<ul id="content">
-			{#key studentNames}
-				{#each Object.entries(marks) as [id, mark], i}
-					<p>{studentNames[i]} : {mark} / 100</p>
+	{#key studentNames}
+		<div id="details" class="card {!up ? 'hidden' : 'visible'}">
+			<p>{name}</p>
+			<p id="date">{date}</p>
+			<div id="separator"></div>
+			<p id="notes">Individual marks</p>
+			<ul id="content">
+				{#each Object.entries(marks) as [id, mark]}
+					<li>{studentNames.get(id)} : {mark} / 100</li>
 				{/each}
-			{/key}
-		</ul>
-	</div>
+			</ul>
+		</div>
+	{/key}
 </div>
 
 <style>
@@ -143,6 +146,10 @@
 		margin-left: 5%;
 		margin-top: 5px;
 		margin-bottom: 10px;
+	}
+
+	li {
+		margin-left: 5%;
 	}
 
 	#date {

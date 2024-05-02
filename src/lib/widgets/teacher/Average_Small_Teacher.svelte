@@ -29,8 +29,6 @@
 			averages.reduce((accumulator, currentValue) => {
 				return accumulator + currentValue;
 			}, 0) / averages.length;
-
-		console.log(averages);
 	}
 
 	onMount(async () => {

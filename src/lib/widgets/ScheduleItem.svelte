@@ -5,8 +5,8 @@
 	export let location = 'Undefined'; // name of the place (ex: "Amphi L001")
 	export let icon = 'slash-square'; // location of the icon file
 	export let color = 'white'; // background color
-	export let height = '25%'; // height of the item
-	export let pos = '50%'; // vertical position of the item on the schedule
+	export let height = '1'; // height of the item
+	export let pos = '1'; // vertical position of the item on the schedule
 	export let overlap = 1;
 	export let left = '0%';
 
@@ -15,10 +15,9 @@
 	$: {
 		if (itemRef) {
 			itemRef.style.backgroundColor = color;
-			itemRef.style.height = height;
-			itemRef.style.marginTop = pos;
-			itemRef.style.width = 'calc(80% - (' + overlap + '*10))';
-			itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
+			itemRef.style.gridRow = pos + '/' + (pos - height);
+			// itemRef.style.width = 'calc(80% - (' + overlap + '*10))';
+			// itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
 		}
 	}
 </script>
@@ -39,11 +38,10 @@
 <style>
 	#schedule-item {
 		border-radius: 10px;
-		/* width: calc(70% - 30px); to make responsive if multiple items at the same height/time */
+		width: calc(70% - 30px);
 		padding: 10px;
 		z-index: 2;
 		position: relative;
-		margin-left: 45px;
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */

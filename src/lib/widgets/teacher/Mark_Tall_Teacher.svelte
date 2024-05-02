@@ -1,5 +1,6 @@
 <script>
 	import MarkItem_Teacher from './MarkItem_Teacher.svelte';
+	import MarkFormTeacher from './Mark_Form_Teacher.svelte';
 	import { currentContent, currentView, userUid } from '../../../store';
 	import { onMount } from 'svelte';
 	import { collection, doc, getDocs } from 'firebase/firestore';
@@ -133,7 +134,7 @@
 
 	#icon {
 		position: absolute;
-		left: 80%;
+		left: 90%;
 		top: 10px;
 	}
 
