@@ -16,7 +16,7 @@
 		if (itemRef) {
 			itemRef.style.backgroundColor = color;
 			itemRef.style.gridRow = pos + '/' + (pos - height);
-			// itemRef.style.width = 'calc(80% - (' + overlap + '*10))';
+			itemRef.style.gridColumn = overlap + '/ 8';
 			// itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
 		}
 	}
@@ -38,8 +38,8 @@
 <style>
 	#schedule-item {
 		border-radius: 10px;
-		width: calc(70% - 30px);
 		padding: 10px;
+		margin-right: 5%;
 		z-index: 2;
 		position: relative;
 

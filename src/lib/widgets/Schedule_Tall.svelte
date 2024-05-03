@@ -87,8 +87,7 @@
 	function calculateOverlap(array) {
 		for (let i = 0; i < array.length - 1; i++) {
 			if (compareHours(array[i], array[i + 1])) {
-				array[i].overlap += 1;
-				array[i + 1].overlap += 1;
+				array[i + 1].overlap = array[i].overlap + 1;
 			}
 		}
 	}
@@ -215,13 +214,13 @@
 	#item-container {
 		position: absolute;
 		z-index: 2;
-		width: 95%;
+		width: 90%;
 		height: 100%;
 		top: 0;
 		left: 0;
-		padding-left: 40px;
+		margin-left: 40px;
 		display: grid;
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(4, 1fr);
 		grid-template-rows: repeat(44, 1fr);
 	}
 

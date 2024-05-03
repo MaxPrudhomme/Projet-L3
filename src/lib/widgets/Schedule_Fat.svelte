@@ -198,7 +198,7 @@
 									pos={event.pos}
 									color={event.color}
 									icon={event.icon}
-									left={overlapValues[event.overlap - 1][i]}
+									overlap={event.overlap}
 								/>
 							{/each}
 						{/if}
@@ -243,7 +243,7 @@
 		height: 100%;
 		padding-left: 40px;
 		display: grid;
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(4, 1fr);
 		grid-template-rows: repeat(44, 1fr);
 	}
 
