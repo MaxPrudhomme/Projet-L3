@@ -70,7 +70,6 @@
 	}
 
 	eventsArray = parseICSContent(generateICSContent());
-	console.log(eventsArray);
 
 	let course;
 	let courseData;
@@ -96,7 +95,6 @@
 	});
 
 	events = getSingleDayFromEventsArray(eventsArray);
-	console.log(events);
 
 	function nextItem(event) {
 		if (i < events.length - 1) i++;

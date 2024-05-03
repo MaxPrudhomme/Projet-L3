@@ -76,6 +76,12 @@ html {
 	font-size: 1rem;
 }
 
+.flexRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 .widgetTitle {
 	text-align: center;
 	color: rgb(0, 0, 0, 0.5);

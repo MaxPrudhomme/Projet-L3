@@ -111,7 +111,6 @@
 			console.error('Error fetching documents:', error);
 		}
 
-		console.log(courseData);
 		eventsArray.forEach((event, index, arr) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);

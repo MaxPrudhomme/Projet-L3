@@ -8,6 +8,7 @@
 	export let maxMark;
 	export let date;
 	export let name;
+	export let semester;
 
 	let studentNames = new Map();
 
@@ -62,7 +63,11 @@
 	{#key studentNames}
 		<div id="details" class="card {!up ? 'hidden' : 'visible'}">
 			<p>{name}</p>
-			<p id="date">{date}</p>
+			<div class="flexRow">
+				<p id="date">{date}</p>
+				<p id="semester">Semester {semester}</p>
+			</div>
+
 			<div id="separator"></div>
 			<p id="notes">Individual marks</p>
 			<ul id="content">
@@ -155,6 +160,12 @@
 	#date {
 		font-size: larger;
 		margin-top: 5px;
+	}
+
+	#semester {
+		font-size: larger;
+		margin-top: 5px;
+		margin-right: 5%;
 	}
 
 	#notes {

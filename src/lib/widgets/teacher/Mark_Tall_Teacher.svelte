@@ -7,8 +7,12 @@
 	import { db } from '$lib/firebase';
 	import { fade } from 'svelte/transition';
 	import Icon from '$lib/Icon.svelte';
+	import { writable } from 'svelte/store';
+	export const state = writable(false);
+	export const refresh = writable(false);
 
 	let currentSemester;
+	let toggleButton;
 
 	export const getSchoolDataById = async (schoolDocRef) => {
 		const schoolSnapshot = await getDoc(schoolDocRef);
@@ -59,7 +63,9 @@
 		currentSemester = 1;
 	});
 
-	console.log(marks);
+	function toggleNewExam() {
+		state.set(!$state);
+	}
 </script>
 
 <div id="container">
@@ -83,31 +89,24 @@
 	{#key currentSemester}
 		<div id="display" in:fade={{ delay: 250, duration: 300 }}>
 			<!-- transition foireuse sur le out -->
-			{#if currentSemester == 1}
-				{#each [...firstSemesterMarks] as [id, { date, mark, maxMark, name }]}
-					<MarkItem_Teacher marks={mark} {maxMark} {date} {name}></MarkItem_Teacher>
-				{/each}
-			{/if}
-			{#if currentSemester == 2}
-				{#each [...secondSemesterMarks] as [id, { date, mark, maxMark, name }]}
-					<MarkItem_Teacher marks={mark} {maxMark} {date} {name}></MarkItem_Teacher>
-				{/each}
+			{#each [...marks] as [id, { date, details, mark, maxMark, name, semester }]}
+				<MarkItem_Teacher marks={mark} {maxMark} {date} {name} {semester}
+				></MarkItem_Teacher>
+			{/each}
+
+			{#if $state}
+				<MarkFormTeacher {refresh} {state}></MarkFormTeacher>
 			{/if}
 		</div>
 	{/key}
-
-	<div id="periods">
-		<button
-			on:click={() => {
-				currentSemester = 1;
-			}}>P1</button
-		>
-		<button
-			on:click={() => {
-				currentSemester = 2;
-			}}>P2</button
-		>
-	</div>
+	<button
+		class="buttonReset addButton"
+		on:click={toggleNewExam}
+		bind:this={toggleButton}
+		class:rotate-45deg={$state}
+	>
+		<Icon name={'plus-circle-dotted'} class={'s32x32'}></Icon>
+	</button>
 </div>
 
 <style>

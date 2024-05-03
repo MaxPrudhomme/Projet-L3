@@ -33,7 +33,7 @@
 
 		if (existingExams) {
 			Object.entries(existingExams).forEach(([id, item]) => {
-				if (item.dueDate.toDate().setHours(0, 0, 0, 0) < today) {
+				if (item.date.toDate().setHours(0, 0, 0, 0) < today) {
 					delete existingExams[id];
 				}
 			});
@@ -60,7 +60,6 @@
 			}
 			let sorted = sortExamsByDate(exams);
 			exams = new Map(sorted);
-			console.log(exams);
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
@@ -79,7 +78,7 @@
 					tempMap.set(key, value);
 				});
 			}
-			exams = sortHomeworkByDueDate(new Map([...tempMap, ...firestoreSnapshot]));
+			exams = sortExamsByDate(new Map([...tempMap, ...firestoreSnapshot]));
 			refresh.set(false);
 		}
 	}
@@ -91,6 +90,7 @@
 
 <div id="container">
 	<h1 class="widgetTitle">Exams</h1>
+	<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
 	<div id="items">
 		{#key exams}
 			{#each [...exams] as [id, { date, details, mark, maxMark, name, semester }]}
@@ -133,6 +133,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	#icon {
+		position: absolute;
+		left: 90%;
+		top: 10px;
 	}
 
 	.addButton {
