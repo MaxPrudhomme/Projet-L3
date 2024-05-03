@@ -2,7 +2,7 @@
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
 	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, updateDoc } from 'firebase/firestore';
+	import { doc, updateDoc, setDoc } from 'firebase/firestore';
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
@@ -10,13 +10,10 @@
 	export let refresh;
 	export let state;
 
-	let details;
-	let name;
-	let date;
-	let detailsInput;
-	let nameInput;
-	let detailsContainer;
-	let nameContainer;
+	let list = [];
+	let dueDate;
+	let taskInput;
+	let taskContainer;
 
 	const today = new Date();
 
@@ -27,23 +24,17 @@
 	function handleKeyDown(event) {
 		if (event.key === 'Enter') {
 			event.preventDefault();
-			if (nameInput.value.trim() !== '') {
-				const content = nameInput.value.trim();
-				details = { content, editable: false };
-				nameInput.value = '';
-				nameInput.focus();
-			}
-			if (detailsInput.value.trim() !== '') {
-				const content = detailsInput.value.trim();
-				details = { content, editable: false };
-				detailsInput.value = '';
-				detailsInput.focus();
+			if (taskInput.value.trim() !== '') {
+				const content = taskInput.value.trim();
+				list = [...list, { content, editable: false }];
+				taskInput.value = '';
+				taskInput.focus();
 			}
 		}
 	}
 
 	function toggleEdit(index) {
-		details.editable = !details.editable;
+		list[index].editable = !list[index].editable;
 	}
 
 	function handleKeyDownForEdit(event, index) {
@@ -58,54 +49,57 @@
 		textarea.style.height = `${textarea.scrollHeight}px`;
 	}
 
+	function makeid() {
+		let result = '';
+		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		const charactersLength = characters.length;
+		let counter = 0;
+		while (counter < 20) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+			counter += 1;
+		}
+		return result;
+	}
+
 	async function submitHomework() {
-		if (!date) {
+		if (!dueDate) {
 			alert('Please select a due date.');
 			return;
 		}
 
-		if (nameInput.value.trim() !== '') {
-			name = { content: nameInput.value.trim(), editable: false };
-			nameInput.style.display = 'none';
-		}
-		if (detailsInput.value.trim() !== '') {
-			details = { content: detailsInput.value.trim(), editable: false };
-			detailsInput.style.display = 'none';
+		if (taskInput.value.trim() !== '') {
+			list = [...list, { content: taskInput.value.trim(), editable: false }];
+			taskContainer.style.display = 'none';
 		}
 
-		if (name.length === 0) {
-			alert('Please add a name.');
-			return;
-		}
-		if (details.length === 0) {
-			alert('Please add details.');
+		if (list.length === 0 || list.every((task) => !task.content.trim())) {
+			alert('Please add at least one task.');
 			return;
 		}
 
-		const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
+		const targetRef = doc(db, 'courses', $currentView, 'homework', makeid());
 
-		const newExam = {
-			date: Timestamp.fromDate(new Date(date)),
-			name: name.content,
-			details: details.content,
-			mark: new Map(),
-			maxMark: 100,
-			semester: 2 // temporary
+		const tasks = list.map((task) => task.content);
+
+		const newHomework = {
+			author: false,
+			dueDate: Timestamp.fromDate(new Date(dueDate)),
+			givenDate: Timestamp.fromDate(today),
+			status: false,
+			tasks: tasks
 		};
 
-		const examId = v4();
+		const homeworkId = v4();
 
-		await updateDoc(targetRef, {
-			[`exam.${examId}`]: newExam
-		});
+		await setDoc(targetRef, newHomework);
 		refresh.set(true);
 		state.set(false);
 
 		currentContent.update((content) => {
-			if (!content.exam || typeof content.exam !== 'object') {
-				content.exam = {};
+			if (!content.homework || typeof content.homework !== 'object') {
+				content.homework = {};
 			}
-			content.exam[examId] = newExam;
+			content.homework[homeworkId] = newHomework;
 			return content;
 		});
 	}
@@ -121,27 +115,40 @@
 			class="dueText inputReset"
 			type="date"
 			min={`${year}-${month}-${day}`}
-			bind:value={date}
+			bind:value={dueDate}
 		/>
 	</div>
-	<div id="name-input" bind:this={nameContainer}>
-		<textarea
-			bind:this={nameInput}
-			class="inputReset"
-			placeholder="Add a name"
-			on:keydown={handleKeyDown}
-			on:input={adjustTextareaHeight}
-		></textarea>
-	</div>
-	<div id="details-input" bind:this={detailsContainer}>
-		<textarea
-			bind:this={detailsInput}
-			class="inputReset"
-			placeholder="Add details"
-			on:keydown={handleKeyDown}
-			on:input={adjustTextareaHeight}
-		></textarea>
-	</div>
+	<ul>
+		<!-- List items will be dynamically added here -->
+		{#each list as task, index}
+			<li>
+				{#if task.editable}
+					<textarea
+						bind:value={task.content}
+						class="inputReset"
+						on:blur={() => toggleEdit(index)}
+						on:input={adjustTextareaHeight}
+					></textarea>
+				{:else}
+					<span
+						role="button"
+						on:click={() => toggleEdit(index)}
+						on:keydown={(event) => handleKeyDownForEdit(event, index)}
+						tabindex="0">{task.content}</span
+					>
+				{/if}
+			</li>
+		{/each}
+		<li bind:this={taskContainer}>
+			<textarea
+				bind:this={taskInput}
+				class="inputReset"
+				placeholder="Add a task"
+				on:keydown={handleKeyDown}
+				on:input={adjustTextareaHeight}
+			></textarea>
+		</li>
+	</ul>
 	<p id="givenDate">given {`${day}/${month}/${year}`}</p>
 </form>
 
@@ -173,18 +180,21 @@
 		margin-right: 0.2rem;
 	}
 
-	#details-input {
+	ul {
 		margin-top: 0.3rem;
 		margin-left: 2rem;
+	}
+
+	li {
 		width: 90%;
 		overflow-wrap: break-word;
 	}
 
-	#details-input > * {
+	li > * {
 		vertical-align: text-top;
 	}
 
-	#details-input:hover {
+	li:hover {
 		cursor: text;
 	}
 

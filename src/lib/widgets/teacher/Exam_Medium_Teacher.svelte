@@ -1,43 +1,47 @@
 <script>
+	import ExamItem from './ExamItem.svelte';
+	import ExamForm from './Exam_Form.svelte';
 	import { currentContent, currentView, userUid } from '../../../store';
 	import { onMount } from 'svelte';
 	import { collection, getDocs, query, orderBy, updateDoc, doc } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
-	import ExamItem from './ExamItem.svelte';
-	import ExamForm from './Exam_Form.svelte';
 	import { writable } from 'svelte/store';
 	export const state = writable(false);
 	export const refresh = writable(false);
 
-	let exams = new Map();
+	let exam = new Map();
 	let firestoreSnapshot = new Map();
-	let today = new Date().setHours(0, 0, 0, 0);
 	let toggleButton;
+	const today = new Date().setHours(0, 0, 0, 0);
 
-	function dateToString(date) {
-		return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-	}
-
-	function sortExamsByDate(examsMap) {
+	function sortExamByDueDate(examMap) {
 		return new Map(
-			[...examsMap.entries()].sort((a, b) => {
+			[...examMap.entries()].sort((a, b) => {
 				return a[1].date - b[1].date;
 			})
 		);
 	}
 
-	async function loadContent() {
-		// loads all the already existing exams from the database and the cache
-		let existingExams = $currentContent['exam'];
+	function dateToString(date) {
+		return date.getDate() + '/' + date.getMonth() + '/' + date.getYear();
+	}
 
-		if (existingExams) {
-			Object.entries(existingExams).forEach(([id, item]) => {
-				if (item.date.toDate().setHours(0, 0, 0, 0) < today) {
-					delete existingExams[id];
+	async function loadContent() {
+		let existingExam = $currentContent['exam'];
+
+		if (existingExam) {
+			Object.entries(existingExam).forEach(([id, item]) => {
+				if (item.date.toDate().setHours(0, 0, 0, 0) < today && item.status) {
+					delete existingExam[id];
 				}
 			});
 		}
+
+		// const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
+		// await updateDoc(targetRef, {
+		// 	exam: existingExam
+		// });
 
 		try {
 			const courseRef = collection(db, 'courses', $currentView, 'exam');
@@ -45,21 +49,20 @@
 			const querySnapshot = await getDocs(q);
 
 			querySnapshot.forEach((doc) => {
-				const data = doc.data();
-
+				let data = doc.data();
 				data['date'] = new Date(data['date'].seconds * 1000);
-				exams.set(doc.id, data);
+				exam.set(doc.id, data);
 			});
 
-			firestoreSnapshot = new Map(exams);
+			firestoreSnapshot = new Map(exam);
 
-			if (existingExams && typeof existingExams === 'object') {
-				Object.entries(existingExams).forEach(([id, data]) => {
-					exams.set(id, data);
+			if (existingExam && typeof existingExam === 'object') {
+				Object.entries(existingExam).forEach(([id, data]) => {
+					exam.set(id, data);
 				});
 			}
-			let sorted = sortExamsByDate(exams);
-			exams = new Map(sorted);
+			let sorted = sortExamByDueDate(exam);
+			exam = new Map(sorted);
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
@@ -78,23 +81,23 @@
 					tempMap.set(key, value);
 				});
 			}
-			exams = sortExamsByDate(new Map([...tempMap, ...firestoreSnapshot]));
+			exam = sortExamByDueDate(new Map([...tempMap, ...firestoreSnapshot]));
 			refresh.set(false);
 		}
 	}
 
 	function toggleNewExam() {
-		state.set(!state);
+		state.set(!$state);
 	}
 </script>
 
 <div id="container">
-	<h1 class="widgetTitle">Exams</h1>
+	<h1 class="widgetTitle">Exam</h1>
 	<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
-	<div id="items">
-		{#key exams}
-			{#each [...exams] as [id, { date, details, mark, maxMark, name, semester }]}
-				<ExamItem date={dateToString(date)} {name} {details} />
+	<div id="examContainer">
+		{#key exam}
+			{#each [...exam] as [id, { date, details, name }]}
+				<ExamItem date={dateToString(date)} {details} {name}></ExamItem>
 			{/each}
 
 			{#if $state}
@@ -107,14 +110,12 @@
 			bind:this={toggleButton}
 			class:rotate-45deg={$state}
 		>
-			<Icon name="plus-circle-dotted" width="32px" height="32px" />
+			<Icon name={'plus-circle-dotted'} class={'s32x32'}></Icon>
 		</button>
 	</div>
 </div>
 
 <style>
-	@import '../../../global.css';
-
 	#container {
 		width: 100%;
 		height: 100%;
@@ -129,16 +130,17 @@
 		display: none;
 	}
 
-	#items {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
 	#icon {
 		position: absolute;
 		left: 90%;
 		top: 10px;
+	}
+
+	#examContainer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: 10px;
 	}
 
 	.addButton {
