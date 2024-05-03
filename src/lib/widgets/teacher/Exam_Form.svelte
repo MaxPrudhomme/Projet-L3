@@ -106,17 +106,28 @@
 </script>
 
 <form transition:fly={{ duration: 250, x: -300 }}>
-	<div id="dueInput">
+	<div id="top">
 		<button class="buttonReset" on:click={submitHomework}>
 			<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 		</button>
-		<p class="dueText" id="dueLabel">due</p>
-		<input
-			class="dueText inputReset"
-			type="date"
-			min={`${year}-${month}-${day}`}
-			bind:value={dueDate}
-		/>
+
+		<!-- <div id="nameInput">
+			<textarea
+			bind:value={task.content}
+			class="inputReset"
+			on:blur={() => toggleEdit(index)}
+			on:input={adjustTextareaHeight}
+		></textarea>
+		</div> -->
+		<div id="dueInput">
+			<p class="dueText" id="dueLabel">due</p>
+			<input
+				class="dueText inputReset"
+				type="date"
+				min={`${year}-${month}-${day}`}
+				bind:value={dueDate}
+			/>
+		</div>
 	</div>
 	<ul>
 		<!-- List items will be dynamically added here -->
@@ -164,8 +175,10 @@
 		height: auto;
 	}
 
-	#dueInput {
+	#top {
 		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
 	}
 
 	.dueText {

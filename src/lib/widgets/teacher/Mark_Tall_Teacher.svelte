@@ -198,4 +198,19 @@
 		border: 1px solid rgb(0, 0, 0, 0.5);
 		border-radius: 5px;
 	}
+
+	.addButton {
+		margin: auto;
+		margin-top: 1rem;
+		opacity: 0.8;
+		transition: all 0.5s ease;
+	}
+
+	.addButton:hover {
+		opacity: 1;
+	}
+
+	.rotate-45deg {
+		transform: rotate(45deg);
+	}
 </style>
