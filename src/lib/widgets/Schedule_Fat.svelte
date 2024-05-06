@@ -241,7 +241,7 @@
 		height: 100%;
 		padding-left: 40px;
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(8, 1fr);
 		grid-template-rows: repeat(44, 1fr);
 	}
 

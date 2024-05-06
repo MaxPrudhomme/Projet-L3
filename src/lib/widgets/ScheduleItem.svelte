@@ -16,15 +16,20 @@
 		if (itemRef) {
 			itemRef.style.backgroundColor = color;
 			itemRef.style.gridRow = pos + '/' + (pos - height);
-			itemRef.style.gridColumn = overlap + '/ 8';
+			itemRef.style.gridColumn = overlap + '/ 12';
+			itemRef.style.zIndex = 2;
 			// itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
 		}
+	}
+
+	function bringToFront(event) {
+		itemRef.style.zIndex += 20;
 	}
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div id="schedule-item" bind:this={itemRef}>
+<button class="buttonReset" id="schedule-item" bind:this={itemRef} on:click={bringToFront}>
 	<div id="align">
 		<div id="icon"><Icon name={icon} /></div>
 
@@ -33,14 +38,15 @@
 			<p>{location}</p>
 		</div>
 	</div>
-</div>
+</button>
 
 <style>
+	@import '../../global.css';
+
 	#schedule-item {
 		border-radius: 10px;
 		padding: 10px;
 		margin-right: 5%;
-		z-index: 2;
 		position: relative;
 
 		font-family: Arial, Helvetica, sans-serif;
