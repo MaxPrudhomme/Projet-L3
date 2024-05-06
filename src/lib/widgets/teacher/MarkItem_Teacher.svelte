@@ -72,7 +72,7 @@
 			<p id="notes">Individual marks</p>
 			<ul id="content">
 				{#each Object.entries(marks) as [id, mark]}
-					<li>{studentNames.get(id)} : {mark} / 100</li>
+					<li>{studentNames.get(id.toString())} : {mark} / 100</li>
 				{/each}
 			</ul>
 		</div>

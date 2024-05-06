@@ -48,6 +48,7 @@
 		padding: 10px;
 		margin-right: 5%;
 		position: relative;
+		filter: saturate(75%);
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */

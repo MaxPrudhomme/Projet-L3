@@ -73,8 +73,11 @@
 </script>
 
 <div id="container">
-	<h1 class="widgetTitle">Marks</h1>
-	<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
+	<div id="top">
+		<h1 class="widgetTitle">Marks</h1>
+		<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
+	</div>
+
 	<!-- <div id="display">
 		{#key currentSemester}
 			{#if currentSemester == 1}
@@ -145,10 +148,16 @@
 		transition: fadeIn 2s ease-in;
 	}
 
+	#top {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		margin-left: 45%;
+		margin-right: 5%;
+	}
+
 	#icon {
-		position: absolute;
-		left: 90%;
-		top: 10px;
+		margin-top: 5%;
 	}
 
 	@keyframes fadeIn {
