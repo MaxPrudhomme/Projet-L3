@@ -6,14 +6,18 @@
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
+	// import { n } from 'vitest/dist/reporters-P7C2ytIv.js';
 
 	export let refresh;
 	export let state;
 
-	let list = [];
+	let details;
+	let name;
 	let dueDate;
-	let taskInput;
-	let taskContainer;
+	let detailsInput;
+	let detailsContainer;
+	let nameInput;
+	let nameContainer;
 
 	const today = new Date();
 
@@ -21,25 +25,14 @@
 	const month = String(today.getMonth() + 1).padStart(2, '0');
 	const year = today.getFullYear();
 
-	function handleKeyDown(event) {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			if (taskInput.value.trim() !== '') {
-				const content = taskInput.value.trim();
-				list = [...list, { content, editable: false }];
-				taskInput.value = '';
-				taskInput.focus();
-			}
-		}
-	}
-
-	function toggleEdit(index) {
-		list[index].editable = !list[index].editable;
+	function toggleEdit() {
+		details.editable = !details.editable;
+		name.editable = !name.editable;
 	}
 
 	function handleKeyDownForEdit(event, index) {
 		if (event.key === 'Enter') {
-			toggleEdit(index);
+			toggleEdit();
 		}
 	}
 
@@ -61,45 +54,54 @@
 		return result;
 	}
 
-	async function submitHomework() {
+	async function submitExam() {
 		if (!dueDate) {
 			alert('Please select a due date.');
 			return;
 		}
 
-		if (taskInput.value.trim() !== '') {
-			list = [...list, { content: taskInput.value.trim(), editable: false }];
-			taskContainer.style.display = 'none';
+		if (detailsInput.value.trim() !== '') {
+			details = { content: detailsInput.value.trim(), editable: false };
+			detailsContainer.style.display = 'none';
 		}
 
-		if (list.length === 0 || list.every((task) => !task.content.trim())) {
-			alert('Please add at least one task.');
+		if (nameInput.value.trim() !== '') {
+			name = { content: nameInput.value.trim(), editable: false };
+			nameContainer.style.display = 'none';
+		}
+
+		if (details.length === 0 || !details.content.trim()) {
+			alert('Please add details.');
 			return;
 		}
 
-		const targetRef = doc(db, 'courses', $currentView, 'homework', makeid());
+		if (name.length === 0 || !name.content.trim()) {
+			alert('Please add a name.');
+			return;
+		}
 
-		const tasks = list.map((task) => task.content);
+		const targetRef = doc(db, 'courses', $currentView, 'exam', makeid());
 
-		const newHomework = {
-			author: false,
-			dueDate: Timestamp.fromDate(new Date(dueDate)),
-			givenDate: Timestamp.fromDate(today),
-			status: false,
-			tasks: tasks
+		const newExam = {
+			date: Timestamp.fromDate(new Date(dueDate)),
+			details: details.content,
+			mark: {},
+			maxMark: 100,
+			name: name.content,
+			semester: 2 // temporary value
 		};
 
-		const homeworkId = v4();
+		const examId = v4();
 
-		await setDoc(targetRef, newHomework);
+		await setDoc(targetRef, newExam);
 		refresh.set(true);
 		state.set(false);
 
 		currentContent.update((content) => {
-			if (!content.homework || typeof content.homework !== 'object') {
-				content.homework = {};
+			if (!content.exam || typeof content.exam !== 'object') {
+				content.exam = {};
 			}
-			content.homework[homeworkId] = newHomework;
+			content.exam[examId] = newExam;
 			return content;
 		});
 	}
@@ -107,7 +109,7 @@
 
 <form transition:fly={{ duration: 250, x: -300 }}>
 	<div id="top">
-		<button class="buttonReset" on:click={submitHomework}>
+		<button class="buttonReset" on:click={submitExam}>
 			<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 		</button>
 
@@ -120,7 +122,6 @@
 		></textarea>
 		</div> -->
 		<div id="dueInput">
-			<p class="dueText" id="dueLabel">due</p>
 			<input
 				class="dueText inputReset"
 				type="date"
@@ -129,38 +130,24 @@
 			/>
 		</div>
 	</div>
-	<ul>
-		<!-- List items will be dynamically added here -->
-		{#each list as task, index}
-			<li>
-				{#if task.editable}
-					<textarea
-						bind:value={task.content}
-						class="inputReset"
-						on:blur={() => toggleEdit(index)}
-						on:input={adjustTextareaHeight}
-					></textarea>
-				{:else}
-					<span
-						role="button"
-						on:click={() => toggleEdit(index)}
-						on:keydown={(event) => handleKeyDownForEdit(event, index)}
-						tabindex="0">{task.content}</span
-					>
-				{/if}
-			</li>
-		{/each}
-		<li bind:this={taskContainer}>
-			<textarea
-				bind:this={taskInput}
-				class="inputReset"
-				placeholder="Add a task"
-				on:keydown={handleKeyDown}
-				on:input={adjustTextareaHeight}
-			></textarea>
-		</li>
-	</ul>
-	<p id="givenDate">given {`${day}/${month}/${year}`}</p>
+	<div id="name" bind:this={nameContainer}>
+		<textarea
+			rows="1"
+			bind:this={nameInput}
+			class="inputReset"
+			placeholder="Add a name"
+			on:input={adjustTextareaHeight}
+		></textarea>
+	</div>
+	<div id="details" bind:this={detailsContainer}>
+		<textarea
+			bind:this={detailsInput}
+			class="inputReset"
+			placeholder="Add details"
+			on:input={adjustTextareaHeight}
+		></textarea>
+	</div>
+	<p id="givenDate">{`${day}/${month}/${year}`}</p>
 </form>
 
 <style>
@@ -188,34 +175,33 @@
 		transition: all 0.15s ease;
 	}
 
-	#dueLabel {
-		margin-left: 0.5rem;
-		margin-right: 0.2rem;
-	}
-
-	ul {
+	#details,
+	#name {
 		margin-top: 0.3rem;
-		margin-left: 2rem;
-	}
-
-	li {
-		width: 90%;
-		overflow-wrap: break-word;
-	}
-
-	li > * {
-		vertical-align: text-top;
-	}
-
-	li:hover {
-		cursor: text;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	textarea {
+		width: 100%;
+		overflow-wrap: break-word;
+		border: 2px dotted;
+		border-color: rgb(0, 0, 0, 0.5);
+		border-radius: 5px;
 		resize: none;
 		overflow-y: hidden;
-		overflow-wrap: break-word;
-		width: 100%;
+	}
+
+	#name > textarea {
+		font-size: x-large;
+	}
+
+	#details > textarea {
+		font-size: large;
+	}
+
+	textarea:hover {
+		cursor: text;
 	}
 
 	#givenDate {

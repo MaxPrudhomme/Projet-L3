@@ -31,10 +31,14 @@
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
-				let date = new Date(data['date'].seconds * 1000);
-				data['date'] = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-				marks.set(j, data);
-				j++;
+				if (JSON.stringify(data.mark) !== '{}') {
+					// ignores unmarked exams
+					let date = new Date(data['date'].seconds * 1000);
+					data['date'] =
+						date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+					marks.set(j, data);
+					j++;
+				}
 			});
 			marks = new Map(marks);
 
@@ -119,6 +123,16 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		width: 100%;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	#container::-webkit-scrollbar {
+		display: none;
+	}
+
+	#container::-webkit-scrollbar-thumb {
+		display: none;
 	}
 
 	#display {
@@ -166,7 +180,7 @@
 		margin-bottom: 20px;
 	} */
 
-	#periods {
+	/* #periods {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -177,7 +191,7 @@
 		padding-right: 20%;
 		margin-left: 5%;
 		margin-right: 5%;
-	}
+	} */
 
 	button {
 		background: none;

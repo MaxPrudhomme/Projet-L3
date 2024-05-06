@@ -23,8 +23,12 @@
 		);
 	}
 
-	function dateToString(date) {
-		return date.getDate() + '/' + date.getMonth() + '/' + date.getYear();
+	function dateToString(timestamp) {
+		const dateObj = timestamp.toDate();
+		const day = String(dateObj.getDate()).padStart(2, '0');
+		const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+		const year = dateObj.getFullYear();
+		return `${day}/${month}/${year}`;
 	}
 
 	async function loadContent() {
@@ -50,7 +54,7 @@
 
 			querySnapshot.forEach((doc) => {
 				let data = doc.data();
-				data['date'] = new Date(data['date'].seconds * 1000);
+				// data['date'] = new Date(data['date'].seconds * 1000);
 				exam.set(doc.id, data);
 			});
 
@@ -120,6 +124,8 @@
 		width: 100%;
 		height: 100%;
 		overflow: auto;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 
 	#container::-webkit-scrollbar {

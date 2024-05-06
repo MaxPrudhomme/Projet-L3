@@ -15,14 +15,16 @@
 
 		examSnapshot.forEach((doc) => {
 			const data = doc.data();
-			let average = 0;
-			let counter = 0;
-			Object.entries(data.mark).forEach(([id, item]) => {
-				average += (item / data.maxMark) * maxMark; // standardise the mark to be out of 100
-				counter++;
-			});
-			average /= counter;
-			averages.push(average);
+			if (JSON.stringify(data.mark) !== '{}') {
+				let average = 0;
+				let counter = 0;
+				Object.entries(data.mark).forEach(([id, item]) => {
+					average += (item / data.maxMark) * maxMark; // standardise the mark to be out of 100
+					counter++;
+				});
+				average /= counter;
+				averages.push(average);
+			}
 		});
 
 		courseAverage =
