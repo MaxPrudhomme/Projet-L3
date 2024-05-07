@@ -24,6 +24,7 @@
 			counter++;
 
 			try {
+				// créer un index pour choper les noms (pour éviter la branlée de requêtes)
 				let userRef = doc(db, 'users', id);
 				let userSnapshot = await getDoc(userRef);
 				let data = userSnapshot.data();
@@ -42,44 +43,6 @@
 	console.log(Object.entries(marks));
 </script>
 
-<<<<<<< Updated upstream
-<div id="container">
-	<div id="main">
-		<h1 id="mark">{average}</h1>
-		<h2>/ {maxMark}</h2>
-		<button
-			class="buttonReset"
-			bind:this={btn}
-			on:click={() => {
-				if (up) {
-					btn.style.transform = 'rotate(0deg)';
-					btn.style.transition = 'transform 0.5s ease-in-out';
-					up = false;
-				} else {
-					btn.style.transform = 'rotate(180deg)';
-					btn.style.transition = 'transform 0.5s ease-in-out';
-					up = true;
-				}
-			}}><Icon name="arrow-box" width="50" height="50" /></button
-		>
-	</div>
-
-	{#key studentNames}
-		<div id="details" class="card {!up ? 'hidden' : 'visible'}">
-			<p>{name}</p>
-			<div class="flexRow">
-				<p id="date">{date}</p>
-				<p id="semester">Semester {semester}</p>
-			</div>
-
-			<div id="separator"></div>
-			<p id="notes">Individual marks</p>
-			<ul id="content">
-				{#each Object.entries(marks) as [id, mark]}
-					<li>{studentNames.get(id.toString())} : {mark} / 100</li>
-				{/each}
-			</ul>
-=======
 {#if average != 0}
 	<div id="container">
 		<div id="main">
@@ -102,7 +65,6 @@
 					}
 				}}><Icon name="arrow-box" width="50" height="50" /></button
 			>
->>>>>>> Stashed changes
 		</div>
 
 		{#key studentNames}

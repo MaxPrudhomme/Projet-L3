@@ -25,6 +25,7 @@
 	function bringToFront(event) {
 		itemRef.style.zIndex += 20;
 	}
+	// peut être juste un dépliage en hover ?
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->

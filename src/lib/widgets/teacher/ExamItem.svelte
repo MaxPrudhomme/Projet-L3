@@ -12,6 +12,7 @@
 </script>
 
 <div id="container" bind:this={itemRef}>
+	<!-- AJOUTER AFFICHAGE HEURE -->
 	<div id="align">
 		<h1>{name}</h1>
 		<h2>{date}</h2>

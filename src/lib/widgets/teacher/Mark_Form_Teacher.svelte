@@ -158,6 +158,12 @@
 	let selectedExam;
 	$: {
 		selectedExam = exams.get(selectedId);
+		// [...selectedExam.students.keys()].forEach((key) => {
+		// 	list.push({
+		// 		content: { id: key },
+		// 		editable: true
+		// 	});
+		// });
 		console.log(selectedExam);
 	}
 </script>

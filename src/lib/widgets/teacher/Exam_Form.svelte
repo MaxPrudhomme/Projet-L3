@@ -133,6 +133,7 @@
 		></textarea>
 		</div> -->
 		<div id="dueInput">
+			<!-- AJOUTER LA SAISIE DE L'HEURE EXACTE -->
 			<input
 				class="dueText inputReset"
 				type="date"
