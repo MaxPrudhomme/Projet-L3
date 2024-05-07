@@ -26,7 +26,7 @@
     });
 
     async function load(view) {
-            widgets.set([]) 
+        widgets.set([]) 
 
         setTimeout(async () => {
             if (view === "dashboard") {

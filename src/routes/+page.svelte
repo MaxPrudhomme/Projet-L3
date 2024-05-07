@@ -4,14 +4,18 @@
     import Sidebar from "$lib/sidebar/Sidebar.svelte";
     import Main from "$lib/content/Main.svelte";
     import Login from "$lib/login/Login.svelte";
+    import Signup from "$lib/login/Signup.svelte/";
     import InteractionContainer from "$lib/content/InteractionContainer.svelte";
     
     import { currentView, interactionActive, userUid } from "../store";
     import { setPersistence, browserSessionPersistence, onAuthStateChanged } from "firebase/auth";
     import { auth } from "$lib/firebase";
+    import { writable } from "svelte/store";
+
 
     let contentContainer;
     let isAuthenticated = false;  
+    let signupProcess = writable(false);
 
     onAuthStateChanged(auth, (user) => {
         isAuthenticated = !!user;
@@ -29,7 +33,7 @@
         }, 500)
 
     }
-
+    
     setPersistence(auth, browserSessionPersistence)
     .then(async () => {
         userUid.set(auth.currentUser.uid)
@@ -48,7 +52,11 @@
 
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
     {#if isAuthenticated === false}
-        <Login></Login>
+        {#if $signupProcess}
+            <Signup></Signup>
+        {:else}
+            <Login {signupProcess}></Login>
+        {/if}
     {:else if $userUid }
         <div in:fly={{ x: -1000, duration: 750, delay: 900}} out:fly={{ x: -1000, duration: 750}}>
             <Sidebar></Sidebar>
