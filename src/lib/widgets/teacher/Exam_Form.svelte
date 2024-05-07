@@ -2,7 +2,7 @@
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
 	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, updateDoc, setDoc } from 'firebase/firestore';
+	import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
@@ -81,11 +81,22 @@
 		}
 
 		const targetRef = doc(db, 'courses', $currentView, 'exam', makeid());
+		const courseRef = doc(db, 'courses', $currentView);
+		let courseSnapshot = await getDoc(courseRef);
+		let courseData = courseSnapshot.data();
+
+		let studentsBase = {};
+		console.log(courseData);
+		for (let i = 0; i < courseData.students.length; i++) {
+			let path = courseData.students[i].path.substr(6);
+			studentsBase[path] = 0;
+		}
+		console.log(studentsBase);
 
 		const newExam = {
 			date: Timestamp.fromDate(new Date(dueDate)),
 			details: details.content,
-			mark: {},
+			mark: studentsBase,
 			maxMark: 100,
 			name: name.content,
 			semester: 2 // temporary value

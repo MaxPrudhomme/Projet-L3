@@ -300,12 +300,12 @@
 		position: absolute;
 		top: 15px;
 		width: 93%;
+		height: 16px;
 		margin-left: 3%;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 		fill: rgb(255, 255, 255, 0.5);
-		height: 100%;
 	}
 
 	p {

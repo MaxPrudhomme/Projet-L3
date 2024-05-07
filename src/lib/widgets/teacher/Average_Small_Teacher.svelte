@@ -23,7 +23,10 @@
 					counter++;
 				});
 				average /= counter;
-				averages.push(average);
+				if (average != 0) {
+					// to skip unmarked exams
+					averages.push(average);
+				}
 			}
 		});
 

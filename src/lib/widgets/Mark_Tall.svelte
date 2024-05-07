@@ -26,11 +26,14 @@
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
-				data['mark'] = data['mark'][$userUid];
-				let date = new Date(data['date'].seconds * 1000);
-				data['date'] = date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-				marks.set(j, data);
-				j++;
+				if (JSON.stringify(data.mark) !== '{}') {
+					data['mark'] = data['mark'][$userUid];
+					let date = new Date(data['date'].seconds * 1000);
+					data['date'] =
+						date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+					marks.set(j, data);
+					j++;
+				}
 			});
 			marks = new Map(marks);
 

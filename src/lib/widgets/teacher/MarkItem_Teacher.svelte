@@ -18,27 +18,31 @@
 	let average = 0;
 
 	let counter = 0;
-	Object.entries(marks).forEach(async ([id, mark]) => {
-		average += (mark / maxMark) * 100; // standardise the mark to be out of 100
-		counter++;
+	onMount(async () => {
+		Object.entries(marks).forEach(async ([id, mark]) => {
+			average += (mark / maxMark) * 100; // standardise the mark to be out of 100
+			counter++;
 
-		try {
-			let userRef = doc(db, 'users', id);
-			let userSnapshot = await getDoc(userRef);
-			let data = userSnapshot.data();
-			studentNames.set(id, data.name.first + ' ' + data.name.last);
+			try {
+				let userRef = doc(db, 'users', id);
+				let userSnapshot = await getDoc(userRef);
+				let data = userSnapshot.data();
+				studentNames.set(counter - 1, data.name.first + ' ' + data.name.last);
 
-			console.log(studentNames.get(id));
-		} catch (error) {
-			console.error('Error fetching documents:', error);
-		}
+				console.log(studentNames.get(counter - 1));
+			} catch (error) {
+				console.error('Error fetching documents:', error);
+			}
+		});
+		average /= counter;
 	});
-	average /= counter;
+
 	console.log(studentNames);
 
 	console.log(Object.entries(marks));
 </script>
 
+<<<<<<< Updated upstream
 <div id="container">
 	<div id="main">
 		<h1 id="mark">{average}</h1>
@@ -75,9 +79,51 @@
 					<li>{studentNames.get(id.toString())} : {mark} / 100</li>
 				{/each}
 			</ul>
+=======
+{#if average != 0}
+	<div id="container">
+		<div id="main">
+			{#key average}
+				<h1 id="mark">{average}</h1>
+			{/key}
+			<h2>/ {maxMark}</h2>
+			<button
+				class="buttonReset"
+				bind:this={btn}
+				on:click={() => {
+					if (up) {
+						btn.style.transform = 'rotate(0deg)';
+						btn.style.transition = 'transform 0.5s ease-in-out';
+						up = false;
+					} else {
+						btn.style.transform = 'rotate(180deg)';
+						btn.style.transition = 'transform 0.5s ease-in-out';
+						up = true;
+					}
+				}}><Icon name="arrow-box" width="50" height="50" /></button
+			>
+>>>>>>> Stashed changes
 		</div>
-	{/key}
-</div>
+
+		{#key studentNames}
+			<div id="details" class="card {!up ? 'hidden' : 'visible'}">
+				<p>{name}</p>
+				<div class="flexRow">
+					<p id="date">{date}</p>
+					<p id="semester">Semester {semester}</p>
+				</div>
+
+				<div id="separator"></div>
+				<p id="notes">Individual marks</p>
+				<ul id="content">
+					{#each Object.entries(marks) as [id, mark], index}
+						<li>{studentNames.values()[index]} : {mark} / 100</li>
+					{/each}
+				</ul>
+			</div>
+		{/key}
+	</div>
+{/if}
 
 <style>
 	@import '../../../global.css';

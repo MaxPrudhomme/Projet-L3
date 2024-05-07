@@ -96,12 +96,12 @@
 	{#key currentSemester}
 		<div id="display" in:fade={{ delay: 250, duration: 300 }}>
 			<!-- transition foireuse sur le out -->
-			{#each [...marks] as [id, { date, details, mark, maxMark, name, semester }]}
-				<MarkItem_Teacher marks={mark} {maxMark} {date} {name} {semester}
-				></MarkItem_Teacher>
-			{/each}
-
-			{#if $state}
+			{#if !$state}
+				{#each [...marks] as [id, { date, details, mark, maxMark, name, semester }]}
+					<MarkItem_Teacher marks={mark} {maxMark} {date} {name} {semester}
+					></MarkItem_Teacher>
+				{/each}
+			{:else}
 				<MarkFormTeacher {refresh} {state}></MarkFormTeacher>
 			{/if}
 		</div>
@@ -204,9 +204,6 @@
 
 	button {
 		background: none;
-		font-family: 'SF Pro Display';
-		font-weight: normal;
-		font-size: large;
 		color: rgb(0, 0, 0, 0.5);
 		background: none;
 		border: 1px solid rgba(0, 0, 0, 0);
@@ -215,11 +212,6 @@
 		/* margin-left: 15%;
 		margin-right: 15%; */
 		margin-bottom: 10px;
-	}
-
-	button:hover {
-		border: 1px solid rgb(0, 0, 0, 0.5);
-		border-radius: 5px;
 	}
 
 	.addButton {

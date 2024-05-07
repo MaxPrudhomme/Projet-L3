@@ -2,10 +2,19 @@
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
 	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, updateDoc, setDoc } from 'firebase/firestore';
+	import {
+		collection,
+		getDocs,
+		query,
+		orderBy,
+		doc,
+		updateDoc,
+		setDoc
+	} from 'firebase/firestore';
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
+	import { onMount } from 'svelte';
 
 	export let refresh;
 	export let state;
@@ -20,6 +29,50 @@
 	const day = String(today.getDate()).padStart(2, '0');
 	const month = String(today.getMonth() + 1).padStart(2, '0');
 	const year = today.getFullYear();
+
+	let exams = new Map();
+
+	async function loadContent() {
+		let existingExam = $currentContent['exam'];
+
+		if (existingExam) {
+			Object.entries(existingExam).forEach(([id, item]) => {
+				if (item.date.toDate().setHours(0, 0, 0, 0) < today && item.status) {
+					delete existingExam[id];
+				}
+			});
+		}
+
+		// const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
+		// await updateDoc(targetRef, {
+		// 	exam: existingExam
+		// });
+
+		try {
+			const courseRef = collection(db, 'courses', $currentView, 'exam');
+			const q = query(courseRef, orderBy('date'));
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((doc) => {
+				let data = doc.data();
+				// data['date'] = new Date(data['date'].seconds * 1000);
+				exams.set(doc.id, data);
+			});
+
+			if (existingExam && typeof existingExam === 'object') {
+				Object.entries(existingExam).forEach(([id, data]) => {
+					exams.set(id, data);
+				});
+			}
+			exams = new Map(exams);
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
+	}
+
+	onMount(async () => {
+		await loadContent();
+	});
 
 	function handleKeyDown(event) {
 		if (event.key === 'Enter') {
@@ -100,57 +153,64 @@
 			return content;
 		});
 	}
+
+	let selectedId;
+	let selectedExam;
+	$: {
+		selectedExam = exams.get(selectedId);
+		console.log(selectedExam);
+	}
 </script>
 
 <form transition:fly={{ duration: 250, x: -300 }}>
-	<div id="dueInput">
-		<button class="buttonReset" on:click={submitMark}>
-			<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
-		</button>
-		<p class="dueText" id="dueLabel">due</p>
-		<input
-			class="dueText inputReset"
-			type="date"
-			min={`${year}-${month}-${day}`}
-			bind:value={date}
-		/>
-	</div>
-	<ul>
-		<!-- List items will be dynamically added here -->
-		{#each list as mark, index}
-			<li>
-				{#if mark.editable}
-					<textarea
-						bind:value={mark.content}
-						class="inputReset"
-						on:blur={() => toggleEdit(index)}
-						on:input={adjustTextareaHeight}
-					></textarea>
-				{:else}
-					<span
-						role="button"
-						on:click={() => toggleEdit(index)}
-						on:keydown={(event) => handleKeyDownForEdit(event, index)}
-						tabindex="0">{mark.content}</span
-					>
-				{/if}
+	{#key exams}
+		<div id="top">
+			<button class="buttonReset" on:click={submitMark}>
+				<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
+			</button>
+			<select name="examSelect" id="examSelect" bind:value={selectedId}>
+				{#each [...exams] as [id, { name }]}
+					<option value={id}>{name}</option>
+				{/each}
+			</select>
+		</div>
+		<ul>
+			<!-- List items will be dynamically added here -->
+			{#each list as mark, index}
+				<li>
+					{#if mark.editable}
+						<textarea
+							bind:value={mark.content}
+							class="inputReset"
+							on:blur={() => toggleEdit(index)}
+							on:input={adjustTextareaHeight}
+						></textarea>
+					{:else}
+						<span
+							role="button"
+							on:click={() => toggleEdit(index)}
+							on:keydown={(event) => handleKeyDownForEdit(event, index)}
+							tabindex="0">{mark.content}</span
+						>
+					{/if}
+				</li>
+			{/each}
+			<li bind:this={markContainer}>
+				<textarea
+					bind:this={markInput}
+					class="inputReset"
+					placeholder="Add a mark"
+					on:keydown={handleKeyDown}
+					on:input={adjustTextareaHeight}
+				></textarea>
 			</li>
-		{/each}
-		<li bind:this={markContainer}>
-			<textarea
-				bind:this={markInput}
-				class="inputReset"
-				placeholder="Add a mark"
-				on:keydown={handleKeyDown}
-				on:input={adjustTextareaHeight}
-			></textarea>
-		</li>
-	</ul>
-	<p id="givenDate">given {`${day}/${month}/${year}`}</p>
+		</ul>
+	{/key}
 </form>
 
 <style>
 	form {
+		position: absolute;
 		background-color: rgb(255, 255, 255, 0.5);
 		border-radius: 10px;
 		width: 80%;
@@ -158,14 +218,21 @@
 		margin-top: 10px;
 		padding: 10px;
 		transition: all 0.5s ease;
-		height: auto;
+		height: 85%;
 	}
 
-	#dueInput {
+	#top {
 		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
 	}
 
-	.dueText {
+	select {
+		width: 70%;
+		text-align-last: center;
+	}
+
+	/* .dueText {
 		font-size: 1.3rem;
 		margin-top: 0.2rem;
 		height: 1.5rem;
@@ -175,7 +242,7 @@
 	#dueLabel {
 		margin-left: 0.5rem;
 		margin-right: 0.2rem;
-	}
+	} */
 
 	ul {
 		margin-top: 0.3rem;
@@ -200,10 +267,5 @@
 		overflow-y: hidden;
 		overflow-wrap: break-word;
 		width: 100%;
-	}
-
-	#givenDate {
-		text-align: right;
-		color: rgba(0, 0, 0, 0.7);
 	}
 </style>
