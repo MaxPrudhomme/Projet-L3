@@ -1,18 +1,4 @@
 <script>
-    import {interrogerBaseDeDonnees} from '../functionics';
-    import { onMount } from 'svelte';
-    onMount(async () => {
-    try {
-      const param1 = new Date('2024-05-03T00:00:00');
-      const param2 = new Date('2024-05-04T00:00:00');
-      const data = await interrogerBaseDeDonnees(param1, param2);
-      // Vous pouvez utiliser les données ici si nécessaire
-      console.log("Résultat de la fonction PHP :", data);
-    } catch (error) {
-        console.log(error)
-      // Gérer les erreurs ici si nécessaire
-    }
-  });
     import Widget from "./Widget.svelte";    
     import Grid, { GridItem } from 'svelte-grid-extended';
     import GridControls from "./GridControls.svelte";
