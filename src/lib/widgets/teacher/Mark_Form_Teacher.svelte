@@ -16,6 +16,7 @@
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import { parse } from 'csv';
 
 	export let refresh;
 	export let state;
@@ -91,6 +92,21 @@
 	// 		}
 	// 	}
 	// }
+
+	const processFile = async () => {
+		const records = [];
+		const parser = fs.createReadStream(`${__dirname}/fs_read.csv`).pipe(
+			// REPLACE BY FILE UPLOADED
+			parse({
+				// CSV options if any
+			})
+		);
+		for await (const record of parser) {
+			// Work with each record
+			records.push(record);
+		}
+		return records;
+	};
 
 	function toggleEdit(index) {
 		list[index].editable = !list[index].editable;
@@ -185,15 +201,15 @@
 								bind:value={mark.content.mark}
 								class="inputReset numberInput"
 								on:blur={() => toggleEdit(index)}
-								on:input={adjustTextareaHeight}
 							/>
 						</div>
 					{:else}
+						<p>{mark.content.name}</p>
 						<span
 							role="button"
 							on:click={() => toggleEdit(index)}
 							on:keydown={(event) => handleKeyDownForEdit(event, index)}
-							tabindex="0">{mark.content}</span
+							tabindex="0">{mark.content.mark}</span
 						>
 					{/if}
 				</li>
@@ -234,7 +250,7 @@
 		width: 10%;
 		background-color: rgb(0, 0, 0, 0.5);
 		border-radius: 3px;
-		padding: 1px;
+		padding: 3px;
 	}
 
 	select {
