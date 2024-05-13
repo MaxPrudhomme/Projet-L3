@@ -107,6 +107,10 @@ html {
 		brightness(101%) contrast(102%);
 }
 
+.testHighlight {
+	background-color: red;
+}
+
 @font-face {
 	font-family: 'SFPro-Regular';
 	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');

@@ -9,7 +9,8 @@
 		orderBy,
 		doc,
 		updateDoc,
-		setDoc
+		setDoc,
+		getDoc
 	} from 'firebase/firestore';
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
@@ -29,6 +30,8 @@
 	const day = String(today.getDate()).padStart(2, '0');
 	const month = String(today.getMonth() + 1).padStart(2, '0');
 	const year = today.getFullYear();
+
+	let studentsIndex;
 
 	let exams = new Map();
 
@@ -52,6 +55,9 @@
 			const courseRef = collection(db, 'courses', $currentView, 'exam');
 			const q = query(courseRef, orderBy('date'));
 			const querySnapshot = await getDocs(q);
+			const studentRef = doc(db, 'users', 'index');
+			const studentSnapshot = await getDoc(studentRef);
+			studentsIndex = studentSnapshot.data();
 
 			querySnapshot.forEach((doc) => {
 				let data = doc.data();
@@ -74,17 +80,17 @@
 		await loadContent();
 	});
 
-	function handleKeyDown(event) {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			if (markInput.value.trim() !== '') {
-				const content = markInput.value.trim();
-				list = [...list, { content, editable: false }];
-				markInput.value = '';
-				markInput.focus();
-			}
-		}
-	}
+	// function handleKeyDown(event) {
+	// 	if (event.key === 'Enter') {
+	// 		event.preventDefault();
+	// 		if (markInput.value.trim() !== '') {
+	// 			const content = markInput.value.trim();
+	// 			list = [...list, { content, editable: false }];
+	// 			markInput.value = '';
+	// 			markInput.focus();
+	// 		}
+	// 	}
+	// }
 
 	function toggleEdit(index) {
 		list[index].editable = !list[index].editable;
@@ -102,70 +108,55 @@
 		textarea.style.height = `${textarea.scrollHeight}px`;
 	}
 
-	function makeid() {
-		let result = '';
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const charactersLength = characters.length;
-		let counter = 0;
-		while (counter < 20) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-			counter += 1;
-		}
-		return result;
+	function getKeyByValue(object, value) {
+		return Object.keys(object).find((key) => object[key] === value);
 	}
 
 	async function submitMark() {
-		if (!date) {
-			alert('Please select a due date.');
-			return;
-		}
+		// if (markInput.value !== null) {
+		// 	list = [...list, { content: markInput.value.trim(), editable: false }];
+		// 	markContainer.style.display = 'none';
+		// }
 
-		if (markInput.value.trim() !== '') {
-			list = [...list, { content: markInput.value.trim(), editable: false }];
-			markContainer.style.display = 'none';
-		}
+		const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
+		const targetSnapshot = await getDoc(targetRef);
 
-		if (list.length === 0 || list.every((mark) => !mark.content.trim())) {
-			alert('Please add at least one mark.');
-			return;
-		}
+		let mark = new Object();
+		list.forEach((item) => {
+			mark[getKeyByValue(studentsIndex, item.content.name)] = item.content.mark;
+		});
+		console.log(mark);
+		console.log(studentsIndex);
 
-		const targetRef = doc(db, 'courses', $currentView, 'exam', makeid());
-
-		const marks = list.map((mark) => mark.content);
-
-		const newMark = {
-			date: Timestamp.fromDate(new Date(date)),
-			mark: marks
-		};
-
-		const markId = v4();
-
-		await setDoc(targetRef, newMark);
+		await updateDoc(targetRef, { mark: mark });
 		refresh.set(true);
 		state.set(false);
 
-		currentContent.update((content) => {
-			if (!content.mark || typeof content.mark !== 'object') {
-				content.mark = {};
-			}
-			content.mark[markId] = newMark;
-			return content;
-		});
+		// currentContent.update((content) => {
+		// 	if (!content.mark || typeof content.mark !== 'object') {
+		// 		content.mark = {};
+		// 	}
+		// 	content.mark[markId] = mark;
+		// 	return content;
+		// });
 	}
 
 	let selectedId;
 	let selectedExam;
-	$: {
-		selectedExam = exams.get(selectedId);
-		// [...selectedExam.students.keys()].forEach((key) => {
-		// 	list.push({
-		// 		content: { id: key },
-		// 		editable: true
-		// 	});
-		// });
-		console.log(selectedExam);
-	}
+
+	const onChange = (event) => {
+		selectedExam = exams.get(event.target.value);
+		list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
+		for (const [key, value] of Object.entries(selectedExam.mark)) {
+			list.push({
+				content: {
+					name: studentsIndex[key],
+					mark: studentsIndex[value]
+				},
+				editable: true
+			});
+		}
+	};
 </script>
 
 <form transition:fly={{ duration: 250, x: -300 }}>
@@ -174,7 +165,7 @@
 			<button class="buttonReset" on:click={submitMark}>
 				<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 			</button>
-			<select name="examSelect" id="examSelect" bind:value={selectedId}>
+			<select name="examSelect" id="examSelect" on:change={onChange} bind:value={selectedId}>
 				{#each [...exams] as [id, { name }]}
 					<option value={id}>{name}</option>
 				{/each}
@@ -185,12 +176,18 @@
 			{#each list as mark, index}
 				<li>
 					{#if mark.editable}
-						<textarea
-							bind:value={mark.content}
-							class="inputReset"
-							on:blur={() => toggleEdit(index)}
-							on:input={adjustTextareaHeight}
-						></textarea>
+						<div class="flexRow">
+							<p>{mark.content.name}</p>
+							<input
+								type="number"
+								max="100"
+								min="0"
+								bind:value={mark.content.mark}
+								class="inputReset numberInput"
+								on:blur={() => toggleEdit(index)}
+								on:input={adjustTextareaHeight}
+							/>
+						</div>
 					{:else}
 						<span
 							role="button"
@@ -201,7 +198,7 @@
 					{/if}
 				</li>
 			{/each}
-			<li bind:this={markContainer}>
+			<!-- <li bind:this={markContainer}>
 				<textarea
 					bind:this={markInput}
 					class="inputReset"
@@ -209,7 +206,7 @@
 					on:keydown={handleKeyDown}
 					on:input={adjustTextareaHeight}
 				></textarea>
-			</li>
+			</li> -->
 		</ul>
 	{/key}
 </form>
@@ -231,6 +228,13 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+	}
+
+	.numberInput {
+		width: 10%;
+		background-color: rgb(0, 0, 0, 0.5);
+		border-radius: 3px;
+		padding: 1px;
 	}
 
 	select {
@@ -273,5 +277,18 @@
 		overflow-y: hidden;
 		overflow-wrap: break-word;
 		width: 100%;
+	}
+
+	/* REMOVE ARROWS FROM NUMBER INPUT */
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type='number'] {
+		-moz-appearance: textfield;
 	}
 </style>

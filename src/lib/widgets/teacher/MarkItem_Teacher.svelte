@@ -29,18 +29,12 @@
 				let userSnapshot = await getDoc(userRef);
 				let data = userSnapshot.data();
 				studentNames.set(counter - 1, data.name.first + ' ' + data.name.last);
-
-				console.log(studentNames.get(counter - 1));
 			} catch (error) {
 				console.error('Error fetching documents:', error);
 			}
 		});
 		average /= counter;
 	});
-
-	console.log(studentNames);
-
-	console.log(Object.entries(marks));
 </script>
 
 {#if average != 0}
