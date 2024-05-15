@@ -14,6 +14,7 @@
 	import AverageSmallTeacher from '$lib/widgets/teacher/Average_Small_Teacher.svelte';
 	import MarkTallTeacher from '$lib/widgets/teacher/Mark_Tall_Teacher.svelte';
 	import LastMarksMedium from '$lib/widgets/LastMarks_Medium.svelte';
+	import ScheduleFormFat from '$lib/widgets/teacher/Schedule_Form_Fat.svelte';
 
 	export let content;
 	export let disabled = false;
@@ -34,7 +35,8 @@
 		'examteacher-m': ExamMediumTeacher,
 		'homeworkteacher-t': HomeworkTallTeacher,
 		'averageteacher-s': AverageSmallTeacher,
-		'markteacher-t': MarkTallTeacher
+		'markteacher-t': MarkTallTeacher,
+		'scheduleform-f': ScheduleFormFat
 	};
 
 	onMount(() => {

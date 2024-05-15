@@ -8,7 +8,6 @@
 	export let height = '1'; // height of the item
 	export let pos = '1'; // vertical position of the item on the schedule
 	export let overlap = 1;
-	export let left = '0%';
 
 	let itemRef;
 

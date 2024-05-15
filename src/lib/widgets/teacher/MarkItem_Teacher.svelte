@@ -33,7 +33,7 @@
 				console.error('Error fetching documents:', error);
 			}
 		});
-		average /= counter;
+		average = Math.floor((average /= counter));
 	});
 </script>
 
