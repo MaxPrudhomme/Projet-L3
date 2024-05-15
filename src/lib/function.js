@@ -36,17 +36,17 @@ async function querydb(startdate, enddate, IDs) {
 import { querydb } from '../function';
 import { onMount } from 'svelte';
 onMount(async () => {
-try {
+  try {
     const startdate = new Date('2024-05-03 00:00:00'); //max start date
     const enddate = new Date('2024-05-04 00:00:00'); //max end date
     const IDs = ['aaaaaaaaaaaaaaaaaaaa','4PSFgCCPpzaOdKChhgyG'];  //list of ID's course in string
     const data = await querydb(startdate, enddate, IDs);
     //you can use data here
     console.log("Résultat de la fonction PHP :", data);
-} catch (error) {
+  } catch (error) {
     //handle errors here
     console.log(error);
-}
+  }
 });
 */
 
@@ -136,13 +136,51 @@ onMount(async () => {
   }
 });
 */
-/**
-     * IDs
-     * startDates
-     * endDates
-     * summarys
-     * descriptions
-     * locations
-     * IDscourse
-     */
+
+async function updatedb(event) {
+  try {
+    const url = await import.meta.env.VITE_URL + 'update.php';
+    const args = new FormData();
+    args.append('ID',event.ID);
+    args.append('startDate',event.startDate.toISOString());
+    args.append('endDate',event.endDate.toISOString());
+    args.append('summary',event.summary);
+    args.append('description',event.description);
+    args.append('location',event.location);
+    args.append('IDcourse',event.IDcourse);
+    const options = {
+      method: 'POST',
+      body: args
+    };
+    const response = await fetch(url,options);
+    const data = await response.text();
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de l'interrogation de la base de données :", error);
+    throw error;
+  }
+}
+/**-------------------------insert-------------------------
+import { updatedb } from '../function';
+import { onMount } from 'svelte';
+onMount(async () => {
+  try {
+    const event = {
+        ID: '7cd5bee3-0e4b-4e6b-8f5e-63c516cda06a',
+        startDate: new Date('2024-05-03 12:00:00'),
+        endDate: new Date('2024-05-03 13:00:00'),
+        summary: "testmodif",
+        description: "",
+        location: "un endroit",
+        IDcourse: "4PSFgCCPpzaOdKChhgyG"
+    };
+    const data = await updatedb(event);
+    //you can use data here
+    console.log("Résultat de la fonction PHP :", data);
+  } catch (error) {
+    //handle errors here
+    console.log(error);
+  }
+});
+*/
 export {querydb,insertdb,deletedb,updatedb};
