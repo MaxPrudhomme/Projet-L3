@@ -104,12 +104,21 @@
 		height: 36px;
 	}
 
-	.s32x32 {
-		width: 32px;
-		height: 32px;
-	}
+    .s32x32 {
+        width: 32px;
+        height: 32px;
+    }
 
-	.t500 {
-		transition: all 0.5s ease;
-	}
+    .s80x80 {
+        width: 80px;
+        height: 80px;
+    }
+
+    .t500 {
+      transition: all 0.5s ease;
+    }
+
+    .white {
+      filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(131deg) brightness(105%) contrast(105%);
+    }
 </style>

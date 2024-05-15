@@ -4,9 +4,7 @@
     export let icon = null;
     export let id = null;
     import Icon from '$lib/Icon.svelte'
-    import { currentView, currentContent, userUid } from '../../store';
-    import { db } from '$lib/firebase';
-    import { doc, getDoc } from 'firebase/firestore';
+    import { currentView } from '../../store';
 
     async function requestView() {
         currentView.set(id)
