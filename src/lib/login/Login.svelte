@@ -25,12 +25,13 @@
         email = null;
         password = null;
     }
+    
     function triggerSignUp() {
         signupProcess.set(true)
     }
 </script>
 
-<div id="container" class="glass noise" in:fade={{duration: 500, delay: 1000}} out:fly={{duration: 500, delay: 0, y:-820}}>
+<div id="container" in:fade={{duration: 250, delay: 250}} out:fade={{duration: 250, delay: 0}}>
     <Icon name="fingerprint" class="s80x80"></Icon>
     <h1>Login</h1>
     <form on:submit|preventDefault={handleSubmit} style="display:flex; flex-direction:column;">
@@ -56,6 +57,8 @@
         flex-direction: column;
         align-items: center;
         padding-top: 2.5rem;
+        background-color: rgba(255, 255, 255, 0.3);
+        transition: all 0.5s ease;
     }
 
     h1 {

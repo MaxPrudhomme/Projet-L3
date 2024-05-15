@@ -12,9 +12,9 @@
     import { auth } from "$lib/firebase";
     import { writable } from "svelte/store";
 
-
     let contentContainer;
     let isAuthenticated = false;  
+
     let signupProcess = writable(false);
 
     onAuthStateChanged(auth, (user) => {
@@ -52,11 +52,13 @@
 
 <div id="contentContainer" class="absolute glass noise" bind:this={contentContainer}>
     {#if isAuthenticated === false}
-        {#if $signupProcess}
-            <Signup></Signup>
-        {:else}
-            <Login {signupProcess}></Login>
-        {/if}
+        <div id="authContainer" class="absolute" in:fade={{duration: 500, delay: 1000}} out:fly={{duration: 500, delay: 0, y:-820}}>
+            {#if $signupProcess}
+                <Signup {signupProcess}></Signup>
+            {:else}
+                <Login {signupProcess}></Login>
+            {/if}
+        </div>
     {:else if $userUid }
         <div in:fly={{ x: -1000, duration: 750, delay: 900}} out:fly={{ x: -1000, duration: 750}}>
             <Sidebar></Sidebar>
@@ -88,5 +90,10 @@
         backdrop-filter: blur(5px);
         transition: all 0.5s ease;
     }
+
+    #authContainer {
+        width: 100%;
+        height: 100%;
+    }    
 
 </style>

@@ -6,13 +6,50 @@
 	import { writable } from "svelte/store";
     import { db, storage } from "$lib/firebase";
     import { doc, getDoc  } from "firebase/firestore";
-    import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+    import { ref, getDownloadURL } from 'firebase/storage';
+	import { fade } from "svelte/transition";
 
-    function handleSubmit() {
-        console.log("SUBMIT")
+    export let signupProcess;
+
+    async function handleSubmit() {
+        if ($formData.acceptTOS && $steps[0].alert == false && $steps[1].alert == false) {
+            const { acceptTOS, ...submitData } = $formData;
+            
+            try {
+                const response = await fetch("https://us-central1-projet-l3-88394.cloudfunctions.net/createUser", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(submitData)
+                });
+                
+                const contentType = response.headers.get("content-type");
+                let result;
+                
+                if (contentType && contentType.includes("application/json")) {
+                    result = await response.json();
+                } else {
+                    result = await response.text();
+                }
+                
+                if (response.ok) {
+                    console.log("User created successfully:", result);
+                    alert("Account successfully created, you can now login.")
+                    signupProcess.set(false)
+                } else {
+                    console.error("Error creating user:", result);
+                    alert("There was an error creating your account, please try again later or contact support.")
+                }
+            } catch (error) {
+                console.error("Network error:", error);
+            }
+        } else {
+            console.log("Huho, something went wrong here !");
+        }
     }
 
-    const formData = writable({
+    export const formData = writable({
         firstName: '',
         lastName: '',
         email: '',
@@ -25,11 +62,11 @@
     });
 
 
-    const steps = [
-        {text: "Account"},
-        {text: "School"},
+    export const steps = writable([
+        {text: "Account", alert: false},
+        {text: "School", alert: false},
         {text: "Confirm"}
-    ]
+    ])
     
     export const current = writable(0)
 
@@ -45,7 +82,6 @@
         } catch(e) {
             console.log(e)
         }
-
     }
 
     async function fetchSchoolDetails(target) {
@@ -65,7 +101,7 @@
     fetchSchools()
 </script>
 
-<div id="container" class="glass noise">
+<div id="container" in:fade={{duration: 250, delay: 250}} out:fade={{duration: 250, delay: 0}}>
     <Icon name="person-vcard" class="s80x80"></Icon>
 
     <h1>Sign Up</h1>
@@ -120,13 +156,11 @@
             </label>
             <ActionButton content={"Create my Account"} mode={"confirm"} onClickFunction={handleSubmit} disabled={$formData.acceptTOS ? false : true}></ActionButton>
         </fieldset>
-
         {/if}
-
     </form>
     
-    <Control {current}></Control>
-    <Steps current={$current} {steps} size="2.3rem" clickable={false} fontFamily="SFPro-Regular"></Steps>
+    <Control {current} {signupProcess} {steps} {formData}></Control>
+    <Steps current={$current} steps={$steps} size="2.3rem" clickable={false} fontFamily="SFPro-Regular"></Steps>
 
 </div>
 
@@ -138,6 +172,8 @@
         flex-direction: column;
         align-items: center;
         padding-top: 2.5rem;
+        background-color: rgba(255, 255, 255, 0.3);
+        transition: all 0.5s ease;
     }
 
     h1 {
