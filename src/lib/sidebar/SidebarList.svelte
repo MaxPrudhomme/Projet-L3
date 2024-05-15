@@ -5,6 +5,7 @@
     import { db } from "$lib/firebase";
 	import SidebarSubject from "./SidebarSubject.svelte";
     import { writable } from "svelte/store"
+	import SidebarAddCourse from "./SidebarAddCourse.svelte";
 
     let coursesList = writable([]);
 
@@ -34,23 +35,29 @@
 </script>
 
 <div id="container"> 
-    {#if $coursesList.length === 0}
-        <p id="noCourses">Seems like you don't have any course yet, try adding your first courses below !</p>
-    {:else}
-        {#each $coursesList as {icon, tag, subject, id} }
-            <SidebarSubject {icon} {tag} {subject} {id}></SidebarSubject>
-        {/each}
-    {/if}
+    <div id="courseContainer">
+        {#if $coursesList.length === 0}
+            <p id="noCourses">Seems like you don't have any course yet, try adding your first courses below !</p>
+        {:else}
+            {#each $coursesList as {icon, tag, subject, id} }
+                <SidebarSubject {icon} {tag} {subject} {id}></SidebarSubject>
+            {/each}
+        {/if}
+    </div>
+    <div id="addContainer">
+        <SidebarAddCourse></SidebarAddCourse>
+    </div>
 </div>
 
 <style>
     #container {
-        width: 275px;
-        height: 610px;
+        width: 17.2rem;
+        height: 38.125rem;
         border-top: 1px solid black; 
         border-bottom: 1px solid black;
         margin: auto;
         margin-top: 30px;
+        position: relative;
     }
 
     #noCourses {
@@ -62,5 +69,18 @@
         align-items: center;
         text-align: center;
         margin: auto;
+        z-index: -1;
+    }
+
+    #addContainer {
+        position: absolute;
+        bottom: 1rem;
+        width: 100%;
+    }
+
+    #courseContainer {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 85%
     }
 </style>
