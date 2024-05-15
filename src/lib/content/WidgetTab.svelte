@@ -30,15 +30,19 @@
     <GridControls></GridControls>
     <div id="grid">
     <Grid class="grid-container" rows={4} cols={7} {itemSize} gap={20} collision="none">
-        {#each $widgets as {x, y, w, h, content}}
-            <div in:fly={{duration: animationDuration, x: animationPosition}} out:fly={{duration: animationDuration, x: animationPosition}}>
-                <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
-                    <div class="content">
-                        <Widget disabled={editMode ? true: false} {content}></Widget>
-                    </div>
-                </GridItem>
-            </div>
-        {/each}
+        {#if $widgets.length === 0}
+            <p id="noWidgets">Seems like you don't have any widget yet, try adding your first widgets using the button up top !</p>
+        {:else}
+            {#each $widgets as {x, y, w, h, content}}
+                <div in:fly={{duration: animationDuration, x: animationPosition}} out:fly={{duration: animationDuration, x: animationPosition}}>
+                    <GridItem bind:x bind:y bind:w bind:h resizable={false} previewClass="itemPreview" movable={move}>
+                        <div class="content">
+                            <Widget disabled={editMode ? true: false} {content}></Widget>
+                        </div>
+                    </GridItem>
+                </div>
+            {/each}
+        {/if}
     </Grid>
     </div>
 </div>
@@ -64,4 +68,12 @@
         border-radius: 20px;
         transition: all 0.15s ease;
 	}
+
+    #noWidgets {
+        width: 25%;
+        font-size: 1.2rem;
+        text-align: center;
+        margin: auto;
+        margin-top: 28%;
+    }
 </style>
