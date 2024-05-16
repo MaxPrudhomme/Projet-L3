@@ -99,6 +99,8 @@
 		return Object.keys(object).find((key) => object[key] === value);
 	}
 
+	function emptyForm() {}
+
 	async function submitSchedule() {
 		// if (markInput.value !== null) {
 		// 	list = [...list, { content: markInput.value.trim(), editable: false }];
@@ -139,8 +141,8 @@
 			summary: nameValue,
 			description: detailsValue,
 			location: locationValue,
-			startDate: Timestamp.fromDate(startDate),
-			endDate: Timestamp.fromDate(endDate),
+			startDate: startDate,
+			endDate: endDate,
 			IDcourse: ID
 		};
 
@@ -201,25 +203,34 @@
 
 		<div id="date-selection">
 			<label for="start-date">Start : </label>
-			<input bind:value={startDateInput} type="datetime" name="start-date" id="start-date" />
+			<input
+				bind:value={startDateInput}
+				type="datetime-local"
+				name="start-date"
+				id="start-date"
+				class="inputReset"
+			/>
+			<span style="width: 10%;"></span>
 			<label for="end-date">End : </label>
-			<input bind:value={endDateInput} type="datetime" name="end-date" id="end-date" />
+			<input
+				bind:value={endDateInput}
+				type="datetime-local"
+				name="end-date"
+				id="end-date"
+				class="inputReset"
+			/>
 		</div>
 		<div id="main-inputs">
 			<label for="name-input">Name : </label>
-			<textarea
-				bind:value={nameInput}
-				class="inputReset"
-				name="name-input"
-				on:input={adjustTextareaHeight}
-			></textarea>
+			<textarea bind:value={nameInput} class="inputReset" name="name-input" id="name-input"
+			></textarea><br />
 			<label for="details-input">Details : </label>
 			<textarea
 				bind:value={detailsInput}
 				class="inputReset"
 				name="details-input"
 				on:input={adjustTextareaHeight}
-			></textarea>
+			></textarea><br />
 			<label for="location-input">Location : </label>
 			<textarea
 				bind:value={locationInput}
@@ -230,6 +241,9 @@
 		</div>
 		<!-- <input type="file" name="csv-input" id="csv-input"> GESTION DE CSV A FAIRE APRES AVOIR REMIS GITHUB BIEN  -->
 	{/key}
+	<button class="buttonReset" id="cancelButton" on:click={emptyForm}>
+		<Icon name={'plus-circle-dotted'} class={'s36x36 t500'}></Icon>
+	</button>
 </form>
 
 <style>
@@ -238,17 +252,10 @@
 		background-color: rgb(255, 255, 255, 0.5);
 		border-radius: 10px;
 		width: 100%;
-		margin: auto;
 		padding: 10px;
 		padding-right: 5%;
 		transition: all 0.5s ease;
 		height: 100%;
-	}
-
-	#top {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
 	}
 
 	#topLabel {
@@ -259,12 +266,46 @@
 		margin-right: 5%;
 	}
 
+	#top {
+		display: flex;
+		flex-direction: row;
+	}
+
+	#top > button {
+		margin-right: 60%;
+	}
+
+	#main-inputs {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	#icon {
 		margin-top: 3%;
 	}
 
 	#date-selection {
 		margin-top: 3%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	#date-selection > * {
+		margin-right: 1%;
+		border-radius: 10px;
+	}
+
+	#start-date,
+	#end-date {
+		background-color: rgb(255, 255, 255, 0.5);
+	}
+
+	#name-input {
+		font-size: large;
+		font-weight: bold;
+		height: 1.5rem;
 	}
 
 	/* .numberInput {
@@ -275,12 +316,13 @@
 	} */
 
 	select {
-		width: 50%;
+		width: 30%;
 		text-align-last: center;
 	}
 
 	label {
 		font-size: large;
+		margin-top: 1rem;
 	}
 
 	/* .dueText {
@@ -317,8 +359,12 @@
 		resize: none;
 		overflow-y: hidden;
 		overflow-wrap: break-word;
-		width: 100%;
+		width: 95%;
 		background-color: rgb(255, 255, 255, 0.5);
+		margin-bottom: 1rem;
+		border-radius: 10px;
+		margin-right: 3%;
+		padding: 0.3rem;
 	}
 
 	/* REMOVE ARROWS FROM NUMBER INPUT */
