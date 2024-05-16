@@ -2,7 +2,7 @@
 	import ScheduleItem from './ScheduleItem.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { onMount } from 'svelte';
-	import { generateICSContent, parseICSContent } from '$lib/functionics';
+	import { querydb } from '$lib/function';
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
@@ -87,15 +87,37 @@
 	function calculateOverlap(array) {
 		for (let i = 0; i < array.length - 1; i++) {
 			if (compareHours(array[i], array[i + 1])) {
-				array[i].overlap += 1;
-				array[i + 1].overlap += 1;
+				array[i + 1].overlap = array[i].overlap + 1;
 			}
 		}
 	}
 
+	function getMonday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
+
+	function getSunday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + 7; // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
+
 	/////////// DATA FETCHING AND TREATMENT //////////
 	onMount(async () => {
-		eventsArray = parseICSContent(generateICSContent());
+		if ($currentView == 'dashboard') {
+			const userCoursesIds = (
+				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
+			).docs.map(({ id }) => id);
+			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+		} else {
+			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
+		}
+
+		console.log(eventsArray);
 
 		eventsArray.sort((eventA, eventB) => {
 			let dateA = new Date(eventA.start);
@@ -112,25 +134,24 @@
 			console.error('Error fetching documents:', error);
 		}
 
-		console.log(courseData);
 		eventsArray.forEach((event, index, arr) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
 			event.start = startDate;
 			event.end = endDate;
 
-			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+			Object.assign(event, { height: (Math.abs(endDate - startDate) / 1000 / 3600) * 4 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
-			let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-			if (index == 0) {
-				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 + 15
-				});
-			} else {
-				Object.assign(event, {
-					pos: Math.abs(begin - startDate) / 1000 / 360 - arr[index - 1].pos - 5 + 9.5
-				});
-			} // ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID
+			let begin = new Date(
+				startDate.getFullYear(),
+				startDate.getMonth(),
+				startDate.getDate(),
+				8
+			);
+			Object.assign(event, {
+				pos: (Math.abs(begin - startDate) / 1000 / 3600) * 4 + 1
+			});
+			// ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID
 			Object.assign(event, { overlap: 1 });
 
 			Object.assign(event, { color: courseData[event.summary].color });
@@ -182,8 +203,8 @@
 						<ScheduleItem
 							name={event.summary}
 							location={event.location}
-							height={event.height + '%'}
-							pos={event.pos + '%'}
+							height={event.height}
+							pos={event.pos}
 							color={event.color}
 							icon={event.icon}
 							overlap={event.overlap}
@@ -215,11 +236,14 @@
 	#item-container {
 		position: absolute;
 		z-index: 2;
-		width: 95%;
+		width: 90%;
 		height: 100%;
 		top: 0;
 		left: 0;
-		padding-left: 15px;
+		margin-left: 40px;
+		display: grid;
+		grid-template-columns: repeat(8, 1fr);
+		grid-template-rows: repeat(44, 1fr);
 	}
 
 	#separator {
