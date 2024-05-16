@@ -99,7 +99,19 @@
 		return Object.keys(object).find((key) => object[key] === value);
 	}
 
-	function emptyForm() {}
+	let nameField;
+	let detailsField;
+	let startDateField;
+	let endDateField;
+	let locationField;
+
+	function emptyForm() {
+		nameField.value = '';
+		detailsField.value = '';
+		startDateField.value = '';
+		endDateField.value = '';
+		locationField.value = '';
+	}
 
 	async function submitSchedule() {
 		// if (markInput.value !== null) {
@@ -185,12 +197,12 @@
 </script>
 
 <form transition:fly={{ duration: 250, x: -300 }}>
-	<div id="topLabel">
+	<div id="topLabel" class="flexRow">
 		<h1 class="widgetTitle">Schedule Form</h1>
 		<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
 	</div>
 	{#key courses}
-		<div id="top">
+		<div id="top" class="simpleFlexRow">
 			<button class="buttonReset" on:click={submitSchedule}>
 				<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 			</button>
@@ -201,10 +213,11 @@
 			</select>
 		</div>
 
-		<div id="date-selection">
+		<div id="main-inputs">
 			<label for="start-date">Start : </label>
 			<input
 				bind:value={startDateInput}
+				bind:this={startDateField}
 				type="datetime-local"
 				name="start-date"
 				id="start-date"
@@ -214,19 +227,25 @@
 			<label for="end-date">End : </label>
 			<input
 				bind:value={endDateInput}
+				bind:this={endDateField}
 				type="datetime-local"
 				name="end-date"
 				id="end-date"
 				class="inputReset"
 			/>
-		</div>
-		<div id="main-inputs">
+
 			<label for="name-input">Name : </label>
-			<textarea bind:value={nameInput} class="inputReset" name="name-input" id="name-input"
+			<textarea
+				bind:value={nameInput}
+				class="inputReset"
+				name="name-input"
+				id="name-input"
+				bind:this={nameField}
 			></textarea><br />
 			<label for="details-input">Details : </label>
 			<textarea
 				bind:value={detailsInput}
+				bind:this={detailsField}
 				class="inputReset"
 				name="details-input"
 				on:input={adjustTextareaHeight}
@@ -234,9 +253,10 @@
 			<label for="location-input">Location : </label>
 			<textarea
 				bind:value={locationInput}
+				bind:this={locationField}
 				class="inputReset"
 				name="location-input"
-				on:input={adjustTextareaHeight}
+				id="location-input"
 			></textarea>
 		</div>
 		<!-- <input type="file" name="csv-input" id="csv-input"> GESTION DE CSV A FAIRE APRES AVOIR REMIS GITHUB BIEN  -->
@@ -247,28 +267,23 @@
 </form>
 
 <style>
+	@import '../../../global.css';
+
 	form {
-		position: absolute;
 		background-color: rgb(255, 255, 255, 0.5);
 		border-radius: 10px;
 		width: 100%;
 		padding: 10px;
-		padding-right: 5%;
 		transition: all 0.5s ease;
 		height: 100%;
+
+		display: flex;
+		flex-direction: column;
 	}
 
 	#topLabel {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		margin-left: 40%;
+		margin-left: 30%;
 		margin-right: 5%;
-	}
-
-	#top {
-		display: flex;
-		flex-direction: row;
 	}
 
 	#top > button {
@@ -285,18 +300,6 @@
 		margin-top: 3%;
 	}
 
-	#date-selection {
-		margin-top: 3%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-	}
-
-	#date-selection > * {
-		margin-right: 1%;
-		border-radius: 10px;
-	}
-
 	#start-date,
 	#end-date {
 		background-color: rgb(255, 255, 255, 0.5);
@@ -308,6 +311,15 @@
 		height: 1.5rem;
 	}
 
+	#location-input {
+		height: 1.5rem;
+	}
+
+	#cancelButton {
+		align-self: center;
+		transform: rotate(45deg);
+	}
+
 	/* .numberInput {
 		width: 10%;
 		background-color: rgb(0, 0, 0, 0.5);
@@ -316,7 +328,7 @@
 	} */
 
 	select {
-		width: 30%;
+		width: 25%;
 		text-align-last: center;
 	}
 
@@ -359,11 +371,11 @@
 		resize: none;
 		overflow-y: hidden;
 		overflow-wrap: break-word;
-		width: 95%;
+		width: 90%;
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-bottom: 1rem;
 		border-radius: 10px;
-		margin-right: 3%;
+		margin-right: 5%;
 		padding: 0.3rem;
 	}
 

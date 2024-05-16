@@ -87,6 +87,16 @@ html {
 	justify-content: space-between;
 }
 
+.simpleFlexRow {
+	display: flex;
+	flex-direction: row;
+}
+
+.simpleFlexColumn {
+	display: flex;
+	flex-direction: column;
+}
+
 .widgetTitle {
 	text-align: center;
 	color: rgb(0, 0, 0, 0.5);
