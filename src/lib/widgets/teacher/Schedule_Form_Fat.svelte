@@ -17,6 +17,7 @@
 	import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { parse } from 'csv';
+	import { insertdb, updatedb, querydb } from '$lib/function';
 
 	let list = [];
 	let date;
@@ -109,7 +110,11 @@
 			return;
 		}
 		if (!endDateInputDate) {
-			alert('Please select a end date and time.');
+			alert('Please select an end date and time.');
+			return;
+		}
+		if (!ID) {
+			alert('Please select a course to add an event to.');
 			return;
 		}
 
@@ -127,14 +132,20 @@
 			locationValue = locationInput.value.trim();
 		}
 
+		let startDate = new Date(startDateInput);
+		let endDate = new Date(endDateInput);
+
 		const newScheduleItem = {
-			name: nameValue,
-			details: detailsValue,
+			summary: nameValue,
+			description: detailsValue,
 			location: locationValue,
-			startDate: Timestamp.fromDate(new Date(startDateInput)),
-			endDate: Timestamp.fromDate(new Date(endDateInput)),
-			course: selectedCourse // ou selectedId ? ou event.target.value ?
+			startDate: Timestamp.fromDate(startDate),
+			endDate: Timestamp.fromDate(endDate),
+			IDcourse: ID
 		};
+
+		// TODOTODO : check if scheduleItem already exists, if so do an update not an insert
+		insertdb([newScheduleItem]);
 
 		// const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
 		// const targetSnapshot = await getDoc(targetRef);
@@ -152,9 +163,12 @@
 
 	let selectedId;
 	let selectedCourse;
+	let ID;
 
 	const onChange = (event) => {
 		selectedCourse = courses.get(event.target.value);
+		ID = event.target.value;
+		console.log(ID);
 		// list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
 		// for (const [key, value] of Object.entries(selectedExam.mark)) {
 		// 	list.push({

@@ -2,7 +2,7 @@
 	import ScheduleItem from './ScheduleItem.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { onMount } from 'svelte';
-	import { generateICSContent, parseICSContent } from '$lib/functionics';
+	import { querydb } from '$lib/function';
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
@@ -92,9 +92,32 @@
 		}
 	}
 
+	function getMonday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
+
+	function getSunday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + 7; // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
+
 	/////////// DATA FETCHING AND TREATMENT //////////
 	onMount(async () => {
-		eventsArray = parseICSContent(generateICSContent());
+		if ($currentView == 'dashboard') {
+			const userCoursesIds = (
+				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
+			).docs.map(({ id }) => id);
+			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+		} else {
+			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
+		}
+
+		console.log(eventsArray);
 
 		eventsArray.sort((eventA, eventB) => {
 			let dateA = new Date(eventA.start);
