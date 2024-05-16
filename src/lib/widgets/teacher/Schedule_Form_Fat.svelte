@@ -23,6 +23,8 @@
 	let nameInput;
 	let detailsInput;
 	let locationInput;
+	let startDateInput;
+	let endDateInput;
 
 	const today = new Date();
 
@@ -102,10 +104,42 @@
 		// 	markContainer.style.display = 'none';
 		// }
 
-		const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
-		const targetSnapshot = await getDoc(targetRef);
+		if (!startDateInputDate) {
+			alert('Please select a start date and time.');
+			return;
+		}
+		if (!endDateInputDate) {
+			alert('Please select a end date and time.');
+			return;
+		}
 
-		await updateDoc(targetRef, { mark: mark });
+		let nameValue = '';
+		let detailsValue = '';
+		let locationValue = '';
+
+		if (nameInput.value.trim() !== '') {
+			nameValue = nameInput.value.trim();
+		}
+		if (detailsInput.value.trim() !== '') {
+			detailsValue = detailsInput.value.trim();
+		}
+		if (locationInput.value.trim() !== '') {
+			locationValue = locationInput.value.trim();
+		}
+
+		const newScheduleItem = {
+			name: nameValue,
+			details: detailsValue,
+			location: locationValue,
+			startDate: Timestamp.fromDate(new Date(startDateInput)),
+			endDate: Timestamp.fromDate(new Date(endDateInput)),
+			course: selectedCourse // ou selectedId ? ou event.target.value ?
+		};
+
+		// const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
+		// const targetSnapshot = await getDoc(targetRef);
+
+		// await updateDoc(targetRef, { mark: mark });
 
 		// currentContent.update((content) => {
 		// 	if (!content.mark || typeof content.mark !== 'object') {
@@ -121,16 +155,16 @@
 
 	const onChange = (event) => {
 		selectedCourse = courses.get(event.target.value);
-		list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
-		for (const [key, value] of Object.entries(selectedExam.mark)) {
-			list.push({
-				content: {
-					name: studentsIndex[key],
-					mark: studentsIndex[value]
-				},
-				editable: true
-			});
-		}
+		// list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
+		// for (const [key, value] of Object.entries(selectedExam.mark)) {
+		// 	list.push({
+		// 		content: {
+		// 			name: studentsIndex[key],
+		// 			mark: studentsIndex[value]
+		// 		},
+		// 		editable: true
+		// 	});
+		// }
 	};
 </script>
 
@@ -153,11 +187,11 @@
 
 		<div id="date-selection">
 			<label for="start-date">Start : </label>
-			<input type="datetime" name="start-date" id="start-date" />
+			<input bind:value={startDateInput} type="datetime" name="start-date" id="start-date" />
 			<label for="end-date">End : </label>
-			<input type="datetime" name="end-date" id="end-date" />
+			<input bind:value={endDateInput} type="datetime" name="end-date" id="end-date" />
 		</div>
-		<div>
+		<div id="main-inputs">
 			<label for="name-input">Name : </label>
 			<textarea
 				bind:value={nameInput}
@@ -180,6 +214,7 @@
 				on:input={adjustTextareaHeight}
 			></textarea>
 		</div>
+		<!-- <input type="file" name="csv-input" id="csv-input"> GESTION DE CSV A FAIRE APRES AVOIR REMIS GITHUB BIEN  -->
 	{/key}
 </form>
 
@@ -218,12 +253,12 @@
 		margin-top: 3%;
 	}
 
-	.numberInput {
+	/* .numberInput {
 		width: 10%;
 		background-color: rgb(0, 0, 0, 0.5);
 		border-radius: 3px;
 		padding: 3px;
-	}
+	} */
 
 	select {
 		width: 50%;
@@ -246,7 +281,7 @@
 		margin-right: 0.2rem;
 	} */
 
-	ul {
+	/* ul {
 		margin-top: 0.3rem;
 		margin-left: 2rem;
 	}
@@ -262,7 +297,7 @@
 
 	li:hover {
 		cursor: text;
-	}
+	} */
 
 	textarea {
 		resize: none;
