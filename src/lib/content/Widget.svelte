@@ -9,6 +9,13 @@
 	import ScheduleLarge from '$lib/widgets/Schedule_Large.svelte';
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
 
+	import ExamMediumTeacher from '$lib/widgets/teacher/Exam_Medium_Teacher.svelte';
+	import HomeworkTallTeacher from '$lib/widgets/teacher/Homework_Tall_Teacher.svelte';
+	import AverageSmallTeacher from '$lib/widgets/teacher/Average_Small_Teacher.svelte';
+	import MarkTallTeacher from '$lib/widgets/teacher/Mark_Tall_Teacher.svelte';
+	import LastMarksMedium from '$lib/widgets/LastMarks_Medium.svelte';
+	import ScheduleFormFat from '$lib/widgets/teacher/Schedule_Form_Fat.svelte';
+
 	export let content;
 	export let disabled = false;
 
@@ -24,7 +31,12 @@
 		'exam-s': ExamSmall,
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,
-		'schedule-l': ScheduleLarge
+		'schedule-l': ScheduleLarge,
+		'examteacher-m': ExamMediumTeacher,
+		'homeworkteacher-t': HomeworkTallTeacher,
+		'averageteacher-s': AverageSmallTeacher,
+		'markteacher-t': MarkTallTeacher,
+		'scheduleform-f': ScheduleFormFat
 	};
 
 	onMount(() => {

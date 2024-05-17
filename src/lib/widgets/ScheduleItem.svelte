@@ -5,27 +5,31 @@
 	export let location = 'Undefined'; // name of the place (ex: "Amphi L001")
 	export let icon = 'slash-square'; // location of the icon file
 	export let color = 'white'; // background color
-	export let height = '25%'; // height of the item
-	export let pos = '50%'; // vertical position of the item on the schedule
+	export let height = '1'; // height of the item
+	export let pos = '1'; // vertical position of the item on the schedule
 	export let overlap = 1;
-	export let left = '0%';
 
 	let itemRef;
 
 	$: {
 		if (itemRef) {
 			itemRef.style.backgroundColor = color;
-			itemRef.style.height = height;
-			itemRef.style.marginTop = pos;
-			itemRef.style.width = 'calc(80% - (' + overlap + '*10))';
-			itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
+			itemRef.style.gridRow = pos + '/' + (pos - height);
+			itemRef.style.gridColumn = overlap + '/ 12';
+			itemRef.style.zIndex = 2;
+			// itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
 		}
 	}
+
+	function bringToFront(event) {
+		itemRef.style.zIndex += 20;
+	}
+	// peut être juste un dépliage en hover ?
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div id="schedule-item" bind:this={itemRef}>
+<button class="buttonReset" id="schedule-item" bind:this={itemRef} on:click={bringToFront}>
 	<div id="align">
 		<div id="icon"><Icon name={icon} /></div>
 
@@ -34,16 +38,17 @@
 			<p>{location}</p>
 		</div>
 	</div>
-</div>
+</button>
 
 <style>
+	@import '../../global.css';
+
 	#schedule-item {
 		border-radius: 10px;
-		/* width: calc(70% - 30px); to make responsive if multiple items at the same height/time */
 		padding: 10px;
-		z-index: 2;
+		margin-right: 5%;
 		position: relative;
-		margin-left: 45px;
+		filter: saturate(75%);
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */

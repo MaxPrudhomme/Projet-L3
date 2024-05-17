@@ -1,144 +1,171 @@
 * {
-    margin: 0;
-    padding: 0;
-    font-family: 'SFPro-Regular'
+	margin: 0;
+	padding: 0;
+	font-family: 'SFPro-Regular';
 }
 
 html {
-    font-size: 16px;
+	font-size: 16px;
 }
 
 .absolute {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
 }
 
 .glass {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
 }
 
 .noise {
-    background-image: url("../src/lib/misc/assets/noise.png");
+	background-image: url('../src/lib/misc/assets/noise.png');
 }
 
 .buttonReset {
-    border: none;
-    background: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    transition: all 0.5s ease;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	transition: all 0.5s ease;
 }
 
 .input {
-    border: none;
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.45);
-    width: 21rem;
-    height: 3rem;
-    font-size: 18px;
-    padding-left: 15px;
-    box-sizing: border-box;
+	border: none;
+	outline: none;
+	background-color: rgba(255, 255, 255, 0.45);
+	width: 21rem;
+	height: 3rem;
+	font-size: 18px;
+	padding-left: 15px;
+	box-sizing: border-box;
+}
+
+.containerDefault {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+.containerDefault::-webkit-scrollbar {
+	display: none;
+}
+
+.containerDefault::-webkit-scrollbar-thumb {
+	display: none;
 }
 
 .input-top {
-    border-radius: 5px 5px 0px 0px;
+	border-radius: 5px 5px 0px 0px;
 }
 
 .input-bot {
-    border-radius: 0px 0px 5px 5px;
+	border-radius: 0px 0px 5px 5px;
 }
 
 .input-solo {
-    border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
 }
 
 .inputReset {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    margin: 0;
-    padding: 0;
-    font-size: 1rem;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	margin: 0;
+	padding: 0;
+	font-size: 1rem;
+}
+
+.flexRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .widgetTitle {
-    text-align: center;
-    color: rgb(0, 0, 0, 0.5);
-    font-size: large;
-    margin-top: 10px;
+	text-align: center;
+	color: rgb(0, 0, 0, 0.5);
+	font-size: large;
+	margin-top: 10px;
 }
 
 .confirmGreenColor {
-    color : #33FF00;
+	color: #33ff00;
 }
 
 .confirmGreenFilter {
-    filter: brightness(0) saturate(100%) invert(66%) sepia(28%) saturate(3339%) hue-rotate(63deg) brightness(109%) contrast(120%);
+	filter: brightness(0) saturate(100%) invert(66%) sepia(28%) saturate(3339%) hue-rotate(63deg)
+		brightness(109%) contrast(120%);
 }
 
 .alertRedColor {
-    color: #FF3C3C;
+	color: #ff3c3c;
 }
 
 .alertRedFilter {
-    filter: brightness(0) saturate(100%) invert(48%) sepia(92%) saturate(4895%) hue-rotate(340deg) brightness(101%) contrast(102%);
+	filter: brightness(0) saturate(100%) invert(48%) sepia(92%) saturate(4895%) hue-rotate(340deg)
+		brightness(101%) contrast(102%);
+}
+
+.testHighlight {
+	background-color: red;
 }
 
 .confirmBlueColor {
-    color: #3A86FF;
+	color: #3a86ff;
 }
 
 .confirmBlueFilter {
-    filter: brightness(0) saturate(100%) invert(68%) sepia(70%) saturate(6604%) hue-rotate(204deg) brightness(104%) contrast(102%);
+	filter: brightness(0) saturate(100%) invert(68%) sepia(70%) saturate(6604%) hue-rotate(204deg)
+		brightness(104%) contrast(102%);
 }
 
 @font-face {
-    font-family: 'SFPro-Regular';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
+	font-family: 'SFPro-Regular';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYREGULAR.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-Medium';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+	font-family: 'SFPro-Medium';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYMEDIUM.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-Bold';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBOLD.OTF') format('opentype');
+	font-family: 'SFPro-Bold';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBOLD.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-BlackItelic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+	font-family: 'SFPro-BlackItelic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-HeavyItalic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
+	font-family: 'SFPro-HeavyItalic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYHEAVYITALIC.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-LightItalic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
+	font-family: 'SFPro-LightItalic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYLIGHTITALIC.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-SemiBoldItalic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+	font-family: 'SFPro-SemiBoldItalic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-ThinItalic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYTHINITALIC.OTF') format('opentype');
+	font-family: 'SFPro-ThinItalic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYTHINITALIC.OTF') format('opentype');
 }
 
 @font-face {
-    font-family: 'SFPro-UltraLightItalic';
-    src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYULTRALIGHTITALIC.OTF') format('opentype');
+	font-family: 'SFPro-UltraLightItalic';
+	src: url('./lib/misc/fonts/SFPro/SFPRODISPLAYULTRALIGHTITALIC.OTF') format('opentype');
 }

@@ -2,7 +2,7 @@
 	import ScheduleItem from './ScheduleItem.svelte';
 	import Icon from '$lib/Icon.svelte';
 	import { onMount } from 'svelte';
-	import { generateICSContent, parseICSContent } from '$lib/functionics';
+	import { querydb } from '$lib/function';
 	import { currentView, userUid } from '../../store';
 	import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
@@ -69,34 +69,61 @@
 		return dayEvents;
 	}
 
-	eventsArray = parseICSContent(generateICSContent());
-	console.log(eventsArray);
+	function getMonday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
 
-	let course;
-	let courseData;
-	eventsArray.forEach(async (event) => {
-		let endDate = new Date(event.end);
-		let startDate = new Date(event.start);
-		event.start = startDate;
-		event.end = endDate;
+	function getSunday(d) {
+		d = new Date(d);
+		var day = d.getDay(),
+			diff = d.getDate() - day + 7; // adjust when day is sunday
+		return new Date(d.setDate(diff));
+	}
 
-		Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
-
-		let begin = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 8);
-		Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
-
-		try {
-			course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
-			courseData = (await getDoc(course)).data();
-			Object.assign(event, { color: courseData.color });
-			Object.assign(event, { icon: courseData.icon });
-		} catch (error) {
-			console.error('Error fetching documents:', error);
+	onMount(async () => {
+		if ($currentView == 'dashboard') {
+			const userCoursesIds = (
+				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
+			).docs.map(({ id }) => id);
+			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+		} else {
+			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
 		}
-	});
+		console.log(eventsArray);
 
-	events = getSingleDayFromEventsArray(eventsArray);
-	console.log(events);
+		let course;
+		let courseData;
+		eventsArray.forEach(async (event) => {
+			let endDate = new Date(event.end);
+			let startDate = new Date(event.start);
+			event.start = startDate;
+			event.end = endDate;
+
+			Object.assign(event, { height: Math.abs(endDate - startDate) / 1000 / 360 / 2 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
+
+			let begin = new Date(
+				startDate.getFullYear(),
+				startDate.getMonth(),
+				startDate.getDate(),
+				8
+			);
+			Object.assign(event, { pos: Math.abs(begin - startDate) / 1000 / 360 - 6.5 }); // -7% pour compenser la hauteur du titre
+
+			try {
+				course = doc(db, 'courses', '4PSFgCCPpzaOdKChhgyG'); // temporary
+				courseData = (await getDoc(course)).data();
+				Object.assign(event, { color: courseData.color });
+				Object.assign(event, { icon: courseData.icon });
+			} catch (error) {
+				console.error('Error fetching documents:', error);
+			}
+		});
+
+		events = getSingleDayFromEventsArray(eventsArray);
+	});
 
 	function nextItem(event) {
 		if (i < events.length - 1) i++;
@@ -116,7 +143,7 @@
 <div id="container">
 	<h1 id="title">Schedule</h1>
 	<p>{stringDate}</p>
-	{#if events && courseData}
+	{#key events}
 		{#key i}
 			<div id="schedule" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 				<ScheduleItem
@@ -127,7 +154,7 @@
 				></ScheduleItem>
 			</div>
 		{/key}
-	{/if}
+	{/key}
 
 	<div id="arrows">
 		<button class="buttonReset bi-caret-left" on:click={previousItem}>
