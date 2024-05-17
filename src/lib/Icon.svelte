@@ -121,6 +121,11 @@
         height: 32px;
     }
 
+    .s24x24 {
+        width: 24px;
+        height: 24px;
+    }
+
     .s80x80 {
         width: 80px;
         height: 80px;

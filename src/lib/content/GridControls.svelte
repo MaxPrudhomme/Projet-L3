@@ -1,5 +1,5 @@
 <script>
-  import { editMode, widgets, interactionActive, userUid, currentView } from "../../store";
+  import { editMode, widgets, interactionActive, userUid, currentView, widgetEdit } from "../../store";
   import { db } from "$lib/firebase";
   import { doc, updateDoc } from "firebase/firestore";
 
@@ -32,6 +32,7 @@
 
   function browseWidgets() {
     interactionActive.set(true)
+    widgetEdit.set(true)
   }
 </script>
 

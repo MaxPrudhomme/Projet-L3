@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
 
 export const editMode = writable(false);
+export const widgetEdit = writable(false);
+export const courseEdit = writable(false);
 
 export const interactionActive = writable(false);
 

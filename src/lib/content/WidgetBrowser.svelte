@@ -1,7 +1,7 @@
 <script>
     import Widget from "./Widget.svelte";
     import Grid, { GridItem } from 'svelte-grid-extended';
-    import { matrixRepresentation, widgets, interactionActive  } from "../../store";
+    import { matrixRepresentation, widgets, interactionActive, widgetEdit  } from "../../store";
     import { derived } from "svelte/store";
     import { v4 } from "uuid";
 
@@ -104,6 +104,7 @@
 
     function leaveBrowser() {
         interactionActive.set(false)
+        widgetEdit.set(false)
     }
 
     function findAvailablePosition(w, h) {

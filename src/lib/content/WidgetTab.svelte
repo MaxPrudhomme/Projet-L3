@@ -74,6 +74,6 @@
         font-size: 1.2rem;
         text-align: center;
         margin: auto;
-        margin-top: 28%;
+        margin-top: 24.5%;
     }
 </style>

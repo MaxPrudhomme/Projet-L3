@@ -1,17 +1,20 @@
 <script>
-    import { editMode } from "../../store"
+    import { widgetEdit, courseEdit } from "../../store"
     import WidgetBrowser from "./WidgetBrowser.svelte";
+    import CourseBrowser from "./CourseBrowser.svelte";
 </script>
 
 <div id="container" class="absolute">
-    {#if $editMode}
+    {#if $widgetEdit}
         <WidgetBrowser></WidgetBrowser>
+    {:else if $courseEdit}
+        <CourseBrowser></CourseBrowser>
     {/if}
 </div>
 
 <style>
-#container {
-    height: 820px;
-    width: 1800px;
-}
+    #container {
+        height: 50rem;
+        width: 111rem;
+    }
 </style>

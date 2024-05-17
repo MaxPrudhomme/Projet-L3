@@ -45,7 +45,7 @@
 </script>
 
 {#if $interactionActive}
-<div id="configContainer" in:fade={{duration:150, delay:650}} out:fade={{duration: 150}}>
+<div id="configContainer" class="darkGlass" in:fade={{duration:150, delay:650}} out:fade={{duration: 150}}>
     <InteractionContainer></InteractionContainer>
 </div>
 {/if }
@@ -86,7 +86,7 @@
     #configContainer {
         width: 100vw;
         height: 100vh;
-        background-color: rgba(255, 255, 255, 0.3 );
+        background-color: rgba(0, 0, 0, 0.3 );
         backdrop-filter: blur(5px);
         transition: all 0.5s ease;
     }
@@ -95,5 +95,4 @@
         width: 100%;
         height: 100%;
     }    
-
 </style>
