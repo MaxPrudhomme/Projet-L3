@@ -28,7 +28,9 @@
 		const day = String(dateObj.getDate()).padStart(2, '0');
 		const month = String(dateObj.getMonth() + 1).padStart(2, '0');
 		const year = dateObj.getFullYear();
-		return `${day}/${month}/${year}`;
+		const hour = dateObj.getHours();
+		const minutes = dateObj.getMinutes();
+		return `${day}/${month}/${year} - ${hour}:${minutes}`;
 	}
 
 	async function loadContent() {

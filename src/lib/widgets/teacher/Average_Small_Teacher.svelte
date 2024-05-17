@@ -30,10 +30,11 @@
 			}
 		});
 
-		courseAverage =
+		courseAverage = Math.floor(
 			averages.reduce((accumulator, currentValue) => {
 				return accumulator + currentValue;
-			}, 0) / averages.length;
+			}, 0) / averages.length
+		);
 	}
 
 	onMount(async () => {

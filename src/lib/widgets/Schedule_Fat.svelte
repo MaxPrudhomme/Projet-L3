@@ -46,12 +46,12 @@
 
 	function compareHours(event1, event2) {
 		return (
-			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
-			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
-			(event1.end >= event2.start && event1.end <= event2.end) || // event1's end contained within event2
-			(event1.start <= event2.end && event1.end >= event2.end) || // event2's end contained within event1
-			(event1.start <= event2.end && event1.start >= event2.start) || // event1's start contained within event2
-			(event1.end >= event2.start && event1.start <= event2.start)
+			(event1.startDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1 contained within event2
+			(event1.startDate <= event2.startDate && event1.endDate >= event2.endDate) || // event2 contained within event1
+			(event1.endDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1's end contained within event2
+			(event1.startDate <= event2.endDate && event1.endDate >= event2.endDate) || // event2's end contained within event1
+			(event1.startDate <= event2.endDate && event1.startDate >= event2.startDate) || // event1's start contained within event2
+			(event1.endDate >= event2.startDate && event1.startDate <= event2.startDate)
 		); // event2's start contained within event1
 	}
 
@@ -76,7 +76,7 @@
 		let eventsMap = new Map();
 
 		eventsArray.forEach((event) => {
-			let eventDate = dateToString(event.start);
+			let eventDate = dateToString(event.startDate);
 			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
 
 			eventsMap.get(eventDate).push(event);
@@ -130,10 +130,10 @@
 		}
 
 		eventsArray.forEach((event, index, arr) => {
-			let endDate = new Date(event.end);
-			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+			let endDate = new Date(event.endDate);
+			let startDate = new Date(event.startDate);
+			event.startDate = startDate;
+			event.endDate = endDate;
 
 			Object.assign(event, { height: (Math.abs(endDate - startDate) / 1000 / 3600) * 4 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
@@ -148,12 +148,12 @@
 			});
 			Object.assign(event, { overlap: 1 });
 
-			Object.assign(event, { color: courseData[event.summary].color });
-			Object.assign(event, { icon: courseData[event.summary].icon });
+			Object.assign(event, { color: courseData[event.IDcourse].color });
+			Object.assign(event, { icon: courseData[event.IDcourse].icon });
 		});
 
 		eventsArray.sort((eventA, eventB) => {
-			return eventA.start - eventB.start;
+			return eventA.startDate - eventB.startDate;
 		});
 
 		calculateOverlap(eventsArray);

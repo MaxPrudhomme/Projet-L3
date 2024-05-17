@@ -136,7 +136,7 @@
 			<!-- AJOUTER LA SAISIE DE L'HEURE EXACTE -->
 			<input
 				class="dueText inputReset"
-				type="date"
+				type="datetime-local"
 				min={`${year}-${month}-${day}`}
 				bind:value={dueDate}
 			/>

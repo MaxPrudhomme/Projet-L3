@@ -119,11 +119,11 @@
 		// 	markContainer.style.display = 'none';
 		// }
 
-		if (!startDateInputDate) {
+		if (!startDateInput) {
 			alert('Please select a start date and time.');
 			return;
 		}
-		if (!endDateInputDate) {
+		if (!endDateInput) {
 			alert('Please select an end date and time.');
 			return;
 		}
@@ -136,18 +136,26 @@
 		let detailsValue = '';
 		let locationValue = '';
 
-		if (nameInput.value.trim() !== '') {
-			nameValue = nameInput.value.trim();
+		if (nameField.value.trim() !== '') {
+			nameValue = nameField.value.trim();
 		}
-		if (detailsInput.value.trim() !== '') {
-			detailsValue = detailsInput.value.trim();
+		if (detailsField.value.trim() !== '') {
+			detailsValue = detailsField.value.trim();
 		}
-		if (locationInput.value.trim() !== '') {
-			locationValue = locationInput.value.trim();
+		if (locationField.value.trim() !== '') {
+			locationValue = locationField.value.trim();
 		}
 
 		let startDate = new Date(startDateInput);
 		let endDate = new Date(endDateInput);
+
+		if (startDate > endDate) {
+			alert('The end date and time cannot come before the start date and time.');
+			return;
+		} else if (startDate == endDate) {
+			alert('The start and end dates and times cannot be identical.');
+			return;
+		}
 
 		const newScheduleItem = {
 			summary: nameValue,
@@ -160,6 +168,8 @@
 
 		// TODOTODO : check if scheduleItem already exists, if so do an update not an insert
 		insertdb([newScheduleItem]);
+
+		emptyForm();
 
 		// const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
 		// const targetSnapshot = await getDoc(targetRef);
