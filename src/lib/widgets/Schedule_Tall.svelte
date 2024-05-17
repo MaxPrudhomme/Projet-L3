@@ -47,6 +47,7 @@
 	}
 
 	function compareHours(event1, event2) {
+		// compares 2 dates
 		return (
 			(event1.startDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1 contained within event2
 			(event1.startDate <= event2.startDate && event1.endDate >= event2.endDate) || // event2 contained within event1
@@ -58,12 +59,13 @@
 	}
 
 	function dateToString(date) {
+		// transfrom a Date into a string
 		return (
 			weekday[date.getDay()] +
 			' - ' +
 			date.getDate() +
 			'/' +
-			date.getMonth() +
+			(date.getMonth() + 1) +
 			'/' +
 			date.getFullYear()
 		);
@@ -85,6 +87,7 @@
 	}
 
 	function calculateOverlap(array) {
+		// calculates the overlap between items based on their timestamps
 		for (let i = 0; i < array.length - 1; i++) {
 			if (compareHours(array[i], array[i + 1])) {
 				array[i + 1].overlap = array[i].overlap + 1;
@@ -93,6 +96,7 @@
 	}
 
 	function getMonday(d) {
+		// gets monday's date of current week
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
@@ -100,6 +104,7 @@
 	}
 
 	function getSunday(d) {
+		// gets sunday's date of current week
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + 7; // adjust when day is sunday
@@ -161,11 +166,14 @@
 		calculateOverlap(eventsArray);
 
 		events = new Map(convertEventsArrayToMap(eventsArray));
+
+		console.log(events);
 	});
 
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
+		// switch to next day
 		currentDate.setDate(currentDate.getDate() + 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = 300;
@@ -173,6 +181,7 @@
 	}
 
 	function previousDay(event) {
+		// switch to previous day
 		currentDate.setDate(currentDate.getDate() - 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = -300;
