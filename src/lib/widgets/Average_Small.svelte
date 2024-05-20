@@ -8,27 +8,32 @@
 	let maxScore = 100;
 
 	onMount(async () => {
-		try {
-			let examRef = collection(db, 'courses', $currentView, 'exam');
-			let examSnapshot = await getDocs(examRef);
+		if ($currentView != 'dashboard') {
+			try {
+				let examRef = collection(db, 'courses', $currentView, 'exam');
+				let examSnapshot = await getDocs(examRef);
 
-			let counter = 0;
+				let counter = 0;
 
-			examSnapshot.forEach((exam) => {
-				const data = exam.data();
-				if (JSON.stringify(data.mark) !== '{}') {
-					if (data.mark[$userUid] != 0) {
-						average += (data.mark[$userUid] / data.maxMark) * maxMark; // standardise the mark to be out of 100
-						counter++;
+				examSnapshot.forEach((exam) => {
+					const data = exam.data();
+					if (JSON.stringify(data.mark) !== '{}') {
+						if (data.mark[$userUid] != 0) {
+							average += (data.mark[$userUid] / data.maxMark) * maxMark; // standardise the mark to be out of 100
+							counter++;
+						}
+						maxScore = data.maxMark;
 					}
-					maxScore = data.maxMark;
-				}
-			});
-		} catch (error) {
-			console.error('Error fetching documents:', error);
-		}
+				});
+			} catch (error) {
+				console.error('Error fetching documents:', error);
+			}
 
-		average /= counter;
+			average /= counter;
+		} else {
+			average = $currentContent.average[0];
+			maxScore = $currentContent.average[1];
+		}
 	});
 
 	// $: {
