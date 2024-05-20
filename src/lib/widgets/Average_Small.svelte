@@ -1,20 +1,47 @@
 <script>
-	import { currentContent } from '../../store';
+	import { onMount } from 'svelte';
+	import { currentContent, currentView, userUid } from '../../store';
+	import { collection, getDocs } from 'firebase/firestore';
+	import { db } from '$lib/firebase';
 
-	let score = null;
-	let maxScore = null;
+	let average = 0;
+	let maxScore = 100;
 
-	$: {
-		if ($currentContent && $currentContent['average']) {
-			score = $currentContent['average'][0];
-			maxScore = $currentContent['average'][1];
+	onMount(async () => {
+		try {
+			let examRef = collection(db, 'courses', $currentView, 'exam');
+			let examSnapshot = await getDocs(examRef);
+
+			let counter = 0;
+
+			examSnapshot.forEach((exam) => {
+				const data = exam.data();
+				if (JSON.stringify(data.mark) !== '{}') {
+					if (data.mark[$userUid] != 0) {
+						average += (data.mark[$userUid] / data.maxMark) * maxMark; // standardise the mark to be out of 100
+						counter++;
+					}
+					maxScore = data.maxMark;
+				}
+			});
+		} catch (error) {
+			console.error('Error fetching documents:', error);
 		}
-	}
+
+		average /= counter;
+	});
+
+	// $: {
+	// 	if ($currentContent && $currentContent['average']) {
+	// 		score = $currentContent['average'][0];
+	// 		maxScore = $currentContent['average'][1];
+	// 	}
+	// }
 </script>
 
 <div id="container">
 	<p class="widgetTitle">Average</p>
-	<p id="average">{score}</p>
+	<p id="average">{average}</p>
 	<p id="out-of">/{maxScore}</p>
 </div>
 
