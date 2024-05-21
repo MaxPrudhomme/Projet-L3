@@ -15,18 +15,20 @@
 	};
 
 	let marks = new Map();
-	let firstSemesterMarks = new Map(); // comment qu'on fait pour choper les dates de semestre ?
-	let secondSemesterMarks = new Map(); // demander à Max
+	// marks are separated between each semester (to avoid a single massive list)
+	let firstSemesterMarks = new Map();
+	let secondSemesterMarks = new Map();
 	onMount(async () => {
+		// fetches all of the student's marks for the cours
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);
-			// let rootCourseRef = await getDocs(collection(db, 'courses', $currentView));
-			// let schoolData = await getSchoolDataById(await getDocs(rootCourseRef).school);
+
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
 				if (JSON.stringify(data.mark) !== '{}') {
+					// minor data formatting
 					data['mark'] = data['mark'][$userUid];
 					let date = new Date(data['date'].seconds * 1000);
 					data['date'] =
@@ -40,6 +42,7 @@
 			let k = 0;
 			let l = 0;
 			marks.forEach((mark) => {
+				// assign each mark to its semester
 				if (mark.semester == 1) {
 					firstSemesterMarks.set(k, mark);
 					k++;
@@ -52,13 +55,22 @@
 			console.error('Error fetching documents:', error);
 		}
 
-		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
+		let sortedMarksOne = [...firstSemesterMarks].sort(([idA, dataA], [idB, dataB]) => {
+			// sorts marks
 			const dateA = new Date(dataA.date.seconds * 1000);
 			const dateB = new Date(dataB.date.seconds * 1000);
 
 			return dateA - dateB;
 		});
-		marks = new Map(sortedMarks);
+		let sortedMarksTwo = [...secondSemesterMarks].sort(([idA, dataA], [idB, dataB]) => {
+			// sorts marks
+			const dateA = new Date(dataA.date.seconds * 1000);
+			const dateB = new Date(dataB.date.seconds * 1000);
+
+			return dateA - dateB;
+		});
+		firstSemesterMarks = new Map(sortedMarksOne);
+		secondSemesterMarks = new Map(sortedMarksTwo);
 		currentSemester = 1;
 	});
 
@@ -68,21 +80,7 @@
 <div id="container">
 	<h1 class="widgetTitle">Marks</h1>
 
-	<!-- <div id="display">
-		{#key currentSemester}
-			{#if currentSemester == 1}
-				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
-					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each}
-			{/if}
-			{#if currentSemester == 2}
-				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
-					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each}
-			{/if}
-		{/key}
-	</div> -->
-
+	<!-- display of marks (changes when another semester is selected) -->
 	{#key currentSemester}
 		<div id="display" in:fade={{ delay: 250, duration: 300 }}>
 			<!-- transition foireuse sur le out -->
@@ -99,6 +97,7 @@
 		</div>
 	{/key}
 
+	<!-- semester change button -->
 	<div id="periods">
 		<button
 			on:click={() => {
