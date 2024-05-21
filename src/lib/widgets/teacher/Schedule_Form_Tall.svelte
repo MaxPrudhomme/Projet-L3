@@ -1,26 +1,13 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent, userUid } from '../../../store';
-	import {
-		collection,
-		getDocs,
-		query,
-		orderBy,
-		doc,
-		updateDoc,
-		setDoc,
-		getDoc
-	} from 'firebase/firestore';
-	import { v4 } from 'uuid';
-	import { Timestamp } from 'firebase/firestore';
+	import { userUid } from '../../../store';
+	import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { parse } from 'csv';
 	import { insertdb, updatedb, querydb } from '$lib/function';
 
-	let list = [];
-	let date;
 	let nameInput;
 	let detailsInput;
 	let locationInput;
@@ -38,12 +25,14 @@
 	let courses = new Map();
 
 	async function loadContent() {
+		// fetch relevant content from backend (ie. the marks of all students from every exam)
 		try {
 			const courseRef = collection(db, 'users', $userUid, 'userCourses');
 			const courseSnapshot = await getDocs(courseRef);
+
 			const studentRef = doc(db, 'users', 'index');
 			const studentSnapshot = await getDoc(studentRef);
-			studentsIndex = studentSnapshot.data();
+			studentsIndex = studentSnapshot.data(); // list of students and their IDs
 
 			courseSnapshot.forEach((doc) => {
 				let data = doc.data();
@@ -52,27 +41,15 @@
 			});
 
 			courses = new Map(courses);
-			console.log(courses);
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
 	}
 
 	onMount(async () => {
+		// content loading done in the onMount
 		await loadContent();
 	});
-
-	// function handleKeyDown(event) {
-	// 	if (event.key === 'Enter') {
-	// 		event.preventDefault();
-	// 		if (markInput.value.trim() !== '') {
-	// 			const content = markInput.value.trim();
-	// 			list = [...list, { content, editable: false }];
-	// 			markInput.value = '';
-	// 			markInput.focus();
-	// 		}
-	// 	}
-	// }
 
 	const processFile = async () => {
 		const records = [];
@@ -90,6 +67,7 @@
 	};
 
 	function adjustTextareaHeight(event) {
+		// function to dynamically adjust the height of a textarea depending on the amount of text within
 		const textarea = event.target;
 		textarea.style.height = 'auto';
 		textarea.style.height = `${textarea.scrollHeight}px`;
@@ -99,6 +77,7 @@
 		return Object.keys(object).find((key) => object[key] === value);
 	}
 
+	// input fields variables
 	let nameField;
 	let detailsField;
 	let startDateField;
@@ -106,6 +85,7 @@
 	let locationField;
 
 	function emptyForm() {
+		// empties form inputs
 		nameField.value = '';
 		detailsField.value = '';
 		startDateField.value = '';
@@ -114,11 +94,9 @@
 	}
 
 	async function submitSchedule() {
-		// if (markInput.value !== null) {
-		// 	list = [...list, { content: markInput.value.trim(), editable: false }];
-		// 	markContainer.style.display = 'none';
-		// }
+		// checks if all the inputs are correct and sends the data to Firebase if so
 
+		// check if minimum necessary content is filled
 		if (!startDateInput) {
 			alert('Please select a start date and time.');
 			return;
@@ -132,6 +110,7 @@
 			return;
 		}
 
+		// puts text inputs values in strings
 		let nameValue = '';
 		let detailsValue = '';
 		let locationValue = '';
@@ -146,6 +125,7 @@
 			locationValue = locationField.value.trim();
 		}
 
+		// checks if dates are in the right order and that the length of the item is larger than 0
 		let startDate = new Date(startDateInput);
 		let endDate = new Date(endDateInput);
 
@@ -157,6 +137,7 @@
 			return;
 		}
 
+		// creates proper item to send to backend
 		const newScheduleItem = {
 			summary: nameValue,
 			description: detailsValue,
@@ -169,20 +150,7 @@
 		// TODOTODO : check if scheduleItem already exists, if so do an update not an insert
 		insertdb([newScheduleItem]);
 
-		emptyForm();
-
-		// const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
-		// const targetSnapshot = await getDoc(targetRef);
-
-		// await updateDoc(targetRef, { mark: mark });
-
-		// currentContent.update((content) => {
-		// 	if (!content.mark || typeof content.mark !== 'object') {
-		// 		content.mark = {};
-		// 	}
-		// 	content.mark[markId] = mark;
-		// 	return content;
-		// });
+		emptyForm(); // empties form after finishing
 	}
 
 	let selectedId;
@@ -190,19 +158,9 @@
 	let ID;
 
 	const onChange = (event) => {
+		// sets in ID which course is selected to add an item to
 		selectedCourse = courses.get(event.target.value);
 		ID = event.target.value;
-		console.log(ID);
-		// list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
-		// for (const [key, value] of Object.entries(selectedExam.mark)) {
-		// 	list.push({
-		// 		content: {
-		// 			name: studentsIndex[key],
-		// 			mark: studentsIndex[value]
-		// 		},
-		// 		editable: true
-		// 	});
-		// }
 	};
 </script>
 
@@ -211,12 +169,14 @@
 		<h1 class="widgetTitle">Schedule Form</h1>
 		<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
 	</div>
+
 	{#key courses}
 		<div id="top" class="simpleFlexRow">
 			<button class="buttonReset" on:click={submitSchedule}>
 				<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 			</button>
 			<select name="examSelect" id="examSelect" on:change={onChange} bind:value={selectedId}>
+				<!-- selection of the course -->
 				{#each [...courses] as [id, tag]}
 					<option value={id}>{tag}</option>
 				{/each}
@@ -224,6 +184,7 @@
 		</div>
 
 		<div id="main-inputs">
+			<!-- selection of the dates -->
 			<label for="start-date">Start : </label>
 			<input
 				bind:value={startDateInput}
@@ -243,7 +204,9 @@
 				id="end-date"
 				class="inputReset"
 			/>
+			<!-- --------------------- -->
 
+			<!-- name, details and location inputs -->
 			<label for="name-input">Name : </label>
 			<textarea
 				bind:value={nameInput}
@@ -271,7 +234,9 @@
 		</div>
 		<!-- <input type="file" name="csv-input" id="csv-input"> GESTION DE CSV A FAIRE APRES AVOIR REMIS GITHUB BIEN  -->
 	{/key}
+
 	<button class="buttonReset" id="cancelButton" on:click={emptyForm}>
+		<!-- reset button -->
 		<Icon name={'plus-circle-dotted'} class={'s36x36 t500'}></Icon>
 	</button>
 </form>
@@ -330,13 +295,6 @@
 		transform: rotate(45deg);
 	}
 
-	/* .numberInput {
-		width: 10%;
-		background-color: rgb(0, 0, 0, 0.5);
-		border-radius: 3px;
-		padding: 3px;
-	} */
-
 	select {
 		width: 25%;
 		text-align-last: center;
@@ -346,36 +304,6 @@
 		font-size: large;
 		margin-top: 1rem;
 	}
-
-	/* .dueText {
-		font-size: 1.3rem;
-		margin-top: 0.2rem;
-		height: 1.5rem;
-		transition: all 0.15s ease;
-	}
-
-	#dueLabel {
-		margin-left: 0.5rem;
-		margin-right: 0.2rem;
-	} */
-
-	/* ul {
-		margin-top: 0.3rem;
-		margin-left: 2rem;
-	}
-
-	li {
-		width: 90%;
-		overflow-wrap: break-word;
-	}
-
-	li > * {
-		vertical-align: text-top;
-	}
-
-	li:hover {
-		cursor: text;
-	} */
 
 	textarea {
 		resize: none;

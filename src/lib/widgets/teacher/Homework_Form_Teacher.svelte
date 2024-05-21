@@ -1,8 +1,8 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, updateDoc, setDoc } from 'firebase/firestore';
+	import { currentView, currentContent } from '../../../store';
+	import { doc, setDoc } from 'firebase/firestore';
 	import { v4 } from 'uuid';
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
@@ -10,7 +10,7 @@
 	export let refresh;
 	export let state;
 
-	let list = [];
+	let list = []; // list of tasks
 	let dueDate;
 	let taskInput;
 	let taskContainer;
@@ -22,6 +22,7 @@
 	const year = today.getFullYear();
 
 	function handleKeyDown(event) {
+		// adds an item to the list of tasks when 'Enter' is pressed
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			if (taskInput.value.trim() !== '') {
@@ -34,34 +35,27 @@
 	}
 
 	function toggleEdit(index) {
+		// makes a single task editable
 		list[index].editable = !list[index].editable;
 	}
 
 	function handleKeyDownForEdit(event, index) {
+		// toggle edit for a specific task when 'Enter' is pressed
 		if (event.key === 'Enter') {
 			toggleEdit(index);
 		}
 	}
 
 	function adjustTextareaHeight(event) {
+		// function to dynamically adjust the height of a textarea depending on the amount of text within
 		const textarea = event.target;
 		textarea.style.height = 'auto';
 		textarea.style.height = `${textarea.scrollHeight}px`;
 	}
 
-	function makeid() {
-		let result = '';
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const charactersLength = characters.length;
-		let counter = 0;
-		while (counter < 20) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-			counter += 1;
-		}
-		return result;
-	}
-
 	async function submitHomework() {
+		// checks if all the inputs are correct and sends the data to Firebase if so
+
 		if (!dueDate) {
 			alert('Please select a due date.');
 			return;
@@ -77,9 +71,9 @@
 			return;
 		}
 
-		const targetRef = doc(db, 'courses', $currentView, 'homework', makeid());
+		const targetRef = doc(db, 'courses', $currentView, 'homework', v4());
 
-		const tasks = list.map((task) => task.content);
+		const tasks = list.map((task) => task.content); // fetches only the content of the tasks from list
 
 		const newHomework = {
 			author: false,
@@ -123,6 +117,7 @@
 		{#each list as task, index}
 			<li>
 				{#if task.editable}
+					<!-- treats task as textarea if it is editable -->
 					<textarea
 						bind:value={task.content}
 						class="inputReset"
@@ -130,6 +125,7 @@
 						on:input={adjustTextareaHeight}
 					></textarea>
 				{:else}
+					<!-- else just display it -->
 					<span
 						role="button"
 						on:click={() => toggleEdit(index)}
@@ -140,6 +136,7 @@
 			</li>
 		{/each}
 		<li bind:this={taskContainer}>
+			<!-- textarea for new tasks -->
 			<textarea
 				bind:this={taskInput}
 				class="inputReset"

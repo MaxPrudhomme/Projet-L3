@@ -1,6 +1,6 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
-	import { collection, doc, getDoc } from 'firebase/firestore';
+	import { doc, getDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 	import { onMount } from 'svelte';
 
@@ -18,17 +18,20 @@
 	let average = 0;
 
 	let counter = 0;
+
 	onMount(async () => {
+		// calculates class average for the exam and makes a list of student-mark pairs
+
+		let userRef = doc(db, 'users', 'index');
+		let userSnapshot = await getDoc(userRef);
+		let data = userSnapshot.data();
+
 		Object.entries(marks).forEach(async ([id, mark]) => {
 			average += (mark / maxMark) * 100; // standardise the mark to be out of 100
 			counter++;
 
 			try {
-				// créer un index pour choper les noms (pour éviter la branlée de requêtes)
-				let userRef = doc(db, 'users', id);
-				let userSnapshot = await getDoc(userRef);
-				let data = userSnapshot.data();
-				studentNames.set(counter - 1, data.name.first + ' ' + data.name.last);
+				studentNames.set(counter - 1, data[id]);
 			} catch (error) {
 				console.error('Error fetching documents:', error);
 			}
@@ -59,6 +62,7 @@
 					}
 				}}><Icon name="arrow-box" width="50" height="50" /></button
 			>
+			<!-- animated button to extend item -->
 		</div>
 
 		{#key studentNames}

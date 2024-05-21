@@ -1,13 +1,15 @@
 <script>
 	import MarkItem_Teacher from './MarkItem_Teacher.svelte';
 	import MarkFormTeacher from './Mark_Form_Teacher.svelte';
-	import { currentContent, currentView, userUid } from '../../../store';
+
+	import { currentView } from '../../../store';
 	import { onMount } from 'svelte';
-	import { collection, doc, getDocs } from 'firebase/firestore';
+	import { collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 	import { fade } from 'svelte/transition';
 	import Icon from '$lib/Icon.svelte';
 	import { writable } from 'svelte/store';
+
 	export const state = writable(false);
 	export const refresh = writable(false);
 
@@ -20,16 +22,15 @@
 	};
 
 	let marks = new Map();
-	let firstSemesterMarks = new Map(); // comment qu'on fait pour choper les dates de semestre ?
-	let secondSemesterMarks = new Map(); // demander à Max
 	onMount(async () => {
+		// fetch relevant content from backend (ie. the marks of all students from every exam)
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);
-			// let rootCourseRef = await getDocs(collection(db, 'courses', $currentView));
-			// let schoolData = await getSchoolDataById(await getDocs(rootCourseRef).school);
+
 			let j = 0;
 			courseSnapshot.forEach((doc) => {
+				// go through each exam to assign its data to marks
 				const data = doc.data();
 				if (JSON.stringify(data.mark) !== '{}') {
 					// ignores unmarked exams
@@ -40,24 +41,13 @@
 					j++;
 				}
 			});
-			marks = new Map(marks);
-
-			let k = 0;
-			let l = 0;
-			marks.forEach((mark) => {
-				if (mark.semester == 1) {
-					firstSemesterMarks.set(k, mark);
-					k++;
-				} else {
-					secondSemesterMarks.set(l, mark);
-					l++;
-				}
-			});
+			marks = new Map(marks); // doing this is somehow necessary for the data to properly get out of onMount
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
 
 		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
+			// sort marks by date
 			const dateA = new Date(dataA.date.seconds * 1000);
 			const dateB = new Date(dataB.date.seconds * 1000);
 
@@ -78,25 +68,10 @@
 		<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
 	</div>
 
-	<!-- <div id="display">
-		{#key currentSemester}
-			{#if currentSemester == 1}
-				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
-					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each}
-			{/if}
-			{#if currentSemester == 2}
-				{#each [...marks] as [id, { date, mark, maxMark, details, name }]}
-					<MarkItem {mark} {maxMark} {date} {details} {name}></MarkItem>
-				{/each}
-			{/if}
-		{/key}
-	</div> -->
-
 	{#key currentSemester}
 		<div id="display" in:fade={{ delay: 250, duration: 300 }}>
-			<!-- transition foireuse sur le out -->
 			{#if !$state}
+				<!-- checks if form is requested, if not display marks normally -->
 				{#each [...marks] as [id, { date, details, mark, maxMark, name, semester }]}
 					<MarkItem_Teacher marks={mark} {maxMark} {date} {name} {semester}
 					></MarkItem_Teacher>
@@ -177,30 +152,6 @@
 			opacity: 0;
 		}
 	}
-
-	/* #title {
-		text-align: center;
-		align-self: center;
-		font-family: 'SF Pro Display';
-		font-weight: normal;
-		color: rgb(0, 0, 0, 0.5);
-		font-size: 20px;
-		margin-top: 10px;
-		margin-bottom: 20px;
-	} */
-
-	/* #periods {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		border-top: 1px solid rgb(0, 0, 0, 0.5);
-		vertical-align: bottom;
-		padding-top: 5px;
-		padding-left: 20%;
-		padding-right: 20%;
-		margin-left: 5%;
-		margin-right: 5%;
-	} */
 
 	button {
 		background: none;

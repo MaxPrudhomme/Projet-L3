@@ -9,11 +9,8 @@
 		orderBy,
 		doc,
 		updateDoc,
-		setDoc,
 		getDoc
 	} from 'firebase/firestore';
-	import { v4 } from 'uuid';
-	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { parse } from 'csv';
@@ -37,6 +34,7 @@
 	let exams = new Map();
 
 	async function loadContent() {
+		// fetch relevant content from backend (ie. the marks of all students from every exam)
 		let existingExam = $currentContent['exam'];
 
 		if (existingExam) {
@@ -47,22 +45,16 @@
 			});
 		}
 
-		// const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
-		// await updateDoc(targetRef, {
-		// 	exam: existingExam
-		// });
-
 		try {
 			const courseRef = collection(db, 'courses', $currentView, 'exam');
 			const q = query(courseRef, orderBy('date'));
 			const querySnapshot = await getDocs(q);
 			const studentRef = doc(db, 'users', 'index');
 			const studentSnapshot = await getDoc(studentRef);
-			studentsIndex = studentSnapshot.data();
+			studentsIndex = studentSnapshot.data(); // studentsIndex is a list of every student with their Firebase ID
 
 			querySnapshot.forEach((doc) => {
 				let data = doc.data();
-				// data['date'] = new Date(data['date'].seconds * 1000);
 				exams.set(doc.id, data);
 			});
 
@@ -81,19 +73,8 @@
 		await loadContent();
 	});
 
-	// function handleKeyDown(event) {
-	// 	if (event.key === 'Enter') {
-	// 		event.preventDefault();
-	// 		if (markInput.value.trim() !== '') {
-	// 			const content = markInput.value.trim();
-	// 			list = [...list, { content, editable: false }];
-	// 			markInput.value = '';
-	// 			markInput.focus();
-	// 		}
-	// 	}
-	// }
-
 	const processFile = async () => {
+		// function to process CSV files into data
 		const records = [];
 		const parser = fs.createReadStream(`${__dirname}/fs_read.csv`).pipe(
 			// REPLACE BY FILE UPLOADED
@@ -118,43 +99,23 @@
 		}
 	}
 
-	function adjustTextareaHeight(event) {
-		const textarea = event.target;
-		textarea.style.height = 'auto';
-		textarea.style.height = `${textarea.scrollHeight}px`;
-	}
-
 	function getKeyByValue(object, value) {
+		// returns the key for a specific value
 		return Object.keys(object).find((key) => object[key] === value);
 	}
 
 	async function submitMark() {
-		// if (markInput.value !== null) {
-		// 	list = [...list, { content: markInput.value.trim(), editable: false }];
-		// 	markContainer.style.display = 'none';
-		// }
-
 		const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
 		const targetSnapshot = await getDoc(targetRef);
 
 		let mark = new Object();
 		list.forEach((item) => {
-			mark[getKeyByValue(studentsIndex, item.content.name)] = item.content.mark;
+			mark[getKeyByValue(studentsIndex, item.content.name)] = item.content.mark; // assign the mark to the firebase ID of the student
 		});
-		console.log(mark);
-		console.log(studentsIndex);
 
 		await updateDoc(targetRef, { mark: mark });
 		refresh.set(true);
 		state.set(false);
-
-		// currentContent.update((content) => {
-		// 	if (!content.mark || typeof content.mark !== 'object') {
-		// 		content.mark = {};
-		// 	}
-		// 	content.mark[markId] = mark;
-		// 	return content;
-		// });
 	}
 
 	let selectedId;
@@ -214,15 +175,6 @@
 					{/if}
 				</li>
 			{/each}
-			<!-- <li bind:this={markContainer}>
-				<textarea
-					bind:this={markInput}
-					class="inputReset"
-					placeholder="Add a mark"
-					on:keydown={handleKeyDown}
-					on:input={adjustTextareaHeight}
-				></textarea>
-			</li> -->
 		</ul>
 	{/key}
 </form>
@@ -258,18 +210,6 @@
 		text-align-last: center;
 	}
 
-	/* .dueText {
-		font-size: 1.3rem;
-		margin-top: 0.2rem;
-		height: 1.5rem;
-		transition: all 0.15s ease;
-	}
-
-	#dueLabel {
-		margin-left: 0.5rem;
-		margin-right: 0.2rem;
-	} */
-
 	ul {
 		margin-top: 0.3rem;
 		margin-left: 2rem;
@@ -288,13 +228,6 @@
 		cursor: text;
 	}
 
-	/* textarea {
-		resize: none;
-		overflow-y: hidden;
-		overflow-wrap: break-word;
-		width: 100%;
-	} */
-
 	/* REMOVE ARROWS FROM NUMBER INPUT */
 	/* Chrome, Safari, Edge, Opera */
 	input::-webkit-outer-spin-button,
@@ -305,6 +238,7 @@
 
 	/* Firefox */
 	input[type='number'] {
+		/* ignore error */
 		-moz-appearance: textfield;
 	}
 </style>

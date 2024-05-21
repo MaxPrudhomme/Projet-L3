@@ -8,7 +8,9 @@
 	let maxScore = 100;
 
 	onMount(async () => {
+		// fetches all the user's marks on Firebase and calculate the average
 		if ($currentView != 'dashboard') {
+			// if widget on a specific course, only the average for this course is calculated
 			try {
 				let examRef = collection(db, 'courses', $currentView, 'exam');
 				let examSnapshot = await getDocs(examRef);
@@ -31,17 +33,11 @@
 
 			average /= counter;
 		} else {
+			// else we take the general hard-coded average
 			average = $currentContent.average[0];
 			maxScore = $currentContent.average[1];
 		}
 	});
-
-	// $: {
-	// 	if ($currentContent && $currentContent['average']) {
-	// 		score = $currentContent['average'][0];
-	// 		maxScore = $currentContent['average'][1];
-	// 	}
-	// }
 </script>
 
 <div id="container">
