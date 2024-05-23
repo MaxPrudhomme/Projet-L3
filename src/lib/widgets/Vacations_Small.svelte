@@ -1,5 +1,25 @@
 <script>
-	export let vacationsDate; // as a string in the form of "01/01/2024"
+	import { onMount } from 'svelte';
+	import { currentView, currentContent, userUid } from '../../store';
+	import { doc, getDoc } from 'firebase/firestore';
+	import { db } from '$lib/firebase';
+
+	let vacationsDate;
+
+	onMount(async () => {
+		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().schools;
+		let vacations = [];
+
+		userSchools.forEach(async (schoolRef) => {
+			let schoolVacations = (await getDoc(doc(db, 'schools', schoolRef.path))).data()
+				.vacations;
+			schoolVacations.forEach((vacation) => {
+				vacations.push(vacation);
+			});
+		});
+
+		console.log(schoolsVacations);
+	});
 
 	vacationsDate = vacationsDate.split('/');
 	let actualVacationsDate = new Date(vacationsDate[2], vacationsDate[1], vacationsDate[0]);

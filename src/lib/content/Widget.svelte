@@ -8,6 +8,7 @@
 	import ScheduleFat from '$lib/widgets/Schedule_Fat.svelte';
 	import ScheduleLarge from '$lib/widgets/Schedule_Large.svelte';
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
+	import VacationsSmall from '$lib/widgets/Vacations_Small.svelte';
 
 	import ExamMediumTeacher from '$lib/widgets/teacher/Exam_Medium_Teacher.svelte';
 	import HomeworkTallTeacher from '$lib/widgets/teacher/Homework_Tall_Teacher.svelte';
@@ -29,9 +30,12 @@
 		'lastmark-l': MarkLarge,
 		'marks-t': MarkTall,
 		'exam-s': ExamSmall,
+		'vacation-s': VacationsSmall,
+
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,
 		'schedule-l': ScheduleLarge,
+
 		'examteacher-m': ExamMediumTeacher,
 		'homeworkteacher-t': HomeworkTallTeacher,
 		'averageteacher-s': AverageSmallTeacher,

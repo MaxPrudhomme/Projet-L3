@@ -33,8 +33,11 @@
 					let date = new Date(data['date'].seconds * 1000);
 					data['date'] =
 						date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
-					marks.set(j, data);
-					j++;
+
+					if (data.mark != 0) {
+						marks.set(j, data);
+						j++;
+					}
 				}
 			});
 			marks = new Map(marks);

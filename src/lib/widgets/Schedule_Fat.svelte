@@ -45,14 +45,12 @@
 	}
 
 	function compareHours(event1, event2) {
+		// compares 2 dates and returns if there is an overlap between the two
 		return (
-			(event1.startDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1 contained within event2
-			(event1.startDate <= event2.startDate && event1.endDate >= event2.endDate) || // event2 contained within event1
-			(event1.endDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1's end contained within event2
-			(event1.startDate <= event2.endDate && event1.endDate >= event2.endDate) || // event2's end contained within event1
-			(event1.startDate <= event2.endDate && event1.startDate >= event2.startDate) || // event1's start contained within event2
-			(event1.endDate >= event2.startDate && event1.startDate <= event2.startDate)
-		); // event2's start contained within event1
+			Math.min(event1.endDate, event2.endDate) -
+				Math.max(event1.startDate, event2.startDate) >
+			0
+		);
 	}
 
 	function dateToString(date) {
@@ -111,10 +109,12 @@
 	/////////// DATA FETCHING AND TREATMENT //////////
 	onMount(async () => {
 		if ($currentView == 'dashboard') {
+			// if widget is on dashboard, load all the schedule items, else only load the items of the viewed course
 			const userCoursesIds = (
 				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
 			).docs.map(({ id }) => id);
-			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+
+			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds); // preloads the data for the entire week
 		} else {
 			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
 		}
@@ -123,7 +123,8 @@
 		let course;
 		let courseData;
 		try {
-			course = doc(db, 'courses', 'courseInfos'); // temporary
+			// fetching data specific to the courses from Firebase
+			course = doc(db, 'courses', 'courseInfos');
 			courseData = (await getDoc(course)).data();
 		} catch (error) {
 			console.error('Error fetching documents:', error);

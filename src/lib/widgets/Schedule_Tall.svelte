@@ -47,15 +47,12 @@
 	}
 
 	function compareHours(event1, event2) {
-		// compares 2 dates
+		// compares 2 dates and returns if there is an overlap between the two
 		return (
-			(event1.startDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1 contained within event2
-			(event1.startDate <= event2.startDate && event1.endDate >= event2.endDate) || // event2 contained within event1
-			(event1.endDate >= event2.startDate && event1.endDate <= event2.endDate) || // event1's end contained within event2
-			(event1.startDate <= event2.endDate && event1.endDate >= event2.endDate) || // event2's end contained within event1
-			(event1.startDate <= event2.endDate && event1.startDate >= event2.startDate) || // event1's start contained within event2
-			(event1.endDate >= event2.startDate && event1.startDate <= event2.startDate)
-		); // event2's start contained within event1
+			Math.min(event1.endDate, event2.endDate) -
+				Math.max(event1.startDate, event2.startDate) >
+			0
+		);
 	}
 
 	function dateToString(date) {
@@ -156,7 +153,6 @@
 			Object.assign(event, {
 				pos: (Math.abs(begin - startDate) / 1000 / 3600) * 4 + 1
 			});
-			// ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID
 			Object.assign(event, { overlap: 1 });
 
 			Object.assign(event, { color: courseData[event.IDcourse].color });

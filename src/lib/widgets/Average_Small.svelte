@@ -11,17 +11,16 @@
 		// fetches all the user's marks on Firebase and calculate the average
 		if ($currentView != 'dashboard') {
 			// if widget on a specific course, only the average for this course is calculated
+			let counter = 0;
 			try {
 				let examRef = collection(db, 'courses', $currentView, 'exam');
 				let examSnapshot = await getDocs(examRef);
-
-				let counter = 0;
 
 				examSnapshot.forEach((exam) => {
 					const data = exam.data();
 					if (JSON.stringify(data.mark) !== '{}') {
 						if (data.mark[$userUid] != 0) {
-							average += (data.mark[$userUid] / data.maxMark) * maxMark; // standardise the mark to be out of 100
+							average += (data.mark[$userUid] / data.maxMark) * maxScore; // standardise the mark to be out of 100
 							counter++;
 						}
 						maxScore = data.maxMark;
@@ -32,6 +31,7 @@
 			}
 
 			average /= counter;
+			average = Math.floor(average);
 		} else {
 			// else we take the general hard-coded average
 			average = $currentContent.average[0];
