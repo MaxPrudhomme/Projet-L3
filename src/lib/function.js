@@ -4,8 +4,8 @@ async function querydb(startdate, enddate, IDs) {
   try {
     const url = await import.meta.env.VITE_URL + 'select.php';
     const args = new FormData();
-    args.append('startdate', startdate.toISOString());
-    args.append('enddate', enddate.toISOString());
+    args.append('startdate', startdate.getTime());
+    args.append('enddate', enddate.getTime());
     IDs.forEach(e => {
       args.append('IDs[]',e);
     })
@@ -16,9 +16,8 @@ async function querydb(startdate, enddate, IDs) {
     const response = await fetch(url,options);
     const data = await response.json();
     data.forEach(e => {
-      e.startDate = new Date(new Date(e.startDate + 'Z'));
-      e.endDate = new Date(new Date(e.endDate + 'Z'))
-      console.log('start:',e.startDate,'/end:',e.endDate);
+      e.startDate = new Date(parseInt(e.startDate));
+      e.endDate = new Date(parseInt(e.endDate));
     })
     return data;
   } catch (error) {
@@ -26,12 +25,6 @@ async function querydb(startdate, enddate, IDs) {
     throw error;
   }
 }
-/*
-    const date = new Date('2024-05-03 00:00:00');
-    const utcDate = new Date(date.toISOString().slice(0, 19).replace('T', ' ') + 'Z'); // Ajoute 'Z' pour indiquer que c'est en UTC
-    const localDate = new Date(utcDate); // Convertit en date locale
-    console.log('Date locale:', localDate.toString());
-*/
 /**-------------------------insert-------------------------
 import { querydb } from '../function';
 import { onMount } from 'svelte';
@@ -56,8 +49,8 @@ async function insertdb(listevent) {
     const args = new FormData();
     listevent.forEach(e => {
       args.append('IDs[]',v4());
-      args.append('startDates[]',e.startDate.toISOString());
-      args.append('endDates[]',e.endDate.toISOString());
+      args.append('startDates[]',e.startDate.getTime());
+      args.append('endDates[]',e.endDate.getTime());
       args.append('summarys[]',e.summary);
       args.append('descriptions[]',e.description);
       args.append('locations[]',e.location);
@@ -142,8 +135,8 @@ async function updatedb(event) {
     const url = await import.meta.env.VITE_URL + 'update.php';
     const args = new FormData();
     args.append('ID',event.ID);
-    args.append('startDate',event.startDate.toISOString());
-    args.append('endDate',event.endDate.toISOString());
+    args.append('startDate',event.startDate.getTime());
+    args.append('endDate',event.endDate.getTime());
     args.append('summary',event.summary);
     args.append('description',event.description);
     args.append('location',event.location);
