@@ -10,33 +10,42 @@
 	let maxMark = 100;
 
 	async function loadContent() {
-		let examRef = collection(db, 'courses', $currentView, 'exam');
-		let examSnapshot = await getDocs(examRef);
+		// fetch relevant content from backend (ie. the marks of all students from every exam)
 
-		examSnapshot.forEach((doc) => {
-			const data = doc.data();
-			if (JSON.stringify(data.mark) !== '{}') {
-				let average = 0;
-				let counter = 0;
-				Object.entries(data.mark).forEach(([id, item]) => {
-					average += (item / data.maxMark) * maxMark; // standardise the mark to be out of 100
-					counter++;
-				});
-				average /= counter;
-				if (average != 0) {
-					// to skip unmarked exams
-					averages.push(average);
+		try {
+			let examRef = collection(db, 'courses', $currentView, 'exam');
+			let examSnapshot = await getDocs(examRef);
+
+			examSnapshot.forEach((doc) => {
+				// loops through every exam to add the students' marks to the average
+				const data = doc.data();
+				if (JSON.stringify(data.mark) !== '{}') {
+					let average = 0;
+					let counter = 0;
+					Object.entries(data.mark).forEach(([id, item]) => {
+						average += (item / data.maxMark) * maxMark; // standardise the mark to be out of 100
+						counter++;
+					});
+					average /= counter;
+					if (average != 0) {
+						// to skip unmarked exams
+						averages.push(average);
+					}
 				}
-			}
-		});
+			});
+		} catch (error) {
+			console.error('Error fetching documents:', error);
+		}
 
-		courseAverage =
+		courseAverage = Math.floor(
 			averages.reduce((accumulator, currentValue) => {
 				return accumulator + currentValue;
-			}, 0) / averages.length;
+			}, 0) / averages.length
+		);
 	}
 
 	onMount(async () => {
+		// content loading done in the onMount
 		await loadContent();
 	});
 </script>

@@ -13,11 +13,12 @@
 
 	$: {
 		if (itemRef) {
+			let relative = parseInt(pos) + parseInt(height);
+
 			itemRef.style.backgroundColor = color;
-			itemRef.style.gridRow = pos + '/' + (pos - height);
+			itemRef.style.gridRow = pos + '/' + relative;
 			itemRef.style.gridColumn = overlap + '/ 12';
 			itemRef.style.zIndex = 2;
-			// itemRef.style.marginLeft = 'calc(30px + ' + left + ')';
 		}
 	}
 
@@ -27,8 +28,6 @@
 	// peut être juste un dépliage en hover ?
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
 <button class="buttonReset" id="schedule-item" bind:this={itemRef} on:click={bringToFront}>
 	<div id="align">
 		<div id="icon"><Icon name={icon} /></div>
@@ -48,7 +47,7 @@
 		padding: 10px;
 		margin-right: 5%;
 		position: relative;
-		filter: saturate(75%);
+		padding-top: 0%;
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */

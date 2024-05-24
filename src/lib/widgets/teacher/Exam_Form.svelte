@@ -1,9 +1,9 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
-	import { v4 } from 'uuid';
+	import { currentView, currentContent } from '../../../store';
+	import { doc, getDoc, setDoc } from 'firebase/firestore';
+	import { v4 } from 'uuid'; // v4() generates a 20 characters alphanumeric id
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
 	// import { n } from 'vitest/dist/reporters-P7C2ytIv.js';
@@ -11,12 +11,17 @@
 	export let refresh;
 	export let state;
 
+	// input values
 	let details;
 	let name;
 	let dueDate;
+
+	// input fields
 	let detailsInput;
-	let detailsContainer;
 	let nameInput;
+
+	// input containers
+	let detailsContainer;
 	let nameContainer;
 
 	const today = new Date();
@@ -30,31 +35,15 @@
 		name.editable = !name.editable;
 	}
 
-	function handleKeyDownForEdit(event, index) {
-		if (event.key === 'Enter') {
-			toggleEdit();
-		}
-	}
-
 	function adjustTextareaHeight(event) {
+		// function to dynamically adjust the height of a textarea depending on the amount of text within
 		const textarea = event.target;
 		textarea.style.height = 'auto';
 		textarea.style.height = `${textarea.scrollHeight}px`;
 	}
 
-	function makeid() {
-		let result = '';
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const charactersLength = characters.length;
-		let counter = 0;
-		while (counter < 20) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-			counter += 1;
-		}
-		return result;
-	}
-
 	async function submitExam() {
+		// checks if all the inputs are correct and sends the data to Firebase if so
 		if (!dueDate) {
 			alert('Please select a due date.');
 			return;
@@ -80,20 +69,20 @@
 			return;
 		}
 
-		const targetRef = doc(db, 'courses', $currentView, 'exam', makeid());
+		const targetRef = doc(db, 'courses', $currentView, 'exam', v4());
 		const courseRef = doc(db, 'courses', $currentView);
 		let courseSnapshot = await getDoc(courseRef);
 		let courseData = courseSnapshot.data();
 
 		let studentsBase = {};
-		console.log(courseData);
+		// pregenerates placeholder values for the students' marks
 		for (let i = 0; i < courseData.students.length; i++) {
 			let path = courseData.students[i].path.substr(6);
 			studentsBase[path] = 0;
 		}
-		console.log(studentsBase);
 
 		const newExam = {
+			// proper complete exam object to be sent to Firebase
 			date: Timestamp.fromDate(new Date(dueDate)),
 			details: details.content,
 			mark: studentsBase,
@@ -102,19 +91,9 @@
 			semester: 2 // temporary value
 		};
 
-		const examId = v4();
-
 		await setDoc(targetRef, newExam);
 		refresh.set(true);
 		state.set(false);
-
-		currentContent.update((content) => {
-			if (!content.exam || typeof content.exam !== 'object') {
-				content.exam = {};
-			}
-			content.exam[examId] = newExam;
-			return content;
-		});
 	}
 </script>
 
@@ -136,7 +115,7 @@
 			<!-- AJOUTER LA SAISIE DE L'HEURE EXACTE -->
 			<input
 				class="dueText inputReset"
-				type="date"
+				type="datetime-local"
 				min={`${year}-${month}-${day}`}
 				bind:value={dueDate}
 			/>

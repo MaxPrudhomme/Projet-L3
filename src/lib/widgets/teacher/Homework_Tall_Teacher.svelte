@@ -24,6 +24,7 @@
 	}
 
 	async function loadContent() {
+		// fetch relevant content from backend
 		let existingHomework = $currentContent['homework'];
 
 		Object.entries(existingHomework).forEach(([id, item]) => {
@@ -83,6 +84,7 @@
 	}
 
 	function toggleNewHomework() {
+		// toggle request for displaying Homework_Form_Teacher
 		state.set(!$state);
 	}
 </script>

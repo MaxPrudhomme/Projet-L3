@@ -47,23 +47,22 @@
 	}
 
 	function compareHours(event1, event2) {
+		// compares 2 dates and returns if there is an overlap between the two
 		return (
-			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
-			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
-			(event1.end > event2.start && event1.end <= event2.end) || // event1's end contained within event2
-			(event1.start < event2.end && event1.end >= event2.end) || // event2's end contained within event1
-			(event1.start < event2.end && event1.start >= event2.start) || // event1's start contained within event2
-			(event1.end > event2.start && event1.start <= event2.start)
-		); // event2's start contained within event1
+			Math.min(event1.endDate, event2.endDate) -
+				Math.max(event1.startDate, event2.startDate) >
+			0
+		);
 	}
 
 	function dateToString(date) {
+		// transfrom a Date into a string
 		return (
 			weekday[date.getDay()] +
 			' - ' +
 			date.getDate() +
 			'/' +
-			date.getMonth() +
+			(date.getMonth() + 1) +
 			'/' +
 			date.getFullYear()
 		);
@@ -75,7 +74,7 @@
 		let eventsMap = new Map();
 
 		eventsArray.forEach((event) => {
-			let eventDate = dateToString(event.start);
+			let eventDate = dateToString(event.startDate);
 			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
 
 			eventsMap.get(eventDate).push(event);
@@ -85,6 +84,7 @@
 	}
 
 	function calculateOverlap(array) {
+		// calculates the overlap between items based on their timestamps
 		for (let i = 0; i < array.length - 1; i++) {
 			if (compareHours(array[i], array[i + 1])) {
 				array[i + 1].overlap = array[i].overlap + 1;
@@ -93,6 +93,7 @@
 	}
 
 	function getMonday(d) {
+		// gets monday's date of current week
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
@@ -100,6 +101,7 @@
 	}
 
 	function getSunday(d) {
+		// gets sunday's date of current week
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + 7; // adjust when day is sunday
@@ -135,10 +137,10 @@
 		}
 
 		eventsArray.forEach((event, index, arr) => {
-			let endDate = new Date(event.end);
-			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+			let endDate = new Date(event.endDate);
+			let startDate = new Date(event.startDate);
+			event.startDate = startDate;
+			event.endDate = endDate;
 
 			Object.assign(event, { height: (Math.abs(endDate - startDate) / 1000 / 3600) * 4 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
@@ -151,21 +153,23 @@
 			Object.assign(event, {
 				pos: (Math.abs(begin - startDate) / 1000 / 3600) * 4 + 1
 			});
-			// ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID ESSAYER UNE GRID
 			Object.assign(event, { overlap: 1 });
 
-			Object.assign(event, { color: courseData[event.summary].color });
-			Object.assign(event, { icon: courseData[event.summary].icon });
+			Object.assign(event, { color: courseData[event.IDcourse].color });
+			Object.assign(event, { icon: courseData[event.IDcourse].icon });
 		});
 
 		calculateOverlap(eventsArray);
 
 		events = new Map(convertEventsArrayToMap(eventsArray));
+
+		console.log(events);
 	});
 
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
+		// switch to next day
 		currentDate.setDate(currentDate.getDate() + 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = 300;
@@ -173,6 +177,7 @@
 	}
 
 	function previousDay(event) {
+		// switch to previous day
 		currentDate.setDate(currentDate.getDate() - 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = -300;

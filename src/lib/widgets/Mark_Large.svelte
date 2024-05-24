@@ -1,13 +1,14 @@
 <script>
 	import { fly } from 'svelte/transition';
-	import { currentContent, currentView, userUid } from '../../store';
+	import { currentView, userUid } from '../../store';
 	import { onMount } from 'svelte';
-	import { collection, doc, getDocs } from 'firebase/firestore';
+	import { collection, getDocs } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 
 	let i = 0;
 
+	// transitions parameters
 	let flyParamsIn = {
 		x: 100,
 		delay: 200,
@@ -22,17 +23,20 @@
 	let marks = new Map();
 	let currentmark = new Object();
 	onMount(async () => {
+		// fetches the user's marks from the exams of the course
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);
 			let j = 0;
+
 			courseSnapshot.forEach((doc) => {
 				const data = doc.data();
 				if (JSON.stringify(data.mark) !== '{}') {
-					data['mark'] = data['mark'][$userUid];
+					// minor formatting of the data for easier usage
+					data['mark'] = data['mark'][$userUid]; // only the user's mark is kept
 					let date = new Date(data['date'].seconds * 1000);
 					data['date'] =
-						date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+						date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear(); // date converted to string
 					marks.set(j, data);
 					j++;
 				}
@@ -42,16 +46,19 @@
 			console.error('Error fetching documents:', error);
 		}
 
+		// sorting of the marks by date (as they will be displayed with the most recent first)
 		let sortedMarks = [...marks].sort(([idA, dataA], [idB, dataB]) => {
 			const dateA = new Date(dataA.date.seconds * 1000);
 			const dateB = new Date(dataB.date.seconds * 1000);
 
 			return dateA - dateB;
 		});
+
 		marks = new Map(sortedMarks);
 		currentmark = marks.get(i);
 	});
 
+	// functions to swap between marks
 	function nextMark(event) {
 		if (i < marks.size - 1) {
 			i++;
@@ -74,7 +81,7 @@
 	<h1 class="widgetTitle">Marks</h1>
 	{#if marks.size !== 0}
 		{#key currentmark}
-			<!-- pour que les animations de transition marchent  -->
+			<!-- displays new mark everytime the value changes -->
 			<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 				<h1 id="name">{currentmark.name}</h1>
 				<h1 id="mark">{currentmark.mark}</h1>
@@ -84,6 +91,7 @@
 		{/key}
 	{/if}
 
+	<!-- buttons to switch between marks -->
 	<button class="buttonReset bi-caret-left" on:click={previousMark}>
 		<Icon name="arrow-left" width="16" height="16" />
 	</button>

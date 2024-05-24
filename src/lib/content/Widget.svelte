@@ -8,13 +8,14 @@
 	import ScheduleFat from '$lib/widgets/Schedule_Fat.svelte';
 	import ScheduleLarge from '$lib/widgets/Schedule_Large.svelte';
 	import ExamSmall from '$lib/widgets/Exam_Small.svelte';
+	import VacationsSmall from '$lib/widgets/Vacations_Small.svelte';
 
 	import ExamMediumTeacher from '$lib/widgets/teacher/Exam_Medium_Teacher.svelte';
 	import HomeworkTallTeacher from '$lib/widgets/teacher/Homework_Tall_Teacher.svelte';
 	import AverageSmallTeacher from '$lib/widgets/teacher/Average_Small_Teacher.svelte';
 	import MarkTallTeacher from '$lib/widgets/teacher/Mark_Tall_Teacher.svelte';
 	import LastMarksMedium from '$lib/widgets/LastMarks_Medium.svelte';
-	import ScheduleFormFat from '$lib/widgets/teacher/Schedule_Form_Fat.svelte';
+	import Schedule_Form_Tall from '$lib/widgets/teacher/Schedule_Form_Tall.svelte';
 
 	export let content;
 	export let disabled = false;
@@ -29,14 +30,17 @@
 		'lastmark-l': MarkLarge,
 		'marks-t': MarkTall,
 		'exam-s': ExamSmall,
+		'vacation-s': VacationsSmall,
+
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,
 		'schedule-l': ScheduleLarge,
+
 		'examteacher-m': ExamMediumTeacher,
 		'homeworkteacher-t': HomeworkTallTeacher,
 		'averageteacher-s': AverageSmallTeacher,
 		'markteacher-t': MarkTallTeacher,
-		'scheduleform-f': ScheduleFormFat
+		'scheduleform-t': Schedule_Form_Tall
 	};
 
 	onMount(() => {

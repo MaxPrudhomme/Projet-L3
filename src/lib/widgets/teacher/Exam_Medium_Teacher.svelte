@@ -1,13 +1,14 @@
 <script>
 	import ExamItem from './ExamItem.svelte';
 	import ExamForm from './Exam_Form.svelte';
-	import { currentContent, currentView, userUid } from '../../../store';
+	import { currentContent, currentView } from '../../../store';
 	import { onMount } from 'svelte';
-	import { collection, getDocs, query, orderBy, updateDoc, doc } from 'firebase/firestore';
+	import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 	import Icon from '$lib/Icon.svelte';
 	import { writable } from 'svelte/store';
-	export const state = writable(false);
+
+	export const state = writable(false); // state checks if the user request to toggle Exam_Form
 	export const refresh = writable(false);
 
 	let exam = new Map();
@@ -16,6 +17,7 @@
 	const today = new Date().setHours(0, 0, 0, 0);
 
 	function sortExamByDueDate(examMap) {
+		// sorts a map of exams by date
 		return new Map(
 			[...examMap.entries()].sort((a, b) => {
 				return a[1].date - b[1].date;
@@ -24,35 +26,29 @@
 	}
 
 	function dateToString(timestamp) {
+		// returns a string with date, hours and minutes from the date put as argument
 		const dateObj = timestamp.toDate();
 		const day = String(dateObj.getDate()).padStart(2, '0');
 		const month = String(dateObj.getMonth() + 1).padStart(2, '0');
 		const year = dateObj.getFullYear();
-		return `${day}/${month}/${year}`;
+		let hour = dateObj.getHours();
+		let minutes = dateObj.getMinutes();
+
+		if (hour < 10) hour = '0' + hour.toString();
+		if (minutes < 10) minutes = '0' + minutes.toString();
+
+		return `${day}/${month}/${year} - ${hour}:${minutes}`;
 	}
 
 	async function loadContent() {
-		let existingExam = $currentContent['exam'];
-
-		if (existingExam) {
-			Object.entries(existingExam).forEach(([id, item]) => {
-				if (item.date.toDate().setHours(0, 0, 0, 0) < today && item.status) {
-					delete existingExam[id];
-				}
-			});
-		}
-
-		// const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
-		// await updateDoc(targetRef, {
-		// 	exam: existingExam
-		// });
-
+		// fetch relevant content from backend (ie. the marks of all students from every exam)
 		try {
 			const courseRef = collection(db, 'courses', $currentView, 'exam');
 			const q = query(courseRef, orderBy('date'));
 			const querySnapshot = await getDocs(q);
 
 			querySnapshot.forEach((doc) => {
+				// add data of each exam to map
 				let data = doc.data();
 				// data['date'] = new Date(data['date'].seconds * 1000);
 				exam.set(doc.id, data);
@@ -60,11 +56,6 @@
 
 			firestoreSnapshot = new Map(exam);
 
-			if (existingExam && typeof existingExam === 'object') {
-				Object.entries(existingExam).forEach(([id, data]) => {
-					exam.set(id, data);
-				});
-			}
 			let sorted = sortExamByDueDate(exam);
 			exam = new Map(sorted);
 		} catch (error) {
@@ -73,6 +64,7 @@
 	}
 
 	onMount(async () => {
+		// content loading done in the onMount
 		await loadContent();
 	});
 
@@ -91,6 +83,7 @@
 	}
 
 	function toggleNewExam() {
+		// makes Exam_Form pop up
 		state.set(!$state);
 	}
 </script>
@@ -105,10 +98,11 @@
 		{#key exam}
 			{#each [...exam] as [id, { date, details, name }]}
 				<ExamItem date={dateToString(date)} {details} {name}></ExamItem>
+				<!-- display individual exams as items -->
 			{/each}
 
 			{#if $state}
-				<ExamForm {refresh} {state}></ExamForm>
+				<ExamForm {refresh} {state}></ExamForm> <!-- display form instead if requested-->
 			{/if}
 		{/key}
 		<button
@@ -117,6 +111,7 @@
 			bind:this={toggleButton}
 			class:rotate-45deg={$state}
 		>
+			<!-- button to request the form -->
 			<Icon name={'plus-circle-dotted'} class={'s32x32'}></Icon>
 		</button>
 	</div>

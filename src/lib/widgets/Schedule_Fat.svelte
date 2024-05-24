@@ -45,14 +45,12 @@
 	}
 
 	function compareHours(event1, event2) {
+		// compares 2 dates and returns if there is an overlap between the two
 		return (
-			(event1.start >= event2.start && event1.end <= event2.end) || // event1 contained within event2
-			(event1.start <= event2.start && event1.end >= event2.end) || // event2 contained within event1
-			(event1.end >= event2.start && event1.end <= event2.end) || // event1's end contained within event2
-			(event1.start <= event2.end && event1.end >= event2.end) || // event2's end contained within event1
-			(event1.start <= event2.end && event1.start >= event2.start) || // event1's start contained within event2
-			(event1.end >= event2.start && event1.start <= event2.start)
-		); // event2's start contained within event1
+			Math.min(event1.endDate, event2.endDate) -
+				Math.max(event1.startDate, event2.startDate) >
+			0
+		);
 	}
 
 	function dateToString(date) {
@@ -76,7 +74,7 @@
 		let eventsMap = new Map();
 
 		eventsArray.forEach((event) => {
-			let eventDate = dateToString(event.start);
+			let eventDate = dateToString(event.startDate);
 			if (!eventsMap.has(eventDate)) eventsMap.set(eventDate, []);
 
 			eventsMap.get(eventDate).push(event);
@@ -111,10 +109,12 @@
 	/////////// DATA FETCHING AND TREATMENT //////////
 	onMount(async () => {
 		if ($currentView == 'dashboard') {
+			// if widget is on dashboard, load all the schedule items, else only load the items of the viewed course
 			const userCoursesIds = (
 				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
 			).docs.map(({ id }) => id);
-			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+
+			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds); // preloads the data for the entire week
 		} else {
 			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
 		}
@@ -123,17 +123,18 @@
 		let course;
 		let courseData;
 		try {
-			course = doc(db, 'courses', 'courseInfos'); // temporary
+			// fetching data specific to the courses from Firebase
+			course = doc(db, 'courses', 'courseInfos');
 			courseData = (await getDoc(course)).data();
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
 
 		eventsArray.forEach((event, index, arr) => {
-			let endDate = new Date(event.end);
-			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+			let endDate = new Date(event.endDate);
+			let startDate = new Date(event.startDate);
+			event.startDate = startDate;
+			event.endDate = endDate;
 
 			Object.assign(event, { height: (Math.abs(endDate - startDate) / 1000 / 3600) * 4 }); // difference between startDate and endDate in milliseconds, converted to a percentage of the height of the schedule
 
@@ -148,12 +149,12 @@
 			});
 			Object.assign(event, { overlap: 1 });
 
-			Object.assign(event, { color: courseData[event.summary].color });
-			Object.assign(event, { icon: courseData[event.summary].icon });
+			Object.assign(event, { color: courseData[event.IDcourse].color });
+			Object.assign(event, { icon: courseData[event.IDcourse].icon });
 		});
 
 		eventsArray.sort((eventA, eventB) => {
-			return eventA.start - eventB.start;
+			return eventA.startDate - eventB.startDate;
 		});
 
 		calculateOverlap(eventsArray);
