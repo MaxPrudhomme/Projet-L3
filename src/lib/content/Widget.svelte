@@ -30,7 +30,7 @@
 		'lastmark-l': MarkLarge,
 		'marks-t': MarkTall,
 		'exam-s': ExamSmall,
-		'vacation-s': VacationsSmall,
+		'vacations-s': VacationsSmall,
 
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,

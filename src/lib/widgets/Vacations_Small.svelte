@@ -4,29 +4,47 @@
 	import { doc, getDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 
-	let vacationsDate;
+	let userSchools;
+	let today = new Date();
+	let diffTime;
+	let diffDays;
+
+	function dateToString(date) {
+		// returns a string with date, hours and minutes from the date put as argument
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const year = date.getFullYear();
+
+		return `${day}/${month}/${year}`;
+	}
 
 	onMount(async () => {
 		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().schools;
 		let vacations = [];
 
 		userSchools.forEach(async (schoolRef) => {
-			let schoolVacations = (await getDoc(doc(db, 'schools', schoolRef.path))).data()
-				.vacations;
+			let schoolVacations = (
+				await getDoc(doc(db, 'schools', schoolRef['path'].slice(8)))
+			).data().vacations;
+
 			schoolVacations.forEach((vacation) => {
-				vacations.push(vacation);
+				let thisVacationDate = new Date(vacation.start.seconds * 1000);
+				if (thisVacationDate > today) {
+					vacations.push(new Date(vacation.start.seconds * 1000));
+				}
 			});
 		});
 
-		console.log(schoolsVacations);
+		vacations.sort(function (a, b) {
+			return new Date(b.date) - new Date(a.date);
+		});
+
+		let vacationsDate = await vacations[0];
+
+		diffTime = Math.abs(vacationsDate - today);
+		diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+		console.log(vacations, vacationsDate);
 	});
-
-	vacationsDate = vacationsDate.split('/');
-	let actualVacationsDate = new Date(vacationsDate[2], vacationsDate[1], vacationsDate[0]);
-	let today = new Date();
-
-	let diffTime = Math.abs(actualVacationsDate - today);
-	let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 </script>
 
 <div id="container">

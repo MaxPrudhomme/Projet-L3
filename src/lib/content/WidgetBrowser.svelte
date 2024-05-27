@@ -48,7 +48,8 @@
 		// { x: 2, y: 0, w: 1, h: 2, content: ["notifications", "h"] },
 		{ x: 0, y: 1, w: 2, h: 1, content: ['lastmark', 'l'] },
 		{ x: 3, y: 0, w: 2, h: 4, content: ['schedule', 't'] },
-		{ x: 5, y: 0, w: 2, h: 4, content: ['homework', 't'] }
+		{ x: 5, y: 0, w: 2, h: 4, content: ['homework', 't'] },
+		{ x: 1, y: 2, w: 1, h: 1, content: ['vacations', 's'] }
 	];
 
 	const sizeGuide = {
@@ -84,7 +85,7 @@
 		vacations: [
 			'Vacations Widget',
 			'The vacations widget adds a countdown until the next vacations. Only available on the main dashboard.',
-			['Small', 'Large', 'High']
+			['Small', 'Large']
 		],
 		homework: [
 			'Homework Widget',
