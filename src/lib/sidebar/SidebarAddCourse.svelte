@@ -2,6 +2,8 @@
     import Icon from '$lib/Icon.svelte'
     import { interactionActive, courseEdit } from '../../store';
 
+    // Déclenche les interactions pour l'ajout d'un cours
+    // Triggers interactions for adding a course
     function triggerInteraction() {
         interactionActive.set(true)
         courseEdit.set(true)

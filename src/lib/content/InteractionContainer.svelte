@@ -2,6 +2,9 @@
     import { widgetEdit, courseEdit } from "../../store"
     import WidgetBrowser from "./WidgetBrowser.svelte";
     import CourseBrowser from "./CourseBrowser.svelte";
+
+    // Ce conteneur gère les interactions pour éditer les widgets et les cours
+    // This container manages interactions for editing widgets and courses
 </script>
 
 <div id="container" class="absolute">

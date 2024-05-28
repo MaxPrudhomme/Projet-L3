@@ -9,20 +9,23 @@
     let animationDuration = 350;
     let animationPosition = -1340
 
+    // Reactive statement to handle override of animations
     $: {
         if ($overrideAnimations) {
-            animationDuration = 0
-            animationPosition = 0
+            animationDuration = 0  // Disable animations
+            animationPosition = 0  // Set position to 0 if animations are overridden
         } else {
-            animationDuration = 350
-            animationPosition = -1340
+            animationDuration = 350  // Standard animation duration
+            animationPosition = -1340  // Standard offscreen position for animation
         }
     }
 
+    // Reactively set movement based on edit mode
     $: {
-        move = $editMode;
+        move = $editMode; // Enable movement (e.g., drag & drop) when in edit mode
     }
 
+    // Define standard item size for grid items
     const itemSize = { width: 170, height: 170 };
 </script>
 

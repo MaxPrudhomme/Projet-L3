@@ -4,6 +4,8 @@
     import SidebarMenu from "./SidebarMenu.svelte";
     import { user } from "../../store";
 
+    // Chargement des composants utilisateur, liste des cours, et menu
+    // Loads user info, course list, and navigation menu components
 </script>
 
 <div id="container" class="noise">

@@ -111,6 +111,7 @@
 	{height}
 	viewBox="0 0 {displayIcon.box} {displayIcon.box}"
 >
+<!-- Use Svelte's built in function to load html code as content -->
 	{@html displayIcon.svg}
 </svg>
 

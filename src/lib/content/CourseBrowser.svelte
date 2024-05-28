@@ -10,6 +10,8 @@
 
     let schoolData;
 
+    // Charge les données de l'école de l'utilisateur au montage du composant
+    // Loads the user's school data when the component mounts
     onMount(async () => {
         try {
             const schoolRef = $user["school"];
@@ -20,6 +22,8 @@
         }
     });
 
+    // Fonction pour enregistrer les cours sélectionnés
+    // Function to register selected courses
     async function registerCourses() {
         const courses = get(selectedCourses)
         const userId = $userUid;
@@ -60,6 +64,8 @@
         }
     }
 
+    // Fonction pour quitter le navigateur de cours
+    // Function to leave the course browser
     function leaveBrowser() {
         courseEdit.set(false)
         interactionActive.set(false)

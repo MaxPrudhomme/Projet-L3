@@ -2,6 +2,7 @@
     import { currentTab } from "../../store";
     import { overrideAnimations } from "../../store";
 
+    // Function to handle tab selection from the scrollbar
     function handleSelection(event) {
         currentTab.set(event.target.value);
         overrideAnimations.set(true)

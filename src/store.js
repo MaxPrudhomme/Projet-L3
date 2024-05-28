@@ -26,3 +26,5 @@ export const currentTab = writable("widgets") // Represents the widgets, files, 
 export const overrideAnimations = writable(false)
 
 export const requestUpdateSidebar = writable(false)
+
+// Basic Svelte stores

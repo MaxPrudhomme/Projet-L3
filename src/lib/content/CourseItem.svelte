@@ -7,15 +7,17 @@
 
     let bool = false;
 
+    // Fonction pour mettre à jour la sélection des cours
+    // Function to update the selection of courses
     function updateSelection() {
-        bool = !bool;
+        bool = !bool; // Toggle the selection state
         selectedCourses.update(courses => {
             if (bool) {
                 if (!courses.includes(key)) {
-                    return [...courses, key];
+                    return [...courses, key]; // Add the course key to the selection if not already included
                 }
             } else {
-                return courses.filter(course => course !== key);
+                return courses.filter(course => course !== key); // Remove the course key from the selection
             }
             return courses;
         });

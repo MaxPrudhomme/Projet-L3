@@ -4,6 +4,9 @@
     export let selectedCourses;
 
     import CourseItem from "./CourseItem.svelte";
+
+    // Le composant représente une catégorie de cours, utilisant CourseItem pour afficher chaque cours individuellement
+    // This component represents a course category, using CourseItem to display each course individually
 </script>
 
 <div id="container" class="noise">

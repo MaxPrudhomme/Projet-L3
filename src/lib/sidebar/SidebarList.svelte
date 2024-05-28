@@ -9,6 +9,8 @@
 
     let coursesList = writable([]);
 
+    // Charge les cours de l'utilisateur à partir de la base de données Firestore
+    // Loads user's courses from Firestore database
     async function loadSidebar() {
         coursesList.set([])
         try {
@@ -38,6 +40,8 @@
         await loadSidebar()
     });
 
+    // Surveille les requêtes pour mettre à jour la liste des cours
+    // Monitors requests to update the course list
     $: {
         const watch = $requestUpdateSidebar
         if (watch) {

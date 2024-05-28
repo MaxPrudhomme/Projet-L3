@@ -13,20 +13,22 @@
     import { doc, getDoc } from "firebase/firestore";
     import { fly } from "svelte/transition";
 
+    // Executes when the component mounts, fetching user data from Firestore
     onMount(async () => {
         try {   
             const userRef = doc(db, 'users', $userUid)
             const userData = (await getDoc(userRef)).data()
-            currentContent.set(userData["content"])
-            user.set(userData)
-            widgets.set(userData["dashboard"])
+            currentContent.set(userData["content"]) // Set the initial content based on user data
+            user.set(userData) // Update user store with fetched user data
+            widgets.set(userData["dashboard"]) // Set initial widgets for the dashboard
         } catch(e) {
             console.log("Error : ", e)
         }
     });
 
+    // Function to load view-specific data, handles both dashboard and course views
     async function load(view) {
-        widgets.set([]) 
+        widgets.set([])   // Clear current widgets before loading new ones, required for some obscure reasons
 
         setTimeout(async () => {
             if (view === "dashboard") {
@@ -44,7 +46,7 @@
     }
 
     $: {
-        load($currentView)
+        load($currentView) // Reactive statement to load new view whenever currentView updates
     }
 
 </script>

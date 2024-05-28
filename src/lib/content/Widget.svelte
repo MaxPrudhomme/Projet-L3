@@ -24,6 +24,7 @@
 	let blockerRef;
 	let CurrentWidget;
 
+	// Map to link content types to widget components
 	const widgetMap = {
 		'average-s': AverageSmall,
 		'homework-t': HomeworkTall,
@@ -43,9 +44,10 @@
 		'scheduleform-t': Schedule_Form_Tall
 	};
 
+	// Initialize the widget based on content type when the component mounts
 	onMount(() => {
 		let target = content[0] + '-' + content[1];
-		CurrentWidget = widgetMap[target];
+		CurrentWidget = widgetMap[target]; // Dynamically set the widget based on the provided content type
 	});
 </script>
 
