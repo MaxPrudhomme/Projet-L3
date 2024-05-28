@@ -19,7 +19,7 @@
 	let firstSemesterMarks = new Map();
 	let secondSemesterMarks = new Map();
 	onMount(async () => {
-		// fetches all of the student's marks for the cours
+		// fetches all of the student's marks for the course
 		try {
 			let courseRef = collection(db, 'courses', $currentView, 'exam');
 			let courseSnapshot = await getDocs(courseRef);

@@ -1,9 +1,17 @@
 <script>
 	import Widget from './Widget.svelte';
 	import Grid, { GridItem } from 'svelte-grid-extended';
-	import { matrixRepresentation, widgets, interactionActive, widgetEdit } from '../../store';
+	import {
+		matrixRepresentation,
+		widgets,
+		interactionActive,
+		widgetEdit,
+		currentView,
+		userUid
+	} from '../../store';
 	import { derived } from 'svelte/store';
 	import { v4 } from 'uuid';
+	import { onMount } from 'svelte';
 
 	let matrix = [];
 	let widgetType = null;
@@ -42,15 +50,36 @@
 		matrixRepresentation.set(value);
 	});
 
-	const widgetsLibrary = [
+	let widgetsLibrary = [
 		{ x: 0, y: 0, w: 1, h: 1, content: ['exam', 's'] },
 		{ x: 1, y: 0, w: 1, h: 1, content: ['average', 's'] },
 		// { x: 2, y: 0, w: 1, h: 2, content: ["notifications", "h"] },
 		{ x: 0, y: 1, w: 2, h: 1, content: ['lastmark', 'l'] },
 		{ x: 3, y: 0, w: 2, h: 4, content: ['schedule', 't'] },
+		{ x: 3, y: 4, w: 4, h: 4, content: ['schedule', 'f'] },
 		{ x: 5, y: 0, w: 2, h: 4, content: ['homework', 't'] },
-		{ x: 1, y: 2, w: 1, h: 1, content: ['vacations', 's'] }
+		{ x: 2, y: 0, w: 1, h: 1, content: ['vacations', 's'] },
+		{ x: 0, y: 2, w: 2, h: 4, content: ['marks', 't'] }
+		// AJOUTER TOUS LES WIDGETS ET FAIRE AFFICHER CEUX DES PROFS QUAND LOGGÉ AVEC UN COMPTE PROF
 	];
+
+	let teacherWidgetsLibrary = [
+		{ x: 2, y: 1, w: 1, h: 1, content: ['averageteacher', 's'] },
+		{ x: 0, y: 6, w: 2, h: 2, content: ['examteacher', 'm'] },
+		{ x: 0, y: 8, w: 2, h: 4, content: ['homeworkteacher', 't'] },
+		{ x: 2, y: 8, w: 2, h: 4, content: ['markteacher', 't'] },
+		{ x: 4, y: 8, w: 2, h: 4, content: ['scheduleform', 't'] }
+	];
+
+	onMount(async () => {
+		if ($currentView != 'dashboard') {
+			const courseData = (await getDoc(doc(db, 'courses', $currentView))).data();
+
+			if (courseData.teachers.find((teacher) => teacher.path.slice(8) == $userUid) !== null) {
+				widgetsLibrary.concat(teacherWidgetsLibrary);
+			}
+		}
+	});
 
 	const sizeGuide = {
 		s: [1, 1],
@@ -96,6 +125,32 @@
 			'Exam Widget',
 			'The exam widget shows the time left before the next upcoming exam?',
 			['Small']
+		],
+		marks: ['Marks Widget', 'The marks widget shows the marks the user received', ['Tall']],
+		averageteacher: [
+			'Average Widget (teacher)',
+			'This average widget displays the class average for the course',
+			['Small']
+		],
+		examteacher: [
+			'Exam Widget (teacher)',
+			'This exam widget displays every exam existing for the course, as well as allows the creation of new exams',
+			['Medium']
+		],
+		homeworkteacher: [
+			'Homework Widget (teacher)',
+			'This homework widget shows the homework given to the entire class. New homework to give to all the students can also be added',
+			['Tall']
+		],
+		markteacher: [
+			'Mark Widget (teacher)',
+			'This mark widget displays the class average for each exam, as well as individual marks. New marks can also be added or modified thanks to the built-in form',
+			['Tall']
+		],
+		scheduleform: [
+			'Schedule Form Widget (teacher)',
+			'The schedule form widget allows the user to add a new item to the schedule',
+			['Tall']
 		]
 	};
 
@@ -198,21 +253,23 @@
 		</div>
 	</div>
 	<div id="grid">
-		<Grid class="grid-container" rows={4} cols={7} {itemSize} gap={20} collision="none">
-			{#each widgetsLibrary as item}
-				<GridItem
-					bind:x={item.x}
-					bind:y={item.y}
-					bind:w={item.w}
-					bind:h={item.h}
-					resizable={false}
-					movable={false}
-				>
-					<button class="content" on:click={() => selectWidget(item.content)}>
-						<Widget content={item.content} disabled={true}></Widget>
-					</button>
-				</GridItem>
-			{/each}
+		<Grid class="grid-container" rows={12} cols={7} {itemSize} gap={20} collision="none">
+			{#key widgetsLibrary}
+				{#each widgetsLibrary as item}
+					<GridItem
+						bind:x={item.x}
+						bind:y={item.y}
+						bind:w={item.w}
+						bind:h={item.h}
+						resizable={false}
+						movable={false}
+					>
+						<button class="content" on:click={() => selectWidget(item.content)}>
+							<Widget content={item.content} disabled={true}></Widget>
+						</button>
+					</GridItem>
+				{/each}
+			{/key}
 		</Grid>
 	</div>
 
@@ -307,6 +364,10 @@
 		width: 1340px;
 		margin-left: 44px;
 		margin-top: 25px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 
 	.content {
