@@ -1,16 +1,15 @@
 <script>
-    export let category
-    export let courses
-    export let selectedCourses
+    export let category;
+    export let courses;
+    export let selectedCourses;
 
     import CourseItem from "./CourseItem.svelte";
-
 </script>
 
 <div id="container" class="noise">
     <h2>{category}</h2>
     {#each Object.entries(courses) as [key, value]}
-        <CourseItem {value} {selectedCourses} {key}></CourseItem>
+        <CourseItem {value} {key} {selectedCourses} />
     {/each}
 </div>
 
