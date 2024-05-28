@@ -8,6 +8,8 @@
 	let today = new Date();
 	let diffTime;
 	let diffDays;
+	let vacations = [];
+	let vacationsDate;
 
 	function dateToString(date) {
 		// returns a string with date, hours and minutes from the date put as argument
@@ -20,7 +22,6 @@
 
 	onMount(async () => {
 		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().schools;
-		let vacations = [];
 
 		userSchools.forEach(async (schoolRef) => {
 			let schoolVacations = (
@@ -39,7 +40,7 @@
 			return new Date(b.date) - new Date(a.date);
 		});
 
-		let vacationsDate = await vacations[0];
+		vacationsDate = vacations[0];
 
 		diffTime = Math.abs(vacationsDate - today);
 		diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
