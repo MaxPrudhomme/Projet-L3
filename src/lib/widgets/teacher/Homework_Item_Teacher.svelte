@@ -19,6 +19,7 @@
 	let displayGivenDate = '';
 
 	async function changeStatus() {
+		// changes the status (ie. if the homework is done) and updates Firebase accordingly
 		status = !status;
 		dueDateColorClass = status ? 'confirmGreenColor' : '';
 		if (author) {
@@ -49,6 +50,7 @@
 	}
 
 	function basicDate(timestamp) {
+		// returns a date in string from from a timestamp
 		const dateObj = timestamp.toDate();
 		const day = String(dateObj.getDate()).padStart(2, '0');
 		const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -57,6 +59,7 @@
 	}
 
 	function formatDate(timestamp) {
+		// returns custom string informing about the time left
 		const dateObj = timestamp.toDate();
 		const today = new Date();
 		const tomorrow = new Date(today);
@@ -78,6 +81,7 @@
 	}
 
 	function isSameDate(date1, date2) {
+		// checks if two dates are identical
 		return (
 			date1.getFullYear() === date2.getFullYear() &&
 			date1.getMonth() === date2.getMonth() &&

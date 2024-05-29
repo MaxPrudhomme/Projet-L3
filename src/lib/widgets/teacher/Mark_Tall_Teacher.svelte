@@ -57,7 +57,7 @@
 		currentSemester = 1;
 	});
 
-	function toggleNewExam() {
+	function toggleNewMark() {
 		state.set(!$state);
 	}
 </script>
@@ -83,7 +83,7 @@
 	{/key}
 	<button
 		class="buttonReset addButton"
-		on:click={toggleNewExam}
+		on:click={toggleNewMark}
 		bind:this={toggleButton}
 		class:rotate-45deg={$state}
 	>

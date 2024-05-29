@@ -1,7 +1,7 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent, userUid } from '../../../store';
+	import { currentView, currentContent } from '../../../store';
 	import {
 		collection,
 		getDocs,
@@ -19,22 +19,15 @@
 	export let state;
 
 	let list = [];
-	let date;
-	let markInput;
-	let markContainer;
 
 	const today = new Date();
-
-	const day = String(today.getDate()).padStart(2, '0');
-	const month = String(today.getMonth() + 1).padStart(2, '0');
-	const year = today.getFullYear();
 
 	let studentsIndex;
 
 	let exams = new Map();
 
 	async function loadContent() {
-		// fetch relevant content from backend (ie. the marks of all students from every exam)
+		// fetch relevant content and data from backend (ie. the marks of all students from every exam)
 		let existingExam = $currentContent['exam'];
 
 		if (existingExam) {
@@ -73,27 +66,14 @@
 		await loadContent();
 	});
 
-	const processFile = async () => {
-		// function to process CSV files into data
-		const records = [];
-		const parser = fs.createReadStream(`${__dirname}/fs_read.csv`).pipe(
-			// REPLACE BY FILE UPLOADED
-			parse({
-				// CSV options if any
-			})
-		);
-		for await (const record of parser) {
-			// Work with each record
-			records.push(record);
-		}
-		return records;
-	};
 
 	function toggleEdit(index) {
+		// toggles mark element editing
 		list[index].editable = !list[index].editable;
 	}
 
 	function handleKeyDownForEdit(event, index) {
+		// toggles mark editing when Enter is pressed
 		if (event.key === 'Enter') {
 			toggleEdit(index);
 		}
@@ -105,6 +85,7 @@
 	}
 
 	async function submitMark() {
+		// submits the inputted marks and uploads them to Firebase
 		const targetRef = doc(db, 'courses', $currentView, 'exam', selectedId);
 		const targetSnapshot = await getDoc(targetRef);
 
@@ -122,6 +103,7 @@
 	let selectedExam;
 
 	const onChange = (event) => {
+		// changes the selected exam so the marks are uploaded to the right document
 		selectedExam = exams.get(event.target.value);
 		list = []; // temporary : empties list, so unsaved changes are lost, yeah it's bad
 		for (const [key, value] of Object.entries(selectedExam.mark)) {
