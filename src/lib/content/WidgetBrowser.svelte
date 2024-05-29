@@ -60,9 +60,16 @@
 		{ x: 5, y: 0, w: 2, h: 4, content: ['homework', 't'] },
 		{ x: 2, y: 0, w: 1, h: 1, content: ['vacations', 's'] },
 		{ x: 0, y: 2, w: 2, h: 4, content: ['marks', 't'] }
-		// AJOUTER TOUS LES WIDGETS ET FAIRE AFFICHER CEUX DES PROFS QUAND LOGGÉ AVEC UN COMPTE PROF
+		// Décommenter ci dessous si le onMount fonctionne pas
+		// { x: 2, y: 1, w: 1, h: 1, content: ['averageteacher', 's'] },
+		// { x: 0, y: 6, w: 2, h: 2, content: ['examteacher', 'm'] },
+		// { x: 0, y: 8, w: 2, h: 4, content: ['homeworkteacher', 't'] },
+		// { x: 2, y: 8, w: 2, h: 4, content: ['markteacher', 't'] },
+		// { x: 4, y: 8, w: 2, h: 4, content: ['scheduleform', 't'] }
+		/////////////////////////////////////////////////
 	];
 
+	// mettre tout ça en commentaire si le onMount fonctionne pas
 	let teacherWidgetsLibrary = [
 		{ x: 2, y: 1, w: 1, h: 1, content: ['averageteacher', 's'] },
 		{ x: 0, y: 6, w: 2, h: 2, content: ['examteacher', 'm'] },
@@ -75,11 +82,12 @@
 		if ($currentView != 'dashboard') {
 			const courseData = (await getDoc(doc(db, 'courses', $currentView))).data();
 
-			if (courseData.teachers.find((teacher) => teacher.path.slice(8) == $userUid) !== null) {
+			if (courseData.teachers.find((teacher) => teacher.path.slice(8) == $userUid)) {
 				widgetsLibrary.concat(teacherWidgetsLibrary);
 			}
 		}
 	});
+	//////////////////////////////////////////////////////////////
 
 	const sizeGuide = {
 		s: [1, 1],

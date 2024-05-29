@@ -54,7 +54,11 @@
 	<h1 class="widgetTitle">Average</h1>
 	<div id="icon"><Icon name="person-workspace" width="24px" height="24px" /></div>
 	<div id="content">
-		<h1 id="average">{courseAverage}</h1>
+		{#if !courseAverage}
+			<h1 id="average">X</h1>
+		{:else}
+			<h1 id="average">{courseAverage}</h1>
+		{/if}
 		<p id="out-of">/100</p>
 	</div>
 </div>
