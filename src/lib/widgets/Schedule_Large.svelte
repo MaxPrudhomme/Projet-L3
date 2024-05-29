@@ -83,7 +83,8 @@
 		return new Date(d.setDate(diff));
 	}
 
-	if ($currentView == 'dashboard') {
+	onMount(async () => {
+		if ($currentView == 'dashboard') {
 		const userCoursesIds = (
 			await getDocs(collection(db, 'users', $userUid, 'userCourses'))
 		).docs.map(({ id }) => id);
@@ -92,6 +93,8 @@
 		eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
 	}
 	console.log(eventsArray);
+	})
+
 
 	let course;
 	let courseData;
