@@ -108,15 +108,14 @@
 		return new Date(d.setDate(diff));
 	}
 
-	/////////// DATA FETCHING AND TREATMENT //////////
-	onMount(async () => {
+	async function getEvents(day) {
 		if ($currentView == 'dashboard') {
 			const userCoursesIds = (
 				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
 			).docs.map(({ id }) => id);
-			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds);
+			eventsArray = await querydb(getMonday(day), getSunday(day), userCoursesIds);
 		} else {
-			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
+			eventsArray = await querydb(getMonday(day), getSunday(day), $currentView);
 		}
 
 		console.log(eventsArray);
@@ -164,24 +163,35 @@
 		events = new Map(convertEventsArrayToMap(eventsArray));
 
 		console.log(events);
+	}
+
+	/////////// DATA FETCHING AND TREATMENT //////////
+	onMount(async () => {
+		await getEvents(today);
 	});
 
 	///////////////////////////////////////////////////
 
 	function nextDay(event) {
 		// switch to next day
+		let previousSunday = getSunday(currentDate);
 		currentDate.setDate(currentDate.getDate() + 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = 300;
 		flyParamsOut.x = -300;
+
+		if (currentDate > previousSunday) getEvents(currentDate);
 	}
 
 	function previousDay(event) {
 		// switch to previous day
+		let previousMonday = getMonday(currentDate);
 		currentDate.setDate(currentDate.getDate() - 1);
 		stringDate = dateToString(currentDate);
 		flyParamsIn.x = -300;
 		flyParamsOut.x = 300;
+
+		if (currentDate < previousMonday) getEvents(currentDate);
 	}
 </script>
 

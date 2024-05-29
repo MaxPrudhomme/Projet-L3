@@ -18,7 +18,6 @@
 	let average = 0;
 
 	let counter = 0;
-	console.log(marks);
 
 	onMount(async () => {
 		// calculates class average for the exam and makes a list of student-mark pairs
@@ -38,8 +37,6 @@
 			}
 		});
 		average = Math.floor((average /= counter));
-
-		console.log(studentNames);
 	});
 </script>
 

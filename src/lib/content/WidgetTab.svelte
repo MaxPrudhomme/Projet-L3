@@ -34,16 +34,13 @@
 	<div id="grid">
 		<Grid class="grid-container" rows={4} cols={7} {itemSize} gap={20} collision="none">
 			{#if $widgets.length === 0}
-				<p id="noWidgets">
+				<p id="noWidgets" class="fadeIn">
 					Seems like you don't have any widget yet, try adding your first widgets using
 					the button up top !
 				</p>
 			{:else}
 				{#each $widgets as { x, y, w, h, content }}
-					<div
-						in:fly={{ duration: animationDuration, x: animationPosition }}
-						out:fly={{ duration: animationDuration, x: animationPosition }}
-					>
+					<div in:fly={{ duration: animationDuration, x: animationPosition }} out:fly={{ duration: animationDuration, x: animationPosition }}>
 						<GridItem
 							bind:x
 							bind:y
@@ -73,6 +70,36 @@
 	#grid {
 		margin-top: -1.5rem;
 	}
+
+	/* SOLUTION DE SECOURS : ajouter class="fly" dans le <div> contenant les GridItem (enlever les in:fly et out:fly) */
+	/* .fly {
+    	animation: superman-fly-right ease-in-out 0.5s forwards;
+	}
+
+	@keyframes superman-fly-right {
+    	from {
+       		transform: translateX(-1340px);
+    	}
+    	to {
+        	transform: translateX(0);
+    	}
+	} */
+
+	.fadeIn {
+		animation: fadeInAnimation ease 1s forwards;
+	}
+
+	@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+	90% {
+		opacity: 0;
+	}
+    100% {
+        opacity: 1;
+    }
+}
 
 	.content {
 		height: 100%;
