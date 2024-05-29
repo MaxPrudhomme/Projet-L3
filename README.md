@@ -10,7 +10,8 @@
 
 ## Structure du projet
 
-`Projet-L3/
+```
+Projet-L3/
 ├─ src/                             // contient le code de l'application
 │  ├─ lib/                          // ensemble des composants
 │  │  ├─ content/                   // composants principaux d'interaction
@@ -33,7 +34,8 @@
 ├─ tests/
 ├─ .gitignore
 ├─ package.json
-└─ README.md`
+└─ README.md
+```
 
 ## Annexes
 
