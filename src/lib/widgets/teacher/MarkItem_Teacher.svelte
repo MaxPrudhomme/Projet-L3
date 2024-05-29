@@ -10,7 +10,7 @@
 	export let name;
 	export let semester;
 
-	let studentNames = new Map();
+	let studentNames = [];
 
 	let up = false;
 	let btn;
@@ -18,6 +18,7 @@
 	let average = 0;
 
 	let counter = 0;
+	console.log(marks);
 
 	onMount(async () => {
 		// calculates class average for the exam and makes a list of student-mark pairs
@@ -31,12 +32,14 @@
 			counter++;
 
 			try {
-				studentNames.set(counter - 1, data[id]);
+				studentNames.push(data[id]);
 			} catch (error) {
 				console.error('Error fetching documents:', error);
 			}
 		});
 		average = Math.floor((average /= counter));
+
+		console.log(studentNames);
 	});
 </script>
 
@@ -77,7 +80,7 @@
 				<p id="notes">Individual marks</p>
 				<ul id="content">
 					{#each Object.entries(marks) as [id, mark], index}
-						<li>{studentNames.values()[index]} : {mark} / 100</li>
+						<li>{studentNames[index]} : {mark} / 100</li>
 					{/each}
 				</ul>
 			</div>
