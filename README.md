@@ -10,7 +10,7 @@
 
 ## Structure du projet
 
-````Projet-L3/
+`Projet-L3/
 ├─ src/                             // contient le code de l'application
 │  ├─ lib/                          // ensemble des composants
 │  │  ├─ content/                   // composants principaux d'interaction
@@ -33,10 +33,9 @@
 ├─ tests/
 ├─ .gitignore
 ├─ package.json
-└─ README.md```
+└─ README.md`
 
 ## Annexes
 
 **Rapport de stage** : https://docs.google.com/document/d/1nRO5l_HmjnMr34_bVxar0nRPntMR-OIBWzhNlwiCYKE/edit?usp=sharing
 **Diaporama de la soutenance** : https://docs.google.com/presentation/d/1a_GKb5c_qd89r6f-qNeZ4DZoikS-JEgE3b11MJYYtSQ/edit?usp=sharing
-````
