@@ -261,6 +261,9 @@
 		margin-right: 5%;
 	}
 
+	#top {
+		margin-top: 1rem;
+	}
 	#top > button {
 		margin-right: 60%;
 	}
@@ -313,7 +316,6 @@
 		background-color: rgb(255, 255, 255, 0.5);
 		margin-bottom: 1rem;
 		border-radius: 10px;
-		margin-right: 5%;
 		padding: 0.3rem;
 	}
 
