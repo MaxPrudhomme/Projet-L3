@@ -1,44 +1,53 @@
 <script>
 	import { onMount } from 'svelte';
-	import { currentView, currentContent, userUid } from '../../store';
+	import { userUid } from '../../store';
 	import { doc, getDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase';
 
+	let userSchools;
+	let today = new Date();
+	let diffTime;
+	let diffDays;
+	let vacations = [];
 	let vacationsDate;
 
 	onMount(async () => {
-		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().schools;
-		let vacations = [];
+		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().school;
 
-		userSchools.forEach(async (schoolRef) => {
-			let schoolVacations = (await getDoc(doc(db, 'schools', schoolRef.path))).data()
-				.vacations;
-			schoolVacations.forEach((vacation) => {
-				vacations.push(vacation);
-			});
+		let schoolVacations = (
+			await getDoc(doc(db, 'schools', userSchools['path'].slice(8)))
+		).data().vacations;
+
+		schoolVacations.forEach((vacation) => {
+			let thisVacationDate = new Date(vacation.start.seconds * 1000);
+			if (thisVacationDate > today) {
+				vacations.push(new Date(vacation.start.seconds * 1000));
+			}
 		});
 
-		console.log(schoolsVacations);
+		vacations.sort(function (a, b) {
+			return new Date(b.date) - new Date(a.date);
+		});
+
+		vacationsDate = vacations[0];
+
+		diffTime = Math.abs(vacationsDate - today);
+		diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 	});
-
-	vacationsDate = vacationsDate.split('/');
-	let actualVacationsDate = new Date(vacationsDate[2], vacationsDate[1], vacationsDate[0]);
-	let today = new Date();
-
-	let diffTime = Math.abs(actualVacationsDate - today);
-	let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 </script>
 
 <div id="container">
 	<h1 id="title">Vacations</h1>
 	<div id="circle">
 		<p>Vacations in</p>
-		{#if diffDays > 1}
-			<h1 id="time">{diffDays} days</h1>
-		{/if}
-		{#if diffDays == 1}
-			<h1 id="time">{diffDays} day</h1>
-		{/if}
+		{#key diffDays}
+			{#if diffDays > 1}
+				<h1 id="time">{diffDays} days</h1>
+			{/if}
+			{#if diffDays == 1}
+				<h1 id="time">{diffDays} day</h1>
+			{/if}
+		{/key}
 	</div>
 </div>
 

@@ -31,7 +31,7 @@
 		'lastmark-l': MarkLarge,
 		'marks-t': MarkTall,
 		'exam-s': ExamSmall,
-		'vacation-s': VacationsSmall,
+		'vacations-s': VacationsSmall,
 
 		'schedule-t': ScheduleTall,
 		'schedule-f': ScheduleFat,
@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div id="container" bind:this={containerRef}>
+<!-- <div id="container" bind:this={containerRef}>
 	{#if disabled}
 		<div id="blocker" bind:this={blockerRef} style="visibility: visible;"></div>
 	{:else}
@@ -61,7 +61,21 @@
 	{#if CurrentWidget}
 		<CurrentWidget />
 	{/if}
-</div>
+</div> -->
+
+{#if disabled}
+	<div id="container" class="blocker" bind:this={containerRef}>
+		{#if CurrentWidget}
+			<CurrentWidget />
+		{/if}
+	</div>
+{:else}
+	<div id="container" bind:this={containerRef}>
+		{#if CurrentWidget}
+			<CurrentWidget />
+		{/if}
+	</div>
+{/if}
 
 <style>
 	#container {
@@ -75,8 +89,7 @@
 		overflow: hidden;
 	}
 
-	#blocker {
-		border-radius: 20px;
-		cursor: pointer;
+	.blocker {
+		pointer-events: none;
 	}
 </style>

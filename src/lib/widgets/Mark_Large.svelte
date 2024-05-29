@@ -89,6 +89,10 @@
 				<p id="date">{currentmark.date}</p>
 			</div>
 		{/key}
+	{:else}
+		<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
+			<h1 id="mark" style="font-size:5rem; margin-top:3%">X</h1>
+		</div>
 	{/if}
 
 	<!-- buttons to switch between marks -->
