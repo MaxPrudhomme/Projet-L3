@@ -40,4 +40,5 @@ Projet-L3/
 ## Annexes
 
 **Rapport de stage** : https://docs.google.com/document/d/1nRO5l_HmjnMr34_bVxar0nRPntMR-OIBWzhNlwiCYKE/edit?usp=sharing
+
 **Diaporama de la soutenance** : https://docs.google.com/presentation/d/1a_GKb5c_qd89r6f-qNeZ4DZoikS-JEgE3b11MJYYtSQ/edit?usp=sharing
