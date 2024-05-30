@@ -3,7 +3,7 @@
 ## Instructions d'installation
 
 1. Télécharger le projet
-2. Ajouter le .env dans la racine du projet
+2. Ajouter le .env dans la racine du projet et DOSSIER LE DOSSIER "php" HORS DU DOSSIER DU PROJET
 3. Exécuter `npm install`
 4. Exécuter `npm run dev`
 5. Aller sur http://localhost:5173/

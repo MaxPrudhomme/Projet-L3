@@ -16,6 +16,7 @@
 	const today = new Date().setHours(0, 0, 0, 0);
 
 	function sortHomeworkByDueDate(homeworkMap) {
+		// sort a map of homeworks by their due dates
 		return new Map(
 			[...homeworkMap.entries()].sort((a, b) => {
 				return a[1].dueDate - b[1].dueDate;
@@ -66,6 +67,7 @@
 	}
 
 	onMount(async () => {
+		// load the content when the component is mounted
 		await loadContent();
 	});
 

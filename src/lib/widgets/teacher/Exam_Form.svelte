@@ -1,12 +1,11 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent } from '../../../store';
+	import { currentView } from '../../../store';
 	import { doc, getDoc, setDoc } from 'firebase/firestore';
 	import { v4 } from 'uuid'; // v4() generates a 20 characters alphanumeric id
 	import { Timestamp } from 'firebase/firestore';
 	import { fly } from 'svelte/transition';
-	// import { n } from 'vitest/dist/reporters-P7C2ytIv.js';
 
 	export let refresh;
 	export let state;
@@ -30,10 +29,6 @@
 	const month = String(today.getMonth() + 1).padStart(2, '0');
 	const year = today.getFullYear();
 
-	function toggleEdit() {
-		details.editable = !details.editable;
-		name.editable = !name.editable;
-	}
 
 	function adjustTextareaHeight(event) {
 		// function to dynamically adjust the height of a textarea depending on the amount of text within
@@ -69,6 +64,7 @@
 			return;
 		}
 
+
 		const targetRef = doc(db, 'courses', $currentView, 'exam', v4());
 		const courseRef = doc(db, 'courses', $currentView);
 		let courseSnapshot = await getDoc(courseRef);
@@ -88,7 +84,7 @@
 			mark: studentsBase,
 			maxMark: 100,
 			name: name.content,
-			semester: 2 // temporary value
+			semester: 2 // placeholder value
 		};
 
 		await setDoc(targetRef, newExam);
@@ -103,16 +99,7 @@
 			<Icon name={'check-circle'} class={'s36x36 t500'}></Icon>
 		</button>
 
-		<!-- <div id="nameInput">
-			<textarea
-			bind:value={task.content}
-			class="inputReset"
-			on:blur={() => toggleEdit(index)}
-			on:input={adjustTextareaHeight}
-		></textarea>
-		</div> -->
 		<div id="dueInput">
-			<!-- AJOUTER LA SAISIE DE L'HEURE EXACTE -->
 			<input
 				class="dueText inputReset"
 				type="datetime-local"
