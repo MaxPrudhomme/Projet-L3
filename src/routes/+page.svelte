@@ -4,7 +4,7 @@
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
 	import Main from '$lib/content/Main.svelte';
 	import Login from '$lib/login/Login.svelte';
-	import Signup from '$lib/login/Signup.svelte/';
+	import Signup from '$lib/login/Signup.svelte';
 	import InteractionContainer from '$lib/content/InteractionContainer.svelte';
 
 	import { currentView, interactionActive, userUid } from '../store';
