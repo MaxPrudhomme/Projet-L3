@@ -42,7 +42,11 @@
 
 <div id="container">
 	<p class="widgetTitle">Average</p>
-	<p id="average">{average}</p>
+	{#if average}
+		<p id="average">{average}</p>
+	{:else}
+		<p id="average">X</p>
+	{/if}
 	<p id="out-of">/{maxScore}</p>
 </div>
 

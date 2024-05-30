@@ -3,10 +3,12 @@
 ## Instructions d'installation
 
 1. Télécharger le projet
-2. Ajouter le .env dans la racine du projet et DEPLACER LE DOSSIER "backend_php" HORS DU DOSSIER DU PROJET
+2. Ajouter le .env dans la racine du projet
 3. Exécuter `npm install` (installer npm si ce n'est pas déjà fait)
 4. Exécuter `npm run dev`
 5. Aller sur http://localhost:5173/
+
+Le dossier "backend_php" ne sert qu'à la consultation du code pour les examinateurs
 
 ## Structure du projet
 

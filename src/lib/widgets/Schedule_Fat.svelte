@@ -119,7 +119,7 @@
 
 			eventsArray = await querydb(getMonday(day), getSunday(day), userCoursesIds); // preloads the data for the entire week
 		} else {
-			eventsArray = await querydb(getMonday(day), getSunday(day), $currentView);
+			eventsArray = await querydb(getMonday(day), getSunday(day), [$currentView]);
 		}
 		console.log(eventsArray);
 

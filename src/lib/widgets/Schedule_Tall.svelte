@@ -119,7 +119,7 @@
 			).docs.map(({ id }) => id);
 			eventsArray = await querydb(getMonday(day), getSunday(day), userCoursesIds);
 		} else {
-			eventsArray = await querydb(getMonday(day), getSunday(day), $currentView);
+			eventsArray = await querydb(getMonday(day), getSunday(day), [$currentView]);
 		}
 
 		console.log(eventsArray);

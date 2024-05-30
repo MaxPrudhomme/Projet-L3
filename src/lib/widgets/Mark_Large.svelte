@@ -84,7 +84,11 @@
 			<!-- displays new mark everytime the value changes -->
 			<div class="content" in:fly={flyParamsIn} out:fly={flyParamsOut}>
 				<h1 id="name">{currentmark.name}</h1>
-				<h1 id="mark">{currentmark.mark}</h1>
+				{#if currentmark.mark}
+					<h1 id="mark">{currentmark.mark}</h1>
+				{:else}
+					<h1 id="mark">{currentmark.mark}</h1>
+				{/if}
 				<p id="out-of">/{currentmark.maxMark}</p>
 				<p id="date">{currentmark.date}</p>
 			</div>
