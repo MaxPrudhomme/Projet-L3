@@ -10,6 +10,7 @@
 	export let overlap = 1;
 
 	let itemRef;
+	let unfolded = false;
 
 	$: {
 		if (itemRef) {
@@ -22,13 +23,21 @@
 		}
 	}
 
-	function bringToFront(event) {
-		itemRef.style.zIndex += 20;
+	function unfold(event) {
+		if (overlap > 1) {
+			if (!unfolded) {
+				itemRef.style.marginLeft = '50%';
+				unfolded = true;
+			} else {
+				itemRef.style.marginLeft = '0%';
+				unfolded = false;
+			}
+		}
 	}
 	// peut être juste un dépliage en hover ?
 </script>
 
-<button class="buttonReset" id="schedule-item" bind:this={itemRef} on:click={bringToFront}>
+<button class="buttonReset" id="schedule-item" bind:this={itemRef} on:click={unfold}>
 	<div id="align">
 		<div id="icon"><Icon name={icon} /></div>
 
@@ -48,6 +57,7 @@
 		margin-right: 5%;
 		position: relative;
 		padding-top: 0%;
+		box-shadow: 0px 5px 5px 0px #000000;
 
 		font-family: Arial, Helvetica, sans-serif;
 		-ms-overflow-style: none; /* IE and Edge */

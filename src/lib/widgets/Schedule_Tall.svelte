@@ -97,7 +97,9 @@
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-		return new Date(d.setDate(diff));
+		let r = new Date(d.setDate(diff));
+		r.setHours(0, 0, 0, 0);
+		return r;
 	}
 
 	function getSunday(d) {
@@ -105,7 +107,9 @@
 		d = new Date(d);
 		var day = d.getDay(),
 			diff = d.getDate() - day + 7; // adjust when day is sunday
-		return new Date(d.setDate(diff));
+		let r = new Date(d.setDate(diff));
+		r.setHours(0, 0, 0, 0);
+		return r;
 	}
 
 	/////////// DATA FETCHING AND TREATMENT //////////

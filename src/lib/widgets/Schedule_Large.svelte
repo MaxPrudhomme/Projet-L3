@@ -96,8 +96,8 @@
 		eventsArray.forEach(async (event) => {
 			let endDate = new Date(event.end);
 			let startDate = new Date(event.start);
-			event.start = startDate;
-			event.end = endDate;
+			event.startDate = startDate;
+			event.endDate = endDate;
 
 			let begin = new Date(
 				startDate.getFullYear(),
@@ -135,12 +135,12 @@
 	{#key events}
 		{#key i}
 			<div id="schedule" in:fly={flyParamsIn} out:fly={flyParamsOut}>
-				<ScheduleItem
+				<!-- <ScheduleItem
 					name={events[i].summary}
 					location={events[i].location}
 					color={events[i].color}
 					icon={events[i].icon}
-				></ScheduleItem>
+				></ScheduleItem> -->
 			</div>
 		{/key}
 	{/key}

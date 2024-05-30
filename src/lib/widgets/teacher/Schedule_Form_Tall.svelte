@@ -13,6 +13,7 @@
 	let locationInput;
 	let startDateInput;
 	let endDateInput;
+	let fileInput;
 
 	const today = new Date();
 
@@ -51,20 +52,20 @@
 		await loadContent();
 	});
 
-	const processFile = async () => {
-		const records = [];
-		const parser = fs.createReadStream(`${__dirname}/fs_read.csv`).pipe(
+	async function processFile(event) {
+		let csv = e.detail.files;
+		let reader = new FileReader();
+		let records = [];
+		const parser = reader.readAsBinaryString(csv).pipe(
 			// REPLACE BY FILE UPLOADED
-			parse({
-				// CSV options if any
-			})
+			parse()
 		);
 		for await (const record of parser) {
 			// Work with each record
 			records.push(record);
 		}
-		return records;
-	};
+		console.log(records);
+	}
 
 	function adjustTextareaHeight(event) {
 		// function to dynamically adjust the height of a textarea depending on the amount of text within
@@ -232,7 +233,7 @@
 				id="location-input"
 			></textarea>
 		</div>
-		<!-- <input type="file" name="csv-input" id="csv-input"> GESTION DE CSV A FAIRE APRES AVOIR REMIS GITHUB BIEN  -->
+		<!-- <input type="file" name="csv-input" id="csv-input" bind:this={fileInput} /> -->
 	{/key}
 
 	<button class="buttonReset" id="cancelButton" on:click={emptyForm}>

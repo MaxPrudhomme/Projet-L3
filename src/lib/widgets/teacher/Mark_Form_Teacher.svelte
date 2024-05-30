@@ -52,6 +52,7 @@
 			const studentRef = doc(db, 'users', 'index');
 			const studentSnapshot = await getDoc(studentRef);
 			studentsIndex = studentSnapshot.data(); // studentsIndex is a list of every student with their Firebase ID
+			console.log(studentsIndex);
 
 			querySnapshot.forEach((doc) => {
 				let data = doc.data();
