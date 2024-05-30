@@ -9,9 +9,13 @@
     import { ref, getDownloadURL } from 'firebase/storage';
 	import { fade } from "svelte/transition";
 
+    // Export variable to control the visibility of the signup process.
     export let signupProcess;
 
+    // Fonction pour soumettre les données du formulaire d'inscription
+    // Function to submit the signup form data
     async function handleSubmit() {
+            // Ensure all required fields are validated and terms of service accepted before submission
         if ($formData.acceptTOS && $steps[0].alert == false && $steps[1].alert == false) {
             const { acceptTOS, ...submitData } = $formData;
             
@@ -49,6 +53,7 @@
         }
     }
 
+    // Svelte stores to manage form data and progress steps
     export const formData = writable({
         firstName: '',
         lastName: '',
@@ -74,6 +79,8 @@
     let schoolData = null
     let imageURL = ""
 
+    // Fonction pour récupérer les écoles disponibles
+    // Function to fetch available schools
     async function fetchSchools() {
         try {
             const indexRef = doc(db, 'schools/index')
@@ -84,6 +91,8 @@
         }
     }
 
+    // Fonction pour récupérer les détails de l'école sélectionnée
+    // Function to fetch details for the selected school
     async function fetchSchoolDetails(target) {
         if (target == "other") { return }
         try {

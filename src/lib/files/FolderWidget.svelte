@@ -10,10 +10,13 @@
     import { currentView } from "../../store";
 	import { writable } from "svelte/store";
 
+    // Fonction pour charger le contenu racine
+    // Function to load root content
     async function loadRoot(view) {
         if (view === "dashboard") {
-
+            // Conditional handling for dashboard view
         } else {
+            // Reference to Firebase storage for course content
             const courseContentRef = ref(storage, 'courseContent/' + view);
             try {
                 const res = await listAll(courseContentRef);
@@ -23,6 +26,7 @@
                     return { name: itemRef.name, downloadURL };
                 }));
 
+                // Set folders and files from Firebase data
                 folders.set(folderNames);
                 files.set(fileNames);
             } catch (error) {
@@ -31,6 +35,8 @@
         }
     }
 
+    // Fonction pour charger le contenu spécifique d'un dossier
+    // Function to load specific folder content
     async function loadContent(view, target) {
         const courseContentRef = ref(storage, 'courseContent/' + view + "/" + target);
         try {
@@ -48,6 +54,7 @@
     }
 
     $: {
+    // Automatically load root when the view changes
         loadRoot($currentView);
     }
 

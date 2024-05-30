@@ -10,7 +10,7 @@
 	export let name;
 	export let semester;
 
-	let studentNames = new Map();
+	let studentNames = [];
 
 	let up = false;
 	let btn;
@@ -31,7 +31,7 @@
 			counter++;
 
 			try {
-				studentNames.set(counter - 1, data[id]);
+				studentNames.push(data[id]);
 			} catch (error) {
 				console.error('Error fetching documents:', error);
 			}
@@ -77,7 +77,7 @@
 				<p id="notes">Individual marks</p>
 				<ul id="content">
 					{#each Object.entries(marks) as [id, mark], index}
-						<li>{studentNames.values()[index]} : {mark} / 100</li>
+						<li>{studentNames[index]} : {mark} / 100</li>
 					{/each}
 				</ul>
 			</div>

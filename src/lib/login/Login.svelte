@@ -2,15 +2,18 @@
     import { auth } from "$lib/firebase";
     import { signInWithEmailAndPassword } from "firebase/auth";
     import { userToken, userUid } from "../../store";
-    import { fly, fade } from "svelte/transition";
+    import { fade } from "svelte/transition";
     import Icon from "$lib/Icon.svelte";
 
+    // Export variable to manage signup process visibility.
     export let signupProcess;
 
     let email = null;
     let password = null;
     let loginButton;
 
+    // Fonction pour gérer la soumission du formulaire de connexion
+    // Function to handle login form submission
     function handleSubmit() {
         if (email && password ) {
             signInWithEmailAndPassword(auth, email, password).then((cred) => {
@@ -25,7 +28,9 @@
         email = null;
         password = null;
     }
-    
+
+    // Fonction pour déclencher le processus d'inscription
+    // Function to trigger the signup process
     function triggerSignUp() {
         signupProcess.set(true)
     }

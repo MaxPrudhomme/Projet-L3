@@ -4,6 +4,8 @@
 
     import FileIcon from "./FileIcon.svelte";
 
+    // Fonction pour modifier le dossier actif
+    // Function to change the active folder
     function changeActiveFolder() {
         activeFolder.set(name)
     }

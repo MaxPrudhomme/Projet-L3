@@ -1,6 +1,9 @@
 <script>
     export let files;
     import File from "./File.svelte";
+    
+    // Le composant s'attend à recevoir une liste de fichiers à afficher
+    // The component expects to receive a list of files to display
 </script>
 
 <div id="container">

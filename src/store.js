@@ -24,3 +24,7 @@ export const currentContent =  writable([]) // Content taken from the user file
 export const currentTab = writable("widgets") // Represents the widgets, files, comms tab
 
 export const overrideAnimations = writable(false)
+
+export const requestUpdateSidebar = writable(false)
+
+// Basic Svelte stores

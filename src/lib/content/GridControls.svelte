@@ -12,31 +12,39 @@
 
 	let widgetsBackup = [];
 
+	// Fonction pour activer le mode d'édition
+	// Function to toggle edit mode on
 	function toggleEdit() {
 		editMode.set(true);
 		widgetsBackup = JSON.parse(JSON.stringify($widgets));
 	}
 
+	// Fonction pour sauvegarder les changements
+	// Function to save changes
 	async function saveChanges() {
 		editMode.set(false);
 		if ($currentView === 'dashboard') {
 			const targetRef = doc(db, 'users', $userUid);
 			await updateDoc(targetRef, {
-				dashboard: $widgets
+				dashboard: $widgets // Save updated widgets to the dashboard
 			});
 		} else {
 			const targetRef = doc(db, 'users', $userUid, 'userCourses', $currentView);
 			await updateDoc(targetRef, {
-				widgets: $widgets
+				widgets: $widgets // Save updated widgets to the current course view
 			});
 		}
 	}
 
+	// Fonction pour annuler les changements
+	// Function to cancel changes
 	function cancelChanges() {
 		editMode.set(false);
-		widgets.set(widgetsBackup);
+		widgets.set(widgetsBackup); // Restore widgets to their original state before editing
 	}
 
+	// Fonction pour parcourir les widgets disponibles
+	// Function to browse available widgets
 	function browseWidgets() {
 		interactionActive.set(true);
 		widgetEdit.set(true);

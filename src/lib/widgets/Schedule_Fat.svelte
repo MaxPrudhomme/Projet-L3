@@ -59,7 +59,7 @@
 			' - ' +
 			date.getDate() +
 			'/' +
-			date.getMonth() +
+			(date.getMonth() + 1) +
 			'/' +
 			date.getFullYear()
 		);
@@ -110,17 +110,16 @@
 		return r;
 	}
 
-	/////////// DATA FETCHING AND TREATMENT //////////
-	onMount(async () => {
+	async function getEvents(day) {
 		if ($currentView == 'dashboard') {
 			// if widget is on dashboard, load all the schedule items, else only load the items of the viewed course
 			const userCoursesIds = (
 				await getDocs(collection(db, 'users', $userUid, 'userCourses'))
 			).docs.map(({ id }) => id);
 
-			eventsArray = await querydb(getMonday(today), getSunday(today), userCoursesIds); // preloads the data for the entire week
+			eventsArray = await querydb(getMonday(day), getSunday(day), userCoursesIds); // preloads the data for the entire week
 		} else {
-			eventsArray = await querydb(getMonday(today), getSunday(today), $currentView);
+			eventsArray = await querydb(getMonday(day), getSunday(day), $currentView);
 		}
 		console.log(eventsArray);
 
@@ -164,6 +163,11 @@
 		calculateOverlap(eventsArray);
 
 		events = new Map(convertEventsArrayToMap(eventsArray));
+	}
+
+	/////////// DATA FETCHING AND TREATMENT //////////
+	onMount(async () => {
+		await getEvents(today);
 	});
 	///////////////////////////////////////////////////
 
@@ -178,6 +182,7 @@
 		for (let i = 0; i < currentWeek.length; i++) {
 			stringDates[i] = dateToString(currentWeek[i]);
 		}
+		getEvents(currentWeek[1]);
 	}
 
 	function previousWeek(event) {
@@ -191,6 +196,7 @@
 		for (let i = 0; i < currentWeek.length; i++) {
 			stringDates[i] = dateToString(newCurrentWeek[i]);
 		}
+		getEvents(currentWeek[1]);
 	}
 </script>
 

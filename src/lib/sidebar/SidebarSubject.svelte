@@ -6,6 +6,8 @@
     import Icon from '$lib/Icon.svelte'
     import { currentView } from '../../store';
 
+    // Demande l'affichage du cours sélectionné
+    // Requests display of the selected course
     async function requestView() {
         currentView.set(id)
     }

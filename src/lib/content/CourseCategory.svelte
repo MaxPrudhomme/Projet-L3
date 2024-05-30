@@ -1,16 +1,18 @@
 <script>
-    export let category
-    export let courses
-    export let selectedCourses
+    export let category;
+    export let courses;
+    export let selectedCourses;
 
     import CourseItem from "./CourseItem.svelte";
 
+    // Le composant représente une catégorie de cours, utilisant CourseItem pour afficher chaque cours individuellement
+    // This component represents a course category, using CourseItem to display each course individually
 </script>
 
 <div id="container" class="noise">
     <h2>{category}</h2>
     {#each Object.entries(courses) as [key, value]}
-        <CourseItem {value} {selectedCourses} {key}></CourseItem>
+        <CourseItem {value} {key} {selectedCourses} />
     {/each}
 </div>
 

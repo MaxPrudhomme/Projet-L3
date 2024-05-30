@@ -12,6 +12,7 @@
 	let vacationsDate;
 
 	onMount(async () => {
+		// fetches all vacations from the school the user is in and calculates the time left in days before the next vacations
 		userSchools = (await getDoc(doc(db, 'users', $userUid))).data().school;
 
 		let schoolVacations = (

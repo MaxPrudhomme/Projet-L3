@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from "svelte";
-    import { userUid } from "../../store";
+    import { requestUpdateSidebar, userUid } from "../../store";
 	import { collection, getDocs, where, query } from "firebase/firestore";
     import { db } from "$lib/firebase";
 	import SidebarSubject from "./SidebarSubject.svelte";
@@ -9,7 +9,10 @@
 
     let coursesList = writable([]);
 
-    onMount(async () => {
+    // Charge les cours de l'utilisateur à partir de la base de données Firestore
+    // Loads user's courses from Firestore database
+    async function loadSidebar() {
+        coursesList.set([])
         try {
             const userCoursesIds = (await getDocs(collection(db, 'users', $userUid, 'userCourses'))).docs.map(({ id }) => id);
             if (userCoursesIds.length === 0) {
@@ -31,7 +34,23 @@
             console.error("Error fetching courses:", error);
             coursesList.set([]);
         }
+    }
+
+    onMount(async () => {
+        await loadSidebar()
     });
+
+    // Surveille les requêtes pour mettre à jour la liste des cours
+    // Monitors requests to update the course list
+    $: {
+        const watch = $requestUpdateSidebar
+        if (watch) {
+            loadSidebar()
+            requestUpdateSidebar.set(false)
+        }
+
+    }
+
 </script>
 
 <div id="container"> 

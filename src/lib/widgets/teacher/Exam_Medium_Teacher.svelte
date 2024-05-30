@@ -50,7 +50,6 @@
 			querySnapshot.forEach((doc) => {
 				// add data of each exam to map
 				let data = doc.data();
-				// data['date'] = new Date(data['date'].seconds * 1000);
 				exam.set(doc.id, data);
 			});
 

@@ -3,10 +3,14 @@
     import { auth } from '$lib/firebase';
     import { currentView, user, userToken, userUid } from '../../store';
 
+    // Fonction pour demander l'affichage du tableau de bord
+    // Function to request dashboard display
     function requestDashboard() {
         currentView.set("dashboard")
     }
 
+    // Fonction pour déconnecter l'utilisateur
+    // Function to log out the user
     async function logOut() {
         await auth.signOut()
         user.set(null)

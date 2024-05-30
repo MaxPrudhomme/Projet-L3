@@ -1,8 +1,8 @@
 <script>
 	import Icon from '$lib/Icon.svelte';
 	import { db } from '$lib/firebase';
-	import { currentView, currentContent, userUid } from '../../../store';
-	import { doc, getDocs, collection } from 'firebase/firestore';
+	import { currentView, } from '../../../store';
+	import { getDocs, collection } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
 	let courseAverage;
@@ -11,7 +11,6 @@
 
 	async function loadContent() {
 		// fetch relevant content from backend (ie. the marks of all students from every exam)
-
 		try {
 			let examRef = collection(db, 'courses', $currentView, 'exam');
 			let examSnapshot = await getDocs(examRef);

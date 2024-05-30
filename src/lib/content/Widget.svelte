@@ -14,7 +14,6 @@
 	import HomeworkTallTeacher from '$lib/widgets/teacher/Homework_Tall_Teacher.svelte';
 	import AverageSmallTeacher from '$lib/widgets/teacher/Average_Small_Teacher.svelte';
 	import MarkTallTeacher from '$lib/widgets/teacher/Mark_Tall_Teacher.svelte';
-	import LastMarksMedium from '$lib/widgets/LastMarks_Medium.svelte';
 	import Schedule_Form_Tall from '$lib/widgets/teacher/Schedule_Form_Tall.svelte';
 
 	export let content;
@@ -24,6 +23,7 @@
 	let blockerRef;
 	let CurrentWidget;
 
+	// Map to link content types to widget components
 	const widgetMap = {
 		'average-s': AverageSmall,
 		'homework-t': HomeworkTall,
@@ -43,9 +43,10 @@
 		'scheduleform-t': Schedule_Form_Tall
 	};
 
+	// Initialize the widget based on content type when the component mounts
 	onMount(() => {
 		let target = content[0] + '-' + content[1];
-		CurrentWidget = widgetMap[target];
+		CurrentWidget = widgetMap[target]; // Dynamically set the widget based on the provided content type
 	});
 </script>
 

@@ -19,3 +19,5 @@ const auth = getAuth(app);
 const storage = getStorage();
 
 export { db, auth, storage };
+
+// Basic firebase setup
